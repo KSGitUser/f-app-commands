@@ -221,7 +221,7 @@
       },
       linksUser () {
         return [
-          {title: 'Учетная запись', icon: 'account_circle', url: '/user'},
+          {title: 'Учетная запись', icon: 'account_circle', url: '/User/UserProfile'},
           {title: 'Доски', icon: 'bookmark_border', url: '/board'},
           {title: 'Выйти', icon: 'exit_to_app', url: '/exit'},
         ]

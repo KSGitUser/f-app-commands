@@ -1,34 +1,34 @@
-import Vue from 'vue'
-import Router from 'vue-router'
+import Vue from 'vue';
+import Router from 'vue-router';
 
-import Home from '@/components/Home'
-import Board from '@/components/Board'
-import User from '@/components/User'
-import Page404 from '@/components/Page/404'
+import Home from '@/components/Home';
+import Board from '@/components/Board';
+import UserProfile from '@/components/User/UserProfile';
+import Page404 from '@/components/Page/404';
 
-Vue.use(Router)
+Vue.use(Router);
 
 export default new Router({
   routes: [
     {
       path: '',
       name: 'home',
-      component: Home,
+      component: Home
     },
     {
       path: '/board',
       name: 'board',
-      component: Board,
+      component: Board
     },
     {
-      path: '/user',
-      name: 'user',
-      component: User,
+      path: '/user/userprofile',
+      name: 'userProfile',
+      component: UserProfile
     },
     {
       path: '*',
-      component: Page404,
-    },
+      component: Page404
+    }
   ],
-  mode: 'history',
-})
+  mode: 'history'
+});
