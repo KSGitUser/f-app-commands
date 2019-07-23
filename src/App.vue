@@ -11,7 +11,6 @@
                         :key="link.title"
                         :to="link.url"
                 >
-
                     <v-list-tile-action>
                         <v-icon>{{link.icon}}</v-icon>
                     </v-list-tile-action>
@@ -20,23 +19,10 @@
                     </v-list-tile-content>
                 </v-list-tile>
                 <v-divider></v-divider>
-                <v-list-tile
-                        v-for="link of linksUser"
-                        :key="link.title"
-                        :to="link.url"
-                >
-
-                    <v-list-tile-action>
-                        <v-icon>{{link.icon}}</v-icon>
-                    </v-list-tile-action>
-                    <v-list-tile-content>
-                        <v-list-tile-title v-text="link.title"></v-list-tile-title>
-                    </v-list-tile-content>
-                </v-list-tile>
-
                 <v-list>
                     <v-list-tile
                             @click="togleLoginDialog"
+                            v-if="!isUserLoggedIn"
                     >
                         <v-list-tile-title>
                             <v-icon left>lock</v-icon>
@@ -47,10 +33,22 @@
                 <v-list>
                     <v-list-tile
                             @click="togleRegisterDialog"
+                            v-if="!isUserLoggedIn"
                     >
                         <v-list-tile-title>
-                            <v-icon left>lock</v-icon>
+                            <v-icon left>face</v-icon>
                             Регистрация
+                        </v-list-tile-title>
+                    </v-list-tile>
+                </v-list>
+                <v-list>
+                    <v-list-tile
+                            v-if="isUserLoggedIn"
+                            @click="onLogout"
+                    >
+                        <v-list-tile-title>
+                            <v-icon left>exit_to_app</v-icon>
+                            Выйти
                         </v-list-tile-title>
                     </v-list-tile>
                 </v-list>
@@ -83,6 +81,7 @@
                     {{link.title}}
                 </v-btn>
                 <v-btn
+                        v-if="!isUserLoggedIn"
                         @click="togleLoginDialog"
                         flat
                 >
@@ -90,11 +89,20 @@
                     Войти
                 </v-btn>
                 <v-btn
+                        v-if="!isUserLoggedIn"
                         @click="togleRegisterDialog"
                         flat
                 >
-                    <v-icon left>lock</v-icon>
+                    <v-icon left>face</v-icon>
                     Регистрация
+                </v-btn>
+                <v-btn
+                        v-if="isUserLoggedIn"
+                        @click="onLogout"
+                        flat
+                >
+                    <v-icon left>exit_to_app</v-icon>
+                    Выйти
                 </v-btn>
 
                 <v-menu bottom left>
@@ -111,7 +119,7 @@
 
                     <v-list>
                         <v-list-tile
-                                v-for="link of linksUser"
+                                v-for="link of links"
                                 :key="link.title"
                                 :to="link.url"
                                 @click=""
@@ -125,6 +133,7 @@
 
                     <v-list>
                         <v-list-tile
+                                :v-if="!isUserLoggedIn"
                                 @click="togleLoginDialog"
                         >
                             <v-list-tile-title>
@@ -135,20 +144,17 @@
                     </v-list>
                     <v-list>
                         <v-list-tile
+                                :v-if="!isUserLoggedIn"
                                 @click="togleRegisterDialog"
                         >
                             <v-list-tile-title>
-                                <v-icon left>lock</v-icon>
+                                <v-icon left>face</v-icon>
                                 Регистрация
                             </v-list-tile-title>
                         </v-list-tile>
                     </v-list>
-
                 </v-menu>
-
-
             </v-toolbar-items>
-
         </v-toolbar>
 
         <v-content>
@@ -179,68 +185,66 @@
                     <reset-password-form></reset-password-form>
                 </v-card>
             </v-dialog>
-
-
         </v-content>
-
 
     </v-app>
 </template>
 
 <script>
-  import LoginForm from './components/Auth/Login'
-  import RegistrForm from './components/Auth/Registration'
-  import ResetPasswordForm from './components/Auth/ResetPassword'
+    import LoginForm from './components/Auth/Login'
+    import RegistrForm from './components/Auth/Registration'
+    import ResetPasswordForm from './components/Auth/ResetPassword'
 
-  export default {
-    components: {
-      ResetPasswordForm,
-      RegistrForm,
-      LoginForm
-    },
-    data () {
-      return {
-        drawer: false,
-      }
-    },
-    methods: {
-      togleLoginDialog () {
-        this.$store.dispatch('togleLoginDialog')
-      },
-      togleRegisterDialog () {
-        this.$store.dispatch('togleRegisterDialog')
-      },
-      togleResetPasswordDialog () {
-        this.$store.dispatch('togleResetPasswordDialog')
-      },
-    },
-    computed: {
-      loginDialog () {
-        return this.$store.getters.loginDialog
-      },
-      registerDialog () {
-        return this.$store.getters.registerDialog
-      },
-      resetPasswordDialog () {
-        return this.$store.getters.resetPasswordDialog
-      },
-
-      links () {
-        return [
-          {title: 'Главная', icon: 'bookmark_border', url: '/'},
-          // {title: 'Авторизация', icon: 'lock', url: '/login'},
-          // {title: 'Регистрация', icon: 'account_circle', url: '/registration'},
-        ]
-      },
-      linksUser () {
-        return [
-          {title: 'Учетная запись', icon: 'account_circle', url: '/user'},
-          {title: 'Доски', icon: 'bookmark_border', url: '/board'},
-          {title: 'Выйти', icon: 'exit_to_app', url: '/exit'},
-        ]
-      },
-    },
-  }
+    export default {
+        components: {
+            ResetPasswordForm,
+            RegistrForm,
+            LoginForm
+        },
+        data () {
+            return {
+                drawer: false,
+            }
+        },
+        methods: {
+            togleLoginDialog () {
+                this.$store.dispatch('togleLoginDialog')
+            },
+            togleRegisterDialog () {
+                this.$store.dispatch('togleRegisterDialog')
+            },
+            togleResetPasswordDialog () {
+                this.$store.dispatch('togleResetPasswordDialog')
+            },
+            onLogout () {
+                this.$store.dispatch('logoutUser')
+                this.$router.push('/')
+            }
+        },
+        computed: {
+            loginDialog () {
+                return this.$store.getters.loginDialog
+            },
+            registerDialog () {
+                return this.$store.getters.registerDialog
+            },
+            resetPasswordDialog () {
+                return this.$store.getters.resetPasswordDialog
+            },
+            isUserLoggedIn () {
+                return this.$store.getters.isUserLoggedIn
+            },
+            links () {
+                if (this.isUserLoggedIn) {
+                    return [
+                        { title: 'Главная', icon: 'home', url: '/' },
+                        { title: 'Доски', icon: 'bookmark_border', url: '/board' },
+                        { title: 'Профиль', icon: 'account_circle', url: '/user' },
+                    ]
+                }
+            },
+        },
+    }
 </script>
 
 <style scoped>
