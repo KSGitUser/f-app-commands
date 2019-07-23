@@ -57,6 +57,8 @@
             <v-btn
                     color="primary"
                     @click="onLogin"
+                    :loading="loading"
+                    :disabled="loading"
             >Зарегистрироваться
             </v-btn>
         </v-card-actions>
@@ -65,7 +67,9 @@
 </template>
 
 <script>
-  export default {
+    const emailRegex = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/
+
+    export default {
     name: 'RegistrForm',
     data () {
       return {
@@ -76,7 +80,7 @@
         valid: false,
         emailRules: [
           v => !!v || 'Обязательное поле',
-          v => /.+@.+/.test(v) || 'E-mail некорректное значение'
+          v => emailRegex.test(v) || 'E-mail некорректное значение'
         ],
         pasRules: [
           v => !!v || 'Обязательное поле',
@@ -92,7 +96,11 @@
         ],
       }
     },
-    computed: {},
+    computed: {
+        loading () {
+            return this.$store.getters.loading
+        }
+    },
     methods: {
       togleRegisterDialog ({commit}, payload) {
         this.$store.dispatch('togleRegisterDialog');
@@ -103,9 +111,16 @@
             email: this.email,
             password: this.password,
           }
-          //...
+
+            this.$store.dispatch('registerUser', user)
+                .then(() => {
+                    this.$router.push('/user')
+                    this.$store.dispatch('togleRegisterDialog', false)
+
+                })
+                .catch(error => console.log(error));
         }
       },
     },
-  }
+    }
 </script>

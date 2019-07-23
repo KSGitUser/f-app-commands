@@ -82,7 +82,20 @@
                     <v-icon left>{{link.icon}}</v-icon>
                     {{link.title}}
                 </v-btn>
-
+                <v-btn
+                        @click="togleLoginDialog"
+                        flat
+                >
+                    <v-icon left>lock</v-icon>
+                    Войти
+                </v-btn>
+                <v-btn
+                        @click="togleRegisterDialog"
+                        flat
+                >
+                    <v-icon left>lock</v-icon>
+                    Регистрация
+                </v-btn>
 
                 <v-menu bottom left>
                     <template v-slot:activator="{ on }">
