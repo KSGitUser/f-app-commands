@@ -57,6 +57,8 @@
             <v-btn
                     color="primary"
                     @click="onLogin"
+                    :loading="loading"
+                    :disabled="loading"
             >Зарегистрироваться
             </v-btn>
         </v-card-actions>
@@ -65,47 +67,60 @@
 </template>
 
 <script>
-  export default {
-    name: 'RegistrForm',
-    data () {
-      return {
-        name: '',
-        email: '',
-        password: '',
-        confirmPassword: '',
-        valid: false,
-        emailRules: [
-          v => !!v || 'Обязательное поле',
-          v => /.+@.+/.test(v) || 'E-mail некорректное значение'
-        ],
-        pasRules: [
-          v => !!v || 'Обязательное поле',
-          v => v.length >= 6 || 'Минимум 6  символов'
-        ],
-        nameRules: [
-          v => !!v || 'Обязательное поле',
-          v => v.length >= 3 || 'Минимум 3  символов'
-        ],
-        confirmPasRules: [
-          v => !!v || 'Обязательное поле',
-          v => v === this.password || 'Должно совпадать с первым паролем'
-        ],
-      }
-    },
-    computed: {},
-    methods: {
-      togleRegisterDialog ({commit}, payload) {
-        this.$store.dispatch('togleRegisterDialog');
-      },
-      onLogin () {
-        if (this.$refs.form.validate()) {
-          const user = {
-            email: this.email,
-            password: this.password,
-          }
-          //...
-        }
-      },
-    },
-  }
+    const emailRegex = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/
+
+    export default {
+        name: 'RegistrForm',
+        data () {
+            return {
+                name: '',
+                email: '',
+                password: '',
+                confirmPassword: '',
+                valid: false,
+                emailRules: [
+                    v => !!v || 'Обязательное поле',
+                    v => emailRegex.test(v) || 'E-mail некорректное значение'
+                ],
+                pasRules: [
+                    v => !!v || 'Обязательное поле',
+                    v => v.length >= 6 || 'Минимум 6  символов'
+                ],
+                nameRules: [
+                    v => !!v || 'Обязательное поле',
+                    v => v.length >= 3 || 'Минимум 3  символов'
+                ],
+                confirmPasRules: [
+                    v => !!v || 'Обязательное поле',
+                    v => v === this.password || 'Должно совпадать с первым паролем'
+                ],
+            }
+        },
+        computed: {
+            loading () {
+                return this.$store.getters.loading
+            }
+        },
+        methods: {
+            togleRegisterDialog ({ commit }, payload) {
+                this.$store.dispatch('togleRegisterDialog');
+            },
+            onLogin () {
+                if (this.$refs.form.validate()) {
+                    const user = {
+                        email: this.email,
+                        password: this.password,
+                    }
+
+                    this.$store.dispatch('registerUser', user)
+                        .then(() => {
+                            this.$router.push('/user')
+                            this.$store.dispatch('togleRegisterDialog', false)
+
+                        })
+                        .catch(error => console.log(error));
+                }
+            },
+        },
+    }
 </script>

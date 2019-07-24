@@ -13,7 +13,7 @@
             </v-layout>
         </v-parallax>
 
-        <v-container v-for="n in 3">
+        <v-container v-for="(n, index) in 3" :key="index">
             <v-layout row>
                 <v-flex xs12 sm8 md8>
                     <v-card-text>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab accusantium assumenda
