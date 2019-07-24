@@ -1,22 +1,61 @@
 <template>
     <div class="demo">
 
+        <v-layout grey lighten-3 row>
+            <v-spacer></v-spacer>
+            <v-menu
+                    :close-on-content-click="false"
+            >
+                <template v-slot:activator="{ on }">
+                    <v-btn
+                            icon
+                            v-on="on"
+                            fab
+                    >
+                        <v-icon>insert_photo</v-icon>
+                    </v-btn>
+                </template>
 
-        <div>
-            <v-select v-model="bf"
-                      :items="bfOptions"
-                      label="выберите фон"
-            ></v-select>
-
-
-            <v-btn  @click="addList" color="primary">
-                добавить список
+                <v-card>
+                    <form class="pa-3">
+                        <v-select v-model="bf"
+                                  :items="bfOptions"
+                                  label="выберите фон"
+                        ></v-select>
+                    </form>
+                </v-card>
+            </v-menu>
+            <v-btn
+                    icon
+                    @click="addList"
+                    fab
+            >
+                <v-icon>add_circle</v-icon>
             </v-btn>
-        </div>
+        </v-layout>
 
         <div class="root-box pre style-1"
+             @contextmenu="show"
              :style="{'background': `url('${bf}')`}"
         >
+
+            <v-menu
+                    v-model="showMenu"
+                    :position-x="x"
+                    :position-y="y"
+                    absolute
+                    offset-y
+            >
+                <v-list>
+                    <v-list-tile
+                            v-for="(item, index) in showMenuItems"
+                            :key="index"
+                            @click="item.action"
+                    >
+                        <v-list-tile-title>{{ item.title }}</v-list-tile-title>
+                    </v-list-tile>
+                </v-list>
+            </v-menu>
 
             <div
                     class="scrollbar-box mt-5 mb-5 mr-2 ml-2"
@@ -106,6 +145,7 @@
             </div>
 
         </div>
+
     </div>
 
 
@@ -124,6 +164,12 @@
     data () {
       return {
         dialog: false,
+        showMenu: false,
+        x: 0,
+        y: 0,
+        showMenuItems: [
+          {title: 'Добавить список', action: this.addList},
+        ],
         bf: 'https://cdn.vuetifyjs.com/images/parallax/material2.jpg',
         bfOptions: [
           {
@@ -132,14 +178,6 @@
           }, {
             text: 'img0.jpg',
             value: 'https://ns328286.ip-37-187-113.eu/ew/wallpapers/800x480/02715_800x480.jpg'
-          },
-          {
-            text: 'img1.jpg',
-            value: 'http://itd1.mycdn.me/image?id=873480001109&t=20&plc=WEB&tkn=*GyMyfp8AbftDW-tEcIQ0ABc_6Ew'
-          },
-          {
-            text: 'img2.jpg',
-            value: 'https://malahitdance.ru/wp-content/uploads/2015/03/12.jpg'
           },
         ],
         lists: [
@@ -154,6 +192,7 @@
           {
             title: `name | ${id}`,
             items: [
+              {name: 'Jonny', id: id++},
               {name: 'Jonny', id: id++},
             ],
           },
@@ -170,7 +209,15 @@
       demo: function () {
         this.dialog = !this.dialog
       },
-
+      show (e) {
+        e.preventDefault()
+        this.showMenu = false
+        this.x = e.clientX
+        this.y = e.clientY
+        this.$nextTick(() => {
+          this.showMenu = true
+        })
+      },
     }
   }
 </script>
@@ -211,7 +258,7 @@
         }
     }
 
-    pre{
+    pre {
         font-size: .8rem;
     }
 
@@ -276,4 +323,9 @@
         padding: 10px;
     }
 
+    .top-menu-board{
+        position: fixed;
+        left: 0;
+        right: 0;
+    }
 </style>
