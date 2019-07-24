@@ -133,7 +133,7 @@
 
                     <v-list>
                         <v-list-tile
-                                :v-if="!isUserLoggedIn"
+                                v-if="!isUserLoggedIn"
                                 @click="togleLoginDialog"
                         >
                             <v-list-tile-title>
@@ -144,7 +144,7 @@
                     </v-list>
                     <v-list>
                         <v-list-tile
-                                :v-if="!isUserLoggedIn"
+                                v-if="!isUserLoggedIn"
                                 @click="togleRegisterDialog"
                         >
                             <v-list-tile-title>
