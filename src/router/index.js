@@ -1,11 +1,25 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
-import Home from '@/components/Home'
-import Board from '@/components/Board'
-import User from '@/components/User'
-import Page404 from '@/components/Page/404'
-import store from "../store";
+import Home from '../components/Home'
+import Page404 from '../components/Page/404'
+import store from '../store'
+
+const Board = resolve => {
+  require.ensure(['../components/Board'], () => {
+    resolve(
+      require('../components/Board')
+    )
+  })
+}
+
+const User = resolve => {
+  require.ensure(['../components/User'], () => {
+    resolve(
+      require('../components/User')
+    )
+  })
+}
 
 Vue.use(Router)
 
@@ -22,7 +36,7 @@ export default new Router({
     {
       path: '',
       name: 'home',
-      component: Home,
+      component: Home
     },
     {
       path: '/board',
@@ -38,8 +52,8 @@ export default new Router({
     },
     {
       path: '*',
-      component: Page404,
-    },
+      component: Page404
+    }
   ],
-  mode: 'history',
+  mode: 'history'
 })

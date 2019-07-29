@@ -5,7 +5,10 @@
 
 
                 <h1>404</h1>
-                <p><v-icon>error</v-icon> Страница не найдена</p>
+                <p>
+                    <v-icon>error</v-icon>
+                    Страница не найдена
+                </p>
 
             </v-flex>
         </v-layout>
@@ -14,14 +17,14 @@
 </template>
 
 <script>
-    export default {
-        name: "404"
-    }
+  export default {
+    name: '404'
+  }
 </script>
 
 <style lang="scss" scoped>
 
-    h1{
+    h1 {
         font-size: 10rem;
     }
 

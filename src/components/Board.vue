@@ -168,7 +168,7 @@
         x: 0,
         y: 0,
         showMenuItems: [
-          {title: 'Добавить список', action: this.addList},
+          {title: 'Добавить список', action: this.addList}
         ],
         bf: 'https://cdn.vuetifyjs.com/images/parallax/material2.jpg',
         bfOptions: [
@@ -178,7 +178,7 @@
           }, {
             text: 'img0.jpg',
             value: 'https://ns328286.ip-37-187-113.eu/ew/wallpapers/800x480/02715_800x480.jpg'
-          },
+          }
         ],
         lists: [
           {
@@ -186,17 +186,17 @@
             items: [
               {name: 'Jonny', id: id++},
               {name: 'Jonny', id: id++},
-              {name: 'Jonny', id: id++},
-            ],
+              {name: 'Jonny', id: id++}
+            ]
           },
           {
             title: `name | ${id}`,
             items: [
               {name: 'Jonny', id: id++},
-              {name: 'Jonny', id: id++},
-            ],
-          },
-        ],
+              {name: 'Jonny', id: id++}
+            ]
+          }
+        ]
       }
     },
     methods: {
@@ -217,7 +217,7 @@
         this.$nextTick(() => {
           this.showMenu = true
         })
-      },
+      }
     }
   }
 </script>
@@ -323,7 +323,7 @@
         padding: 10px;
     }
 
-    .top-menu-board{
+    .top-menu-board {
         position: fixed;
         left: 0;
         right: 0;

@@ -47,22 +47,21 @@
         emailRules: [
           v => !!v || 'Обязательное поле',
           v => /.+@.+/.test(v) || 'E-mail некорректное значение'
-        ],
+        ]
       }
     },
     computed: {},
     methods: {
       togleResetPasswordDialog ({commit}, payload) {
-        this.$store.dispatch('togleResetPasswordDialog');
+        this.$store.dispatch('togleResetPasswordDialog')
       },
       onLogin () {
         if (this.$refs.form.validate()) {
           const user = {
-            email: this.email,
+            email: this.email
           }
-          //...
         }
-      },
-    },
+      }
+    }
   }
 </script>

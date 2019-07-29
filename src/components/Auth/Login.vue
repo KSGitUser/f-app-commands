@@ -59,56 +59,64 @@
 </template>
 
 <script>
-    const emailRegex = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/
+  const emailRegex = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/
 
-    export default {
-        name: 'LoginForm',
-        data () {
-            return {
-                email: '',
-                password: '',
-                valid: false,
-                emailRules: [
-                    v => !!v || 'Обязательное поле',
-                    v => emailRegex.test(v) || 'E-mail некорректное значение'
-                ],
-                pasRules: [
-                    v => !!v || 'Обязательное поле',
-                    v => v.length >= 6 || 'Минимум 6  символов'
-                ],
-            }
-        },
-        computed: {
-            loading () {
-                return this.$store.getters.loading
-            }
-        },
-        methods: {
-            togleLoginDialog () {
-                this.$store.dispatch('togleLoginDialog')
-            },
-            togleRegisterDialog () {
-                this.togleLoginDialog()
-                this.$store.dispatch('togleRegisterDialog')
-            },
-            togleResetPasswordDialog () {
-                this.togleLoginDialog()
-                this.$store.dispatch('togleResetPasswordDialog')
-            },
-            onLogin () {
-                if (this.$refs.form.validate()) {
-                    const user = {
-                        email: this.email,
-                        password: this.password,
-                    }
+  export default {
+    name: 'LoginForm',
+    data () {
+      return {
+        email: '',
+        password: '',
+        valid: false,
+        emailRules: [
+          v => !!v || 'Обязательное поле',
+          v => emailRegex.test(v) || 'E-mail некорректное значение'
+        ],
+        pasRules: [
+          v => !!v || 'Обязательное поле',
+          v => v.length >= 6 || 'Минимум 6  символов'
+        ]
+      }
+    },
+    computed: {
+      loading () {
+        return this.$store.getters.loading
+      }
+    },
+    methods: {
+      togleLoginDialog () {
+        this.$store.dispatch('togleLoginDialog')
+      },
+      togleRegisterDialog () {
+        this.togleLoginDialog()
+        this.$store.dispatch('togleRegisterDialog')
+      },
+      togleResetPasswordDialog () {
+        this.togleLoginDialog()
+        this.$store.dispatch('togleResetPasswordDialog')
+      },
+      onLogin () {
+        if (this.$refs.form.validate()) {
+          const user = {
+            email: this.email,
+            password: this.password
+          }
 
-                this.$store.dispatch('loginUser', user)
-                    .then(() => {
-                        this.$store.dispatch('togleLoginDialog', false)
-                    })
-                    .catch(error => console.log(error))
-                }
-            },
-        },
+          this.$store.dispatch('loginUser', user)
+            .then(() => {
+              this.$store.dispatch('togleLoginDialog', false)
+              this.$store.dispatch('setSnackbarMsg', 'Успешная авторизация')
+              this.$store.dispatch('setSnackbarType', 'success')
+            })
+            .catch(
+              error => {
+                console.log(error)
+                this.$store.dispatch('setSnackbarMsg', error.message)
+                this.$store.dispatch('setSnackbarType', 'error')
+              }
+            )
+        }
+      }
     }
+  }
 </script>

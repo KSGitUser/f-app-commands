@@ -25,7 +25,6 @@ export default {
     togleResetPasswordDialog ({commit}, payload) {
       commit('setResetPasswordDialog')
     },
-
   },
   getters: {
     loginDialog (state) {
