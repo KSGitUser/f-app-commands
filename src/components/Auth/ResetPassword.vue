@@ -22,6 +22,7 @@
                         v-model="email"
                         :rules="emailRules"
                         required
+                        @keyup.enter="onLogin"
                 ></v-text-field>
 
             </v-form>
@@ -57,9 +58,10 @@
       },
       onLogin () {
         if (this.$refs.form.validate()) {
-          const user = {
+          const email = {
             email: this.email
           }
+          this.$store.dispatch('resetPassword', email)
         }
       }
     }

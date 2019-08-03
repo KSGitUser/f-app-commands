@@ -23,6 +23,7 @@
                         v-model="email"
                         :rules="emailRules"
                         required
+                        @keyup.enter="onLogin"
                 ></v-text-field>
                 <v-text-field
                         prepend-icon="lock"
@@ -32,6 +33,7 @@
                         v-model="password"
                         :rules="pasRules"
                         required
+                        @keyup.enter="onLogin"
                 ></v-text-field>
             </v-form>
         </v-card-text>
@@ -70,7 +72,7 @@
         valid: false,
         emailRules: [
           v => !!v || 'Обязательное поле',
-          v => emailRegex.test(v) || 'E-mail некорректное значение'
+          //v => emailRegex.test(v) || 'E-mail некорректное значение'
         ],
         pasRules: [
           v => !!v || 'Обязательное поле',
@@ -98,23 +100,11 @@
       onLogin () {
         if (this.$refs.form.validate()) {
           const user = {
-            email: this.email,
+            login: this.email,
             password: this.password
           }
 
           this.$store.dispatch('loginUser', user)
-            .then(() => {
-              this.$store.dispatch('togleLoginDialog', false)
-              this.$store.dispatch('setSnackbarMsg', 'Успешная авторизация')
-              this.$store.dispatch('setSnackbarType', 'success')
-            })
-            .catch(
-              error => {
-                console.log(error)
-                this.$store.dispatch('setSnackbarMsg', error.message)
-                this.$store.dispatch('setSnackbarType', 'error')
-              }
-            )
         }
       }
     }
