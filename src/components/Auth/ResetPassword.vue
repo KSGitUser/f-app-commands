@@ -56,12 +56,14 @@
       togleResetPasswordDialog ({commit}, payload) {
         this.$store.dispatch('togleResetPasswordDialog')
       },
-      onLogin () {
+      async onLogin () {
         if (this.$refs.form.validate()) {
           const email = {
             email: this.email
           }
-          this.$store.dispatch('resetPassword', email)
+          this.$store.dispatch('setLoading', true)
+          await this.$store.dispatch('resetPassword', email)
+          this.$store.dispatch('setLoading', false)
         }
       }
     }

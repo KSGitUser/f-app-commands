@@ -24,7 +24,8 @@ const User = resolve => {
 Vue.use(Router)
 
 const ifAuth = (to, from, next) => {
-  if (store.getters.user) {
+  //if (store.getters.user) {
+  if (localStorage.getItem('user')) {
     next()
   } else {
     next('/')

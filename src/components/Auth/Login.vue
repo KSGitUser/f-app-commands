@@ -16,12 +16,12 @@
                     lazy-validation
             >
                 <v-text-field
-                        prepend-icon="mail"
-                        name="email"
-                        label="e-mail"
-                        type="email"
-                        v-model="email"
-                        :rules="emailRules"
+                        prepend-icon="person"
+                        name="login"
+                        label="Логин"
+                        type="text"
+                        v-model="login"
+                        :rules="loginRules"
                         required
                         @keyup.enter="onLogin"
                 ></v-text-field>
@@ -67,12 +67,12 @@
     name: 'LoginForm',
     data () {
       return {
-        email: '',
+        login: '',
         password: '',
         valid: false,
-        emailRules: [
+        loginRules: [
           v => !!v || 'Обязательное поле',
-          //v => emailRegex.test(v) || 'E-mail некорректное значение'
+          v => v.length >= 3 || 'Минимум 3  символа'
         ],
         pasRules: [
           v => !!v || 'Обязательное поле',
@@ -97,14 +97,20 @@
         this.togleLoginDialog()
         this.$store.dispatch('togleResetPasswordDialog')
       },
-      onLogin () {
+      async onLogin () {
         if (this.$refs.form.validate()) {
           const user = {
-            login: this.email,
+            login: this.login,
             password: this.password
           }
 
-          this.$store.dispatch('loginUser', user)
+          this.$store.dispatch('setLoading', true)
+          let login = await this.$store.dispatch('loginUser', user)
+          if (login){
+            this.togleLoginDialog()
+            this.$router.push('/board')
+          }
+          this.$store.dispatch('setLoading', false)
         }
       }
     }

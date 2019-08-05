@@ -109,15 +109,16 @@
       togleRegisterDialog ({commit}, payload) {
         this.$store.dispatch('togleRegisterDialog')
       },
-      onLogin () {
+      async onLogin () {
         if (this.$refs.form.validate()) {
           const user = {
             email: this.email,
             password: this.password,
             login: this.name,
-
           }
-          this.$store.dispatch('registerUser', user)
+          this.$store.dispatch('setLoading', true)
+          await this.$store.dispatch('registerUser', user)
+          this.$store.dispatch('setLoading', false)
         }
       }
     }
