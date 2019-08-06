@@ -264,7 +264,7 @@
         if (this.isUserLoggedIn) {
           return [
             {title: 'Главная', icon: 'home', url: '/'},
-            {title: 'Доски', icon: 'bookmark_border', url: '/board'},
+            {title: 'Доски', icon: 'bookmark_border', url: '/boards'},
             {title: 'Профиль', icon: 'account_circle', url: '/user'},
           ]
         }

@@ -85,7 +85,6 @@ export default {
             console.log(json)
             if (json.status === 1) {
               commit('togleLoginDialog')
-              //commit('setUser', new User(user.uid))
               commit('setSnackbarMsg', 'Успешная авторизация')
               commit('setSnackbarType', 'success')
               return true

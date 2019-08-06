@@ -108,7 +108,7 @@
           let login = await this.$store.dispatch('loginUser', user)
           if (login){
             this.togleLoginDialog()
-            this.$router.push('/board')
+            this.$router.push('/boards')
           }
           this.$store.dispatch('setLoading', false)
         }
