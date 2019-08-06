@@ -4,7 +4,7 @@ class Board {
     constructor (name, userId, image) {
         this.name = name
         this.userId = userId
-        this.image = image
+        // this.image = image
     }
 }
 
@@ -14,7 +14,8 @@ export default {
   },
   mutations: {
     setBoards (state, payload) {
-      state.boards = payload
+        state.boards = [...payload]
+        console.log(payload)
     },
       createBoard (state, payload) {
           state.boards.push(payload)
@@ -23,6 +24,7 @@ export default {
   actions: {
     fetchBoards ({commit}, payload) {
       commit('clearSnackbar')
+      commit('setLoading', true)
       return fetch(`${URL}/api/v1/board`,
         {
           mode: 'cors',
@@ -38,7 +40,15 @@ export default {
         .then(response => response.json())
         .then(
           json => {
-            console.log(json)
+              console.log('json ',json)
+              if (json.status === 1){
+                  commit('setBoards', json.data.boards)
+              }
+              if (json.status === 401) {
+                  commit('setSnackbarMsg', 'Требуется авторизация')
+                  commit('setSnackbarType', 'error')
+              }
+              commit('setLoading', false)
           }
         )
         .catch(
@@ -46,6 +56,7 @@ export default {
             console.error(error)
             commit('setSnackbarMsg', 'Ошибка загрузки данных')
             commit('setSnackbarType', 'error')
+            commit('setLoading', false)
             return false
           }
         )
