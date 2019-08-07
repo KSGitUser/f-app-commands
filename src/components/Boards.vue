@@ -1,5 +1,25 @@
 <template>
     <div>
+        <div class="demo">
+            <v-layout grey lighten-3 row align-center>
+                <v-btn flat
+                       @click="toggleBoardDialog">
+                    <v-icon>add</v-icon>
+                    добавить доску
+                </v-btn>
+                <v-dialog persistent
+                          v-model="boardDialog"
+                          max-width="500"
+                >
+                    <v-card>
+                        <create-board></create-board>
+                    </v-card>
+                </v-dialog>
+                <v-spacer></v-spacer>
+            </v-layout>
+
+        </div>
+
         <h2>Доски пользователя</h2>
 
         <div
@@ -31,7 +51,7 @@
                         <v-card-title primary-title>
                             <div>
                                 <h3 class="headline mb-0">{{board.name}}</h3>
-                                <div> {{ card_text }}</div>
+                                <div> {{  }}</div>
                             </div>
                         </v-card-title>
 
@@ -44,29 +64,40 @@
             <h2>пока пусто...</h2>
         </div>
     </div>
-
 </template>
 
 <script>
+  import CreateBoard from './CreateBoard'
 
   export default {
     name: 'Boards',
+    components: {
+      CreateBoard
+    },
     computed: {
       boards () {
         return this.$store.getters.boards
       },
       loading () {
         return this.$store.getters.loading
-      }
+      },
+      boardDialog () {
+        return this.$store.getters.boardDialog
+      },
     },
     data () {
       return {
-        //test:
+        dialog: false,
       }
     },
+    methods: {
+      toggleBoardDialog () {
+        this.$store.dispatch('toggleBoardDialog')
+      },
+    },
     mounted: function () {
-      this.$nextTick(this.$store.dispatch('fetchBoards'))
-    }
+      this.$nextTick(() => this.$store.dispatch('fetchBoards'))
+    },
   }
 </script>
 <style lang="scss" scoped>

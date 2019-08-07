@@ -6,12 +6,15 @@ export default {
   },
   mutations: {
     setBoards (state, payload) {
-      state.boards = [...payload]
-      console.log(payload)
-    }
+        state.boards = [...payload]
+        console.log(payload)
+    },
+      createBoard (state, payload) {
+          state.boards.push(payload)
+      }
   },
   actions: {
-    async fetchBoards ({commit}, payload) {
+    fetchBoards ({commit}, payload) {
       commit('clearSnackbar')
       commit('setLoading', true)
       return fetch(`${URL}/api/v1/board`,
@@ -50,11 +53,40 @@ export default {
           }
         )
     },
+      createBoard ({ commit }, { name }) {
+          commit('clearError')
+          commit('setLoading', true)
+        
+              fetch(`${URL}/api/v1/board`, {
+                  mode: 'cors',
+                  headers: {
+                      'Accept': 'application/json',
+                      'Content-Type': 'application/json',
+                      'Access-Control-Allow-Origin': '*',
+                      'Access-Control-Allow-Headers': '*',
+                      'Authorization': localStorage.getItem('user'),
+                  },
+                  method: 'POST',
+                  body: JSON.stringify({
+                      name,
+                  })
+              })
+              .then(response => response.json())
+              .then (result => {
+              commit('setLoading', false)
+            
+          })
+            .catch (error => {
+              commit('setLoading', false)
+              commit('setSnackbarMsg', error.message)
+              commit('setSnackbarType', 'error')
+              commit('setBoardDialog', false)
+          })
+      }
   },
   getters: {
     boards (state) {
       return state.boards
     },
-
   }
 }
