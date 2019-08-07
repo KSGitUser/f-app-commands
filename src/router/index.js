@@ -12,14 +12,6 @@ const Boards = resolve => {
   })
 }
 
-const Board = resolve => {
-  require.ensure(['../components/Board'], () => {
-    resolve(
-      require('../components/Board')
-    )
-  })
-}
-
 const User = resolve => {
   require.ensure(['../components/User'], () => {
     resolve(

@@ -18,9 +18,11 @@ export default {
     }
   },
   actions: {
-    async registerUser ({commit}, payload) {
+    registerUser ({commit}, payload) {
       commit('clearSnackbar')
-      return fetch(`${URL}/api/v1/user`,
+      commit('setLoading', true)
+
+        return fetch(`${URL}/api/v1/user`,
         {
           mode: 'cors',
           headers: {
@@ -38,13 +40,15 @@ export default {
             console.log(json)
             if (json.status === -1) {
               console.log(json.message)
-              commit('setSnackbarMsg', json.message)
-              commit('setSnackbarType', 'error')
+                commit('setLoading', false)
+                commit('setSnackbarMsg', json.message)
+                commit('setSnackbarType', 'error')
               return false
             } else {
-              commit('togleRegisterDialog')
-              commit('setSnackbarMsg', 'Успешная регистрация')
-              commit('setSnackbarType', 'success')
+                commit('setLoading', false)
+                commit('togleRegisterDialog')
+                commit('setSnackbarMsg', 'Успешная регистрация')
+                commit('setSnackbarType', 'success')
               return true
             }
           }
@@ -58,7 +62,7 @@ export default {
           }
         )
     },
-    async loginUser ({commit}, payload) {
+    loginUser ({commit}, payload) {
       commit('clearSnackbar')
 
       return fetch(`${URL}/api/v1/user/auth`,
@@ -104,7 +108,7 @@ export default {
           }
         )
     },
-    async resetPassword ({commit}, payload) {
+    resetPassword ({commit}, payload) {
       commit('clearSnackbar')
       return fetch(`${URL}/api/v1/user/recovery`,
         {
