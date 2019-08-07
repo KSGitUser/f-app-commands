@@ -117,6 +117,7 @@
             login: this.name,
           }
           this.$store.dispatch('registerUser', user)
+            .then(() => this.$store.dispatch('togleRegisterDialog'))
         }
       }
     }

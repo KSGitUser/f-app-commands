@@ -2,35 +2,36 @@
     <v-card class="elevation-12">
         <v-toolbar dark color="primary">
             <v-toolbar-title>Создать доску</v-toolbar-title>
-            <v-spacer></v-spacer>
-            <v-btn icon @click="toggleBoardDialog">
-                <v-icon>close</v-icon>
-            </v-btn>
         </v-toolbar>
         <v-card-text>
             <v-form
-                ref="boardForm"
+                    ref="form"
+                    v-model="valid"
+                    lazy-validation
             >
                 <v-text-field
-                    name="name"
-                    label="Ведите название доски"
-                    type="text"
-                    v-model="boardName"
-                    required
+                        name="name"
+                        label="Ведите название доски"
+                        type="text"
+                        v-model="boardName"
+                        required
+                        :rules="boardNameRules"
                 ></v-text-field>
             </v-form>
         </v-card-text>
         <v-card-actions>
             <v-btn
-                color="primary"
-                @click="createNewBoard"
-            >Создать доску: "{{ boardName !== '' ? boardName : 'Новая доска' }}"
+                    color="primary"
+                    @click="createNewBoard"
+                    :loading="loading"
+                    :disabled="loading"
+            >Создать доску
             </v-btn>
             <v-spacer></v-spacer>
             <v-btn
-                color="primary"
-                @click="reset"
-            >Очистить форму
+                    color="warning"
+                    @click="boardName=''"
+            >Очистить
             </v-btn>
         </v-card-actions>
     </v-card>
@@ -41,30 +42,35 @@
     name: 'CreateBoard',
     data () {
       return {
-        boardName: 'Новая доска',
+        boardName: '',
+        valid: false,
+        boardNameRules: [
+          v => !!v || 'Обязательное поле',
+          v => v.length >= 3 || 'Минимум 3 символа'
+        ],
+      }
+    },
+    computed: {
+      loading () {
+        return this.$store.getters.loading
       }
     },
     methods: {
       toggleBoardDialog () {
         this.$store.dispatch('toggleBoardDialog')
       },
-      reset () {
-        this.$refs.boardForm.reset()
-        this.boardName = ''
-      },
       createNewBoard () {
-        const board = {
-          name: this.boardName.trim(),
+        if (this.$refs.form.validate()) {
+          const board = {
+            name: this.boardName.trim(),
+          }
+          this.$store.dispatch('createBoard', board)
+            .then(() => {
+              this.$store.dispatch('fetchBoards')
+              this.boardName = ''
+            })
+
         }
-        if (this.boardName === '') {
-          board.name = 'Новая доска'
-        }
-        this.$store.dispatch('createBoard', board)
-          .then(() => {
-            this.$store.dispatch('toggleBoardDialog')
-            this.$nextTick(() => this.$store.dispatch('fetchBoards'))
-          })
-          .catch(() => {})
       }
     },
   }

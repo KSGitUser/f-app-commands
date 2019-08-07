@@ -1,33 +1,26 @@
 <template>
     <div>
-        <div class="demo">
-            <v-layout grey lighten-3 row align-center>
-                <v-btn flat
-                       @click="toggleBoardDialog">
-                    <v-icon>add</v-icon>
-                    добавить доску
-                </v-btn>
-                <v-dialog persistent
-                          v-model="boardDialog"
+
+
+                <v-dialog
+                          v-model="dialog"
                           max-width="500"
                 >
                     <v-card>
                         <create-board></create-board>
                     </v-card>
                 </v-dialog>
-                <v-spacer></v-spacer>
-            </v-layout>
 
-        </div>
 
-        <h2>Доски пользователя</h2>
-
+        <v-layout row>
+            <v-flex xs12 sm6 offset-sm3>
+                <h1 class="text--secondary mb-3">Мои доски</h1>
         <div
                 v-if="loading"
                 class="text-xs-center align-center"
         >
             <v-progress-circular
-                    :size="70"
+                    :size="100"
                     :width="3"
                     color="grue"
                     indeterminate
@@ -36,33 +29,42 @@
         <div
                 v-else-if="boards.length!==0"
         >
-
-            <v-layout>
-                <v-flex xs12 sm6 offset-sm3>
                     <v-card
+                            :to="`/board/${board.id}`"
                             v-for="board in boards"
                             :key="board.id"
+                            class="elevation-10 mb-3"
                     >
-                        <v-img
-                                src="https://cdn.vuetifyjs.com/images/cards/desert.jpg"
-                                aspect-ratio="2.75"
-                        ></v-img>
-
-                        <v-card-title primary-title>
-                            <div>
-                                <h3 class="headline mb-0">{{board.name}}</h3>
-                                <div> {{  }}</div>
-                            </div>
-                        </v-card-title>
-
+                        <v-layout row>
+                            <v-flex>
+                                <v-card-text>
+                                    <h2 class="text--primary">{{board.name}}</h2>
+                                    <p>{{board.name}}</p>
+                                </v-card-text>
+                            </v-flex>
+                        </v-layout>
                     </v-card>
-                </v-flex>
-            </v-layout>
-
         </div>
         <div v-else>
-            <h2>пока пусто...</h2>
+            <h2>Пока пусто...</h2>
         </div>
+
+
+        <div class="toggleBoardDialog">
+            <v-btn
+                    @click="dialog=true"
+                    fab
+                    dark
+                    color="primary"
+            >
+                <v-icon dark>add</v-icon>
+            </v-btn>
+        </div>
+
+
+            </v-flex>
+        </v-layout>
+
     </div>
 </template>
 
@@ -96,10 +98,19 @@
       },
     },
     mounted: function () {
-      this.$nextTick(() => this.$store.dispatch('fetchBoards'))
+      this.$nextTick(async () => {
+        const fetchBoards = await this.$store.dispatch('fetchBoards')
+        if(fetchBoards){
+          this.$router.push('/')
+        }
+      })
     },
   }
 </script>
 <style lang="scss" scoped>
-
+    .toggleBoardDialog{
+        position: fixed;
+        bottom: 2rem;
+        right: 2rem;
+    }
 </style>
