@@ -12,7 +12,6 @@
                 ref="boardForm"
             >
                 <v-text-field
-                    class="boardName"
                     name="name"
                     label="Ведите название доски"
                     type="text"
@@ -51,24 +50,23 @@
       },
       reset () {
         this.$refs.boardForm.reset()
-        this.boardName = 'Новая доска'
+        this.boardName = ''
       },
       createNewBoard () {
         const board = {
-          name: this.boardName,
-          id_user: 1
+          name: this.boardName.trim(),
+        }
+        if (this.boardName === '') {
+          board.name = 'Новая доска'
         }
         this.$store.dispatch('createBoard', board)
           .then(() => {
-            this.$store.dispatch('toggleBoardDialog', false)
-            this.$router.push(`/board/${board.name}`)
-
+            this.$store.dispatch('toggleBoardDialog')
+            this.$nextTick(() => this.$store.dispatch('fetchBoards'))
           })
-          .catch(error => {
-            this.$store.dispatch('setError', error.message)
-          })
+          .catch(() => {})
       }
-    }
+    },
   }
 </script>
 

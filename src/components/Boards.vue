@@ -16,54 +16,6 @@
                     </v-card>
                 </v-dialog>
                 <v-spacer></v-spacer>
-                <h2>{{ name }}</h2>
-                <v-spacer></v-spacer>
-                <v-menu
-                    :close-on-content-click="false"
-                >
-                    <template v-slot:activator="{ on }">
-                        <v-btn
-                            flat
-                            v-on="on"
-                        >
-                            <v-icon>map</v-icon>
-                            Мои доски
-                        </v-btn>
-                    </template>
-                    <v-card>
-                        <form class="pa-3">
-                            <v-select
-                                label="Мои доски"
-                            ></v-select>
-                        </form>
-                    </v-card>
-                </v-menu>
-                <v-menu
-                    :close-on-content-click="false"
-                >
-                    <template v-slot:activator="{ on }">
-                        <v-btn
-                            flat
-                            v-on="on"
-                        >
-                            <v-icon>insert_photo</v-icon>
-                            Изменить фон
-                        </v-btn>
-                    </template>
-                    <v-card>
-                        <form class="pa-3">
-                            <v-select
-                                      label="выберите фон"
-                            ></v-select>
-                        </form>
-                    </v-card>
-                </v-menu>
-                <v-btn
-                    flat
-                >
-                    <v-icon>add_circle</v-icon>
-                    Добавить список
-                </v-btn>
             </v-layout>
 
         </div>
@@ -98,7 +50,6 @@
                         <v-card-title primary-title>
                             <div>
                                 <h3 class="headline mb-0">{{board.name}}</h3>
-                                <div> {{ card_text }}</div>
                             </div>
                         </v-card-title>
 
@@ -118,7 +69,6 @@
 
   export default {
     name: 'Boards',
-    props: ['name'],
     components: {
       CreateBoard
     },
@@ -132,10 +82,6 @@
       boardDialog () {
         return this.$store.getters.boardDialog
       },
-      addBoard () {
-        const name = this.name
-        return this.$store.getters.boardByName(name)
-      }
     },
     data () {
       return {
@@ -148,7 +94,7 @@
       },
     },
     mounted: function () {
-      this.$nextTick(this.$store.dispatch('fetchBoards'))
+      this.$nextTick(() => this.$store.dispatch('fetchBoards'))
     },
   }
 </script>

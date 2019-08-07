@@ -1,13 +1,5 @@
 import URL from '../URL'
 
-class Board {
-    constructor (name, userId, image) {
-        this.name = name
-        this.userId = userId
-        // this.image = image
-    }
-}
-
 export default {
   state: {
     boards: [],
@@ -62,7 +54,7 @@ export default {
         )
     },
     
-      createBoard ({ commit }, { name, userId, image }) {
+      createBoard ({ commit }, { name }) {
           commit('clearError')
           commit('setLoading', true)
         
@@ -78,19 +70,14 @@ export default {
                   method: 'POST',
                   body: JSON.stringify({
                       name,
-                      userId,
-                      image
                   })
               })
-                  .then(response => response.json())
-                  .then (result => {
-            
-              commit('createBoard', new Board(board.name, board.userId))
+              .then(response => response.json())
+              .then (result => {
               commit('setLoading', false)
-              this.$router.push(`/boards/${board.name}`)
             
           })
-                .catch (error => {
+            .catch (error => {
               commit('setLoading', false)
               commit('setSnackbarMsg', error.message)
               commit('setSnackbarType', 'error')
