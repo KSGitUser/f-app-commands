@@ -9,20 +9,39 @@ class User {
 export default {
   state: {
     user: null,
+    email: null,
+    login: null,
+    password: null,
   },
   mutations: {
     setUser (state, payload) {
       state.user = payload
       localStorage.setItem('user', payload)
-      console.log('======USER======== ', localStorage.getItem('user'))
-    }
+      console.log('====== SET USER ======== ', state.user)
+    },
+    setUserHeader (state, payload) {
+      const Authorization = payload.headers.get('Authorization')
+      if (Authorization) {
+        state.user = Authorization
+        localStorage.setItem('user', Authorization)
+        console.log('====== USER Header ======== ', state.user)
+      }
+    },
+    setUserLogin (state, payload) {
+      state.login = payload
+    },
+    setUserEmail (state, payload) {
+      state.email = payload
+    },
+    setUserPassword (state, payload) {
+      state.password = payload
+    },
   },
   actions: {
     registerUser ({commit}, payload) {
       commit('clearSnackbar')
       commit('setLoading', true)
-
-        return fetch(`${URL}/api/v1/user`,
+      return fetch(`${URL}/api/v1/user`,
         {
           mode: 'cors',
           headers: {
@@ -40,15 +59,15 @@ export default {
             console.log(json)
             if (json.status === -1) {
               console.log(json.message)
-                commit('setLoading', false)
-                commit('setSnackbarMsg', json.message)
-                commit('setSnackbarType', 'error')
+              commit('setLoading', false)
+              commit('setSnackbarMsg', json.message)
+              commit('setSnackbarType', 'error')
               return false
             } else {
-                commit('setLoading', false)
-                commit('togleRegisterDialog')
-                commit('setSnackbarMsg', 'Успешная регистрация')
-                commit('setSnackbarType', 'success')
+              commit('setLoading', false)
+              commit('togleRegisterDialog')
+              commit('setSnackbarMsg', 'Успешная регистрация')
+              commit('setSnackbarType', 'success')
               return true
             }
           }
@@ -64,7 +83,6 @@ export default {
     },
     loginUser ({commit}, payload) {
       commit('clearSnackbar')
-
       return fetch(`${URL}/api/v1/user/auth`,
         {
           mode: 'cors',
@@ -78,15 +96,11 @@ export default {
           body: JSON.stringify(payload)
         })
         .then(response => {
-          const Authorization = response.headers.get('Authorization')
-          if (Authorization){
-            commit('setUser', Authorization)
-          }
+          commit('setUserHeader', response)
           return response.json()
         })
         .then(
           json => {
-            console.log(json)
             if (json.status === 1) {
               commit('togleLoginDialog')
               commit('setSnackbarMsg', 'Успешная авторизация')
@@ -122,7 +136,6 @@ export default {
         .then(response => response.json())
         .then(
           json => {
-            console.log(json)
             if (json.status === -1) {
               commit('setSnackbarMsg', json.message)
               commit('setSnackbarType', 'error')
@@ -150,7 +163,43 @@ export default {
     logoutUser ({commit}) {
       commit('setUser', null)
       localStorage.removeItem('user')
-    }
+    },
+    profileUser ({commit, getters}, payload) {
+      commit('clearSnackbar')
+      commit('setLoading', true)
+      return fetch(`${URL}/api/v1/user`,
+        {
+          mode: 'cors',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Headers': '*',
+            'Authorization': getters.user,
+          },
+          method: 'GET',
+        })
+        .then(response => {
+          commit('setUserHeader', response)
+          return response.json()
+        })
+        .then(
+          json => {
+            console.log(json)
+            commit('setLoading', false)
+            commit('setUserLogin', json.data.login)
+            commit('setUserEmail', json.data.email)
+            commit('setUserPassword', json.data.password)
+          }
+        )
+        .catch(
+          error => {
+            console.error(error)
+            commit('setSnackbarMsg', 'Ошибка загрузки данных')
+            commit('setSnackbarType', 'error')
+          }
+        )
+    },
   },
   getters: {
     user (state) {
@@ -158,6 +207,15 @@ export default {
     },
     isUserLoggedIn (state) {
       return state.user !== null
-    }
+    },
+    email (state) {
+      return state.email
+    },
+    login (state) {
+      return state.login
+    },
+    password (state) {
+      return state.password
+    },
   }
 }

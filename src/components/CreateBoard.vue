@@ -16,6 +16,7 @@
                         v-model="boardName"
                         required
                         :rules="boardNameRules"
+                        @keypress.enter.prevent
                 ></v-text-field>
             </v-form>
         </v-card-text>
@@ -59,17 +60,18 @@
       toggleBoardDialog () {
         this.$store.dispatch('toggleBoardDialog')
       },
-      createNewBoard () {
+      async createNewBoard () {
         if (this.$refs.form.validate()) {
           const board = {
             name: this.boardName.trim(),
           }
-          this.$store.dispatch('createBoard', board)
-            .then(() => {
-              this.$store.dispatch('fetchBoards')
-              this.boardName = ''
-            })
-
+          const {commit, dispatch} = this.$store
+          commit('setLoading', true)
+          await dispatch('createBoard', board)
+          this.boardName = ''
+          dispatch('toggleBoardDialog')
+          commit('setLoading', false)
+          await dispatch('fetchBoards')
         }
       }
     },

@@ -22,7 +22,7 @@
                         v-model="email"
                         :rules="emailRules"
                         required
-                        @keyup.enter="onLogin"
+                        @keypress.enter.prevent
                 ></v-text-field>
 
             </v-form>

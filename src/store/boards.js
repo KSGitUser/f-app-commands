@@ -14,9 +14,8 @@ export default {
     }
   },
   actions: {
-    async fetchBoards ({commit}, payload) {
+    async fetchBoards ({commit, getters}, payload) {
       commit('clearSnackbar')
-      commit('setLoading', true)
       return fetch(`${URL}/api/v1/board`,
         {
           mode: 'cors',
@@ -25,13 +24,16 @@ export default {
             'Content-Type': 'application/json',
             'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Headers': '*',
-            'Authorization': localStorage.getItem('user'),
+            'Authorization': getters.user,
+
           },
           method: 'GET',
         })
-        .then(response => response.json())
-        .then(
-          json => {
+        .then(response => {
+          commit('setUserHeader', response)
+          return response.json()
+        })
+        .then(json => {
             console.log('json ', json)
             if (json.status === 1) {
               commit('setBoards', json.data.boards)
@@ -40,7 +42,6 @@ export default {
               commit('setSnackbarMsg', 'Требуется авторизация')
               commit('setSnackbarType', 'error')
             }
-            commit('setLoading', false)
           }
         )
         .catch(
@@ -48,12 +49,10 @@ export default {
             console.error(error)
             commit('setSnackbarMsg', 'Ошибка загрузки данных')
             commit('setSnackbarType', 'error')
-            commit('setLoading', false)
-            return false
           }
         )
     },
-    async createBoard ({commit}, {name}) {
+    async createBoard ({commit, getters}, {name}) {
       commit('clearSnackbar')
       return fetch(`${URL}/api/v1/board`, {
         mode: 'cors',
@@ -62,32 +61,35 @@ export default {
           'Content-Type': 'application/json',
           'Access-Control-Allow-Origin': '*',
           'Access-Control-Allow-Headers': '*',
-          'Authorization': localStorage.getItem('user'),
+          'Authorization': getters.user,
         },
         method: 'POST',
         body: JSON.stringify({
           name,
         })
       })
-        .then(response => response.json())
-        .then(result => {
+        .then(response => {
+          commit('setUserHeader', response)
+          return response.json()
+        }).then(result => {
           console.log(result)
           if (result.status === 1) {
             commit('setSnackbarMsg', 'Создана новая доска')
             commit('setSnackbarType', 'success')
+            this.boardName = ''
           }
           if (result.status === 401) {
             commit('setSnackbarMsg', 'Требуется авторизация')
             commit('setSnackbarType', 'error')
           }
-          commit('setLoading', false)
         })
-        .catch(error => {
-          console.error(error)
-          commit('setSnackbarMsg', 'Ошибка загрузки данных')
-          commit('setSnackbarType', 'error')
-          commit('setLoading', false)
-        })
+        .catch(
+          error => {
+            console.error(error)
+            commit('setSnackbarMsg', 'Ошибка загрузки данных')
+            commit('setSnackbarType', 'error')
+          }
+        )
     }
   },
   getters: {

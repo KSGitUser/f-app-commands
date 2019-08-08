@@ -1,34 +1,32 @@
 <template>
     <div>
 
-
-                <v-dialog
-                          v-model="dialog"
-                          max-width="500"
-                >
-                    <v-card>
-                        <create-board></create-board>
-                    </v-card>
-                </v-dialog>
-
+        <v-dialog
+                v-model="boardDialog"
+                max-width="500"
+        >
+            <v-card>
+                <create-board></create-board>
+            </v-card>
+        </v-dialog>
 
         <v-layout row>
             <v-flex xs12 sm6 offset-sm3>
                 <h1 class="text--secondary mb-3">Мои доски</h1>
-        <div
-                v-if="loading"
-                class="text-xs-center align-center"
-        >
-            <v-progress-circular
-                    :size="100"
-                    :width="3"
-                    color="grue"
-                    indeterminate
-            ></v-progress-circular>
-        </div>
-        <div
-                v-else-if="boards.length!==0"
-        >
+                <div
+                        v-if="loadingLocal"
+                        class="text-xs-center align-center"
+                >
+                    <v-progress-circular
+                            :size="100"
+                            :width="3"
+                            color="primary"
+                            indeterminate
+                    ></v-progress-circular>
+                </div>
+                <div
+                        v-else-if="boards.length!==0"
+                >
                     <v-card
                             :to="`/board/${board.id}`"
                             v-for="board in boards"
@@ -44,23 +42,22 @@
                             </v-flex>
                         </v-layout>
                     </v-card>
-        </div>
-        <div v-else>
-            <h2>Пока пусто...</h2>
-        </div>
+                </div>
+                <div v-else>
+                    <h2>Пока пусто...</h2>
+                </div>
 
 
-        <div class="toggleBoardDialog">
-            <v-btn
-                    @click="dialog=true"
-                    fab
-                    dark
-                    color="primary"
-            >
-                <v-icon dark>add</v-icon>
-            </v-btn>
-        </div>
-
+                <div class="toggleBoardDialog">
+                    <v-btn
+                            @click="toggleBoardDialog"
+                            fab
+                            dark
+                            color="primary"
+                    >
+                        <v-icon dark>add</v-icon>
+                    </v-btn>
+                </div>
 
             </v-flex>
         </v-layout>
@@ -90,6 +87,7 @@
     data () {
       return {
         dialog: false,
+        loadingLocal: false,
       }
     },
     methods: {
@@ -99,16 +97,16 @@
     },
     mounted: function () {
       this.$nextTick(async () => {
-        const fetchBoards = await this.$store.dispatch('fetchBoards')
-        if(fetchBoards){
-          this.$router.push('/')
-        }
+        const {commit, dispatch} = this.$store
+        this.loadingLocal = true
+        await dispatch('fetchBoards')
+        this.loadingLocal = false
       })
     },
   }
 </script>
 <style lang="scss" scoped>
-    .toggleBoardDialog{
+    .toggleBoardDialog {
         position: fixed;
         bottom: 2rem;
         right: 2rem;
