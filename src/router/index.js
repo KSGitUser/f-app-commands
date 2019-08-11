@@ -12,6 +12,14 @@ const Boards = resolve => {
   })
 }
 
+const Board = resolve => {
+  require.ensure(['../components/Board'], () => {
+    resolve(
+      require('../components/Board')
+    )
+  })
+}
+
 const User = resolve => {
   require.ensure(['../components/User'], () => {
     resolve(
@@ -35,23 +43,29 @@ export default new Router({
     {
       path: '',
       name: 'home',
-      component: Home
+      component: Home,
     },
     {
       path: '/boards',
       name: 'boards',
       component: Boards,
-      beforeEnter: ifAuth
+      beforeEnter: ifAuth,
+    },{
+      path: '/board/:id',
+      name: 'board',
+      props: true,
+      component: Board,
+      beforeEnter: ifAuth,
     },
     {
       path: '/user',
       name: 'user',
       component: User,
-      beforeEnter: ifAuth
+      beforeEnter: ifAuth,
     },
     {
       path: '*',
-      component: Page404
+      component: Page404,
     }
   ],
   mode: 'history'

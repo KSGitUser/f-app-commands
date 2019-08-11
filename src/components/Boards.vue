@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <v-container grid-list-lg>
 
         <v-dialog
                 v-model="boardDialog"
@@ -10,9 +10,12 @@
             </v-card>
         </v-dialog>
 
+
         <v-layout row>
-            <v-flex xs12 sm6 offset-sm3>
+            <v-flex xs12>
                 <h1 class="text--secondary mb-3">Мои доски</h1>
+
+                <!--загрузка данных-->
                 <div
                         v-if="loadingLocal"
                         class="text-xs-center align-center"
@@ -24,30 +27,45 @@
                             indeterminate
                     ></v-progress-circular>
                 </div>
-                <div
-                        v-else-if="boards.length!==0"
-                >
-                    <v-card
-                            :to="`/board/${board.id}`"
-                            v-for="board in boards"
-                            :key="board.id"
-                            class="elevation-10 mb-3"
-                    >
-                        <v-layout row>
-                            <v-flex>
-                                <v-card-text>
-                                    <h2 class="text--primary">{{board.name}}</h2>
-                                    <p>{{board.name}}</p>
-                                </v-card-text>
-                            </v-flex>
-                        </v-layout>
-                    </v-card>
-                </div>
-                <div v-else>
+
+                <!--если нет записей -->
+                <div v-else-if="boards.length===0">
                     <h2>Пока пусто...</h2>
                 </div>
 
+                <!--список досок-->
+                <v-layout
+                        v-else
+                        row
+                        wrap
+                >
 
+                    <v-flex
+                            d-flex
+                            xs12
+                            sm6
+                            md4
+                            lg3
+                            v-for="board in boards"
+                            :key="board.id"
+                    >
+                        <v-hover>
+                            <v-card
+                                    :to="`/board/${board.id}`"
+                                    slot-scope="{ hover }"
+                                    :class="`elevation-${hover ? 12 : 2}`">
+                                <v-card-title primary-title>
+                                    <div>
+                                        <h3 class="headline mb-0">{{board.name}}</h3>
+                                    </div>
+                                </v-card-title>
+                            </v-card>
+                        </v-hover>
+
+                    </v-flex>
+                </v-layout>
+
+                <!--добавление новых досок -->
                 <div class="toggleBoardDialog">
                     <v-btn
                             @click="toggleBoardDialog"
@@ -62,7 +80,7 @@
             </v-flex>
         </v-layout>
 
-    </div>
+    </v-container>
 </template>
 
 <script>

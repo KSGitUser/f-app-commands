@@ -2,6 +2,7 @@
     <div class="demo">
 
         <v-layout grey lighten-3 row>
+            <h3>id: {{id}}</h3>
             <v-spacer></v-spacer>
             <v-menu
                     :close-on-content-click="false"
@@ -156,6 +157,7 @@
 
   let id = 1
   export default {
+    props: ['id'],
     name: 'Board',
     order: 14,
     components: {
