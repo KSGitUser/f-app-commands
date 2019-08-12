@@ -1,5 +1,17 @@
 <template>
-    <div class="demo">
+    <!--загрузка данных-->
+    <div
+            v-if="loading"
+            class="text-xs-center align-center mt-5"
+    >
+        <v-progress-circular
+                :size="100"
+                :width="3"
+                color="primary"
+                indeterminate
+        ></v-progress-circular>
+    </div>
+    <div v-else class="demo">
 
         <v-layout grey lighten-3 row>
             <h3>id: {{id}}</h3>
@@ -58,35 +70,36 @@
                 </v-list>
             </v-menu>
 
+
             <div
                     class="scrollbar-box mt-5 mb-5 mr-2 ml-2"
-                    v-for="(list, idx) in lists" :key="idx"
+                    v-for="(column) in columns" :key="column.id"
             >
                 <div class="bg pa-3">
-                    <h2><b>{{list.title}}</b></h2>
+                    <h2><b>{{column.title}}</b></h2>
                     <hr>
                 </div>
 
                 <div class="scrollbar style-1 bg pa-1">
 
-                    <draggable
-                            id="first"
-                            data-source="juju"
-                            :list="list.items"
-                            draggable=".item"
-                            group="a"
-                    >
-                        <div
-                                class=" item"
-                                v-for="element in list.items"
-                                :key="element.id"
-                                @click="demo"
-                        >
-                            {{ element.name }} | {{ element.id }}
-                        </div>
+                    <!--<draggable-->
+                    <!--id="first"-->
+                    <!--data-source="juju"-->
+                    <!--:list="column.items"-->
+                    <!--draggable=".item"-->
+                    <!--group="a"-->
+                    <!--&gt;-->
+                    <!--<div-->
+                    <!--class=" item"-->
+                    <!--v-for="element in list.items"-->
+                    <!--:key="element.id"-->
+                    <!--@click="demo"-->
+                    <!--&gt;-->
+                    <!--{{ element.name }} | {{ element.id }}-->
+                    <!--</div>-->
 
-                    </draggable>
-                    <pre> {{ list.items }} </pre>
+                    <!--</draggable>-->
+                    <!--<pre> {{ list.items }} </pre>-->
                 </div>
 
                 <v-card-actions class="bg pa-3">
@@ -145,6 +158,15 @@
                 </v-dialog>
             </div>
 
+            <v-dialog
+                    v-model="newCollumnDialog"
+                    max-width="500"
+            >
+                <v-card>
+                    <create-column></create-column>
+                </v-card>
+            </v-dialog>
+
         </div>
 
     </div>
@@ -154,13 +176,16 @@
 
 <script>
   import draggable from 'vuedraggable'
+  import CreateColumn from './CreateColumn'
 
   let id = 1
   export default {
     props: ['id'],
     name: 'Board',
+    newCollumnDialog: false,
     order: 14,
     components: {
+      CreateColumn,
       draggable
     },
     data () {
@@ -170,7 +195,7 @@
         x: 0,
         y: 0,
         showMenuItems: [
-          {title: 'Добавить список', action: this.addList}
+          {title: 'Добавить колонку', action: this.addList},
         ],
         bf: 'https://cdn.vuetifyjs.com/images/parallax/material2.jpg',
         bfOptions: [
@@ -182,23 +207,16 @@
             value: 'https://ns328286.ip-37-187-113.eu/ew/wallpapers/800x480/02715_800x480.jpg'
           }
         ],
-        lists: [
-          {
-            title: `name | ${id}`,
-            items: [
-              {name: 'Jonny', id: id++},
-              {name: 'Jonny', id: id++},
-              {name: 'Jonny', id: id++}
-            ]
-          },
-          {
-            title: `name | ${id}`,
-            items: [
-              {name: 'Jonny', id: id++},
-              {name: 'Jonny', id: id++}
-            ]
-          }
-        ]
+        // lists: [
+        //   {
+        //     title: `name | ${id}`,
+        //     items: [
+        //       {name: 'Jonny', id: id++},
+        //       {name: 'Jonny', id: id++},
+        //       {name: 'Jonny', id: id++}
+        //     ]
+        //   },
+        // ]
       }
     },
     methods: {
@@ -206,7 +224,8 @@
         this.lists[idx].items.push({name: 'Juan ' + id, id: id++})
       },
       addList: function () {
-        this.lists.push({title: `title ${id}`, items: [{name: 'Juan ' + id, id: id++}]})
+        //this.lists.push({title: `title ${id}`, items: [{name: 'Juan ' + id, id: id++}]})
+        this.newCollumnDialog = !this.newCollumnDialog
       },
       demo: function () {
         this.dialog = !this.dialog
@@ -220,7 +239,26 @@
           this.showMenu = true
         })
       }
-    }
+    },
+    mounted: function () {
+      this.$nextTick(async () => {
+        const {commit, dispatch} = this.$store
+        commit('setLoading', true)
+        await dispatch('fetchBoard', this.id)
+        commit('setLoading', false)
+      })
+    },
+    computed: {
+      labels () {
+        return this.$store.getters.labels
+      },
+      columns () {
+        return this.$store.getters.columns
+      },
+      loading () {
+        return this.$store.getters.loading
+      },
+    },
   }
 </script>
 <style lang="scss" scoped>

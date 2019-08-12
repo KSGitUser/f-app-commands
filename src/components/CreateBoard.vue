@@ -63,7 +63,7 @@
       async createNewBoard () {
         if (this.$refs.form.validate()) {
           const board = {
-            name: this.boardName.trim(),
+            title: this.boardName.trim(),
           }
           const {commit, dispatch} = this.$store
           commit('setLoading', true)

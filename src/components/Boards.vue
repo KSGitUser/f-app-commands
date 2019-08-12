@@ -56,7 +56,7 @@
                                     :class="`elevation-${hover ? 12 : 2}`">
                                 <v-card-title primary-title>
                                     <div>
-                                        <h3 class="headline mb-0">{{board.name}}</h3>
+                                        <h3 class="headline mb-0">{{board.title}}</h3>
                                     </div>
                                 </v-card-title>
                             </v-card>

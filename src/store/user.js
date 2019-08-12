@@ -58,9 +58,8 @@ export default {
           json => {
             console.log(json)
             if (json.status === -1) {
-              console.log(json.message)
               commit('setLoading', false)
-              commit('setSnackbarMsg', json.message)
+              commit('setSnackbarMsg', Object.values(json.message).join('; '))
               commit('setSnackbarType', 'error')
               return false
             } else {
@@ -107,7 +106,7 @@ export default {
               commit('setSnackbarType', 'success')
               return true
             } else {
-              commit('setSnackbarMsg', json.message)
+              commit('setSnackbarMsg', Object.values(json.message).join('; '))
               commit('setSnackbarType', 'error')
               return false
             }
@@ -137,7 +136,7 @@ export default {
         .then(
           json => {
             if (json.status === -1) {
-              commit('setSnackbarMsg', json.message)
+              commit('setSnackbarMsg', Object.values(json.message).join('; '))
               commit('setSnackbarType', 'error')
               return false
             } else {
@@ -248,7 +247,7 @@ export default {
               commit('setSnackbarMsg', 'Требуется авторизация')
               commit('setSnackbarType', 'error')
             } else if (json.status === -1) {
-              commit('setSnackbarMsg', json.message)
+              commit('setSnackbarMsg', Object.values(json.message).join('; '))
               commit('setSnackbarType', 'error')
             } else if (json.status === 1) {
               commit('setSnackbarMsg', 'Подтвердите новый email пройдя по сслыке в письме')
@@ -290,7 +289,7 @@ export default {
               commit('setSnackbarMsg', 'Требуется авторизация')
               commit('setSnackbarType', 'error')
             } else if (json.status === -1) {
-              commit('setSnackbarMsg', json.message)
+              commit('setSnackbarMsg', Object.values(json.message).join('; '))
               commit('setSnackbarType', 'error')
             } else if (json.status === 1) {
               commit('setSnackbarMsg', 'Пароль изменен')
