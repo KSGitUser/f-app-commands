@@ -1,6 +1,11 @@
 <template>
     <v-layout row>
-        <v-flex class="text-xs-center align-center">
+        <v-flex
+                sm10
+                offset-sm1
+                lg6
+                offset-lg3
+                xs12>
             <h1 class="text--secondary mb-3">Профиль пользователя</h1>
             <div
                     v-if="loading"
@@ -15,9 +20,50 @@
             </div>
 
             <div v-else>
-                <pre>email: {{email}} | <v-btn @click="emailForm = true">изменить</v-btn></pre>
-                <pre>login: {{login}} | <v-btn @click="loginForm = true">изменить</v-btn></pre>
-                <pre>password: {{password}} | <v-btn @click="passwordForm = true">изменить</v-btn></pre>
+
+                <v-list
+                        subheader
+                        two-line
+                >
+                    <v-list-tile>
+                        <v-list-tile-content>
+                            <v-list-tile-sub-title>email</v-list-tile-sub-title>
+                            <v-list-tile-title>{{email}}</v-list-tile-title>
+                        </v-list-tile-content>
+                        <v-list-tile-action>
+                            <v-toolbar-side-icon
+                                    @click="emailForm = true"
+                                    class="primary"
+                            ></v-toolbar-side-icon>
+                        </v-list-tile-action>
+                    </v-list-tile>
+                    <v-list-tile>
+                        <v-list-tile-content>
+                            <v-list-tile-sub-title>login</v-list-tile-sub-title>
+                            <v-list-tile-title>{{login}}</v-list-tile-title>
+                        </v-list-tile-content>
+                        <v-list-tile-action>
+                            <v-toolbar-side-icon
+                                    @click="loginForm = true"
+                                    class="primary"
+                            ></v-toolbar-side-icon>
+                        </v-list-tile-action>
+                    </v-list-tile>
+                    <v-list-tile>
+                        <v-list-tile-content>
+                            <v-list-tile-sub-title>password</v-list-tile-sub-title>
+                            <v-list-tile-title>{{password}}</v-list-tile-title>
+                        </v-list-tile-content>
+                        <v-list-tile-action>
+                            <v-toolbar-side-icon
+                                    @click="passwordForm = true"
+                                    class="primary"
+                            ></v-toolbar-side-icon>
+                        </v-list-tile-action>
+                    </v-list-tile>
+
+                </v-list>
+
             </div>
 
             <v-dialog
@@ -63,7 +109,7 @@
       return {
         passwordForm: false,
         emailForm: false,
-        loginForm: false
+        loginForm: false,
       }
     },
     components: {
