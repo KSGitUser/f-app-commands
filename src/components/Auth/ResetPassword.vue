@@ -23,6 +23,7 @@
                         :rules="emailRules"
                         required
                         @keypress.enter.prevent
+                        :autofocus="true"
                 ></v-text-field>
 
             </v-form>

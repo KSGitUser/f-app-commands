@@ -19,6 +19,7 @@
                         :rules="oldPasRules"
                         required
                         @keyup.enter="onLogin"
+                        :autofocus="true"
                 ></v-text-field>
                 <v-text-field
                         prepend-icon="lock"
