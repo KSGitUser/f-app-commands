@@ -305,6 +305,48 @@ export default {
           }
         )
     },
+    updateUserLogin ({commit, getters}, payload) {
+      commit('clearSnackbar')
+      return fetch(`${URL}/api/v1/user`,
+        {
+          mode: 'cors',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Headers': '*',
+            'Authorization': getters.user,
+          },
+          method: 'PATCH',
+          body: JSON.stringify(payload),
+        })
+        .then(response => {
+          commit('setUserHeader', response)
+          return response.json()
+        })
+        .then(
+          json => {
+            console.log(json)
+            if (json.status === 401) {
+              commit('setSnackbarMsg', 'Требуется авторизация')
+              commit('setSnackbarType', 'error')
+            } else if (json.status === -1) {
+              commit('setSnackbarMsg', Object.values(json.message).join('; '))
+              commit('setSnackbarType', 'error')
+            } else if (json.status === 1) {
+              commit('setSnackbarMsg', 'Имя изменено')
+              commit('setSnackbarType', 'success')
+            }
+          }
+        )
+        .catch(
+          error => {
+            console.error(error)
+            commit('setSnackbarMsg', 'Ошибка загрузки данных')
+            commit('setSnackbarType', 'error')
+          }
+        )
+    },
   },
   getters: {
     user (state) {
