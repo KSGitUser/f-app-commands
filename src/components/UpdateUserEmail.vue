@@ -1,23 +1,19 @@
 <template>
+
     <v-card class="elevation-12">
         <v-toolbar dark color="primary">
-            <v-toolbar-title>Восстановление доступа</v-toolbar-title>
-            <v-spacer></v-spacer>
-            <v-btn icon @click="togleResetPasswordDialog">
-                <v-icon>close</v-icon>
-            </v-btn>
+            <v-toolbar-title>Изменение Email</v-toolbar-title>
         </v-toolbar>
         <v-card-text>
-            <p class="subheading">Укажите адрес электронной почты, чтобы получить временный пароль</p>
             <v-form
                     ref="form"
                     v-model="valid"
                     lazy-validation
             >
                 <v-text-field
-                        prepend-icon="mail"
+                        prepend-icon="email"
                         name="email"
-                        label="e-mail"
+                        label="Новый email"
                         type="email"
                         v-model="email"
                         :rules="emailRules"
@@ -25,7 +21,6 @@
                         @keypress.enter.prevent
                         :autofocus="true"
                 ></v-text-field>
-
             </v-form>
         </v-card-text>
         <v-card-actions>
@@ -33,38 +28,44 @@
             <v-btn
                     color="primary"
                     @click="onLogin"
-            >Восстановить пароль
+                    :loading="loading"
+                    :disabled="loading"
+            >Изменить
             </v-btn>
         </v-card-actions>
     </v-card>
+
 </template>
 
 <script>
+  const emailRegex = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/
+
   export default {
-    name: 'ResetPasswordForm',
+    name: 'updateEmailForm',
     data () {
       return {
         email: '',
         valid: false,
         emailRules: [
           v => !!v || 'Обязательное поле',
-          v => /.+@.+/.test(v) || 'E-mail некорректное значение'
-        ]
+          v => emailRegex.test(v) || 'E-mail некорректное значение'
+        ],
       }
     },
-    computed: {},
+    computed: {
+      loading () {
+        return this.$store.getters.loading
+      }
+    },
     methods: {
-      togleResetPasswordDialog ({commit}, payload) {
-        this.$store.dispatch('togleResetPasswordDialog')
-      },
       async onLogin () {
         if (this.$refs.form.validate()) {
-          const email = {
-            email: this.email
+          const updateEmail = {
+            email: this.email,
           }
-          this.$store.dispatch('setLoading', true)
-          await this.$store.dispatch('resetPassword', email)
-          this.$store.dispatch('setLoading', false)
+          this.$store.commit('setLoading', true)
+          await this.$store.dispatch('updateUserEmail', updateEmail)
+          this.$store.commit('setLoading', false)
         }
       }
     }
