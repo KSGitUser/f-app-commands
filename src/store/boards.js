@@ -20,13 +20,9 @@ export default {
       state.labels = [...payload]
       console.log('state.labels', payload)
     },
-    createBoard (state, payload) {
-      state.boards.push(payload)
-    }
   },
   actions: {
     async fetchBoard ({commit, getters}, payload) {
-      commit('clearSnackbar')
       return fetch(`${URL}/api/v1/board?id=${payload}`,
         {
           mode: 'cors',
@@ -47,14 +43,20 @@ export default {
             console.log('json ', json)
             if (json.status === 1) {
               const {columns, labels} = json.data
+              commit('clearSnackbar')
               commit('setColumns', columns)
               commit('setLabels', labels)
+              return 1
             } else if (json.status === -1) {
+              commit('clearSnackbar')
               commit('setSnackbarMsg', Object.values(json.message).join('; '))
               commit('setSnackbarType', 'error')
+              return -1
             } else if (json.status === 401) {
+              commit('clearSnackbar')
               commit('setSnackbarMsg', 'Требуется авторизация')
               commit('setSnackbarType', 'error')
+              return 401
             }
           }
         )
@@ -67,7 +69,6 @@ export default {
         )
     },
     async fetchBoards ({commit, getters}, payload) {
-      commit('clearSnackbar')
       return fetch(`${URL}/api/v1/board`,
         {
           mode: 'cors',
@@ -90,6 +91,7 @@ export default {
               commit('setBoards', json.data.boards)
             }
             if (json.status === 401) {
+              commit('clearSnackbar')
               commit('setSnackbarMsg', 'Требуется авторизация')
               commit('setSnackbarType', 'error')
             }
@@ -104,7 +106,6 @@ export default {
         )
     },
     async createBoard ({commit, getters}, payload) {
-      commit('clearSnackbar')
       return fetch(`${URL}/api/v1/board`, {
         mode: 'cors',
         headers: {
@@ -123,13 +124,16 @@ export default {
         }).then(result => {
           console.log(result)
           if (result.status === 1) {
+            commit('clearSnackbar')
             commit('setSnackbarMsg', 'Создана новая доска')
             commit('setSnackbarType', 'success')
             this.boardName = ''
           } else if (result.status === -1) {
+            commit('clearSnackbar')
             commit('setSnackbarMsg', Object.values(json.message).join('; '))
             commit('setSnackbarType', 'error')
           } else if (result.status === 401) {
+            commit('clearSnackbar')
             commit('setSnackbarMsg', 'Требуется авторизация')
             commit('setSnackbarType', 'error')
           }
@@ -137,11 +141,53 @@ export default {
         .catch(
           error => {
             console.error(error)
+            commit('clearSnackbar')
             commit('setSnackbarMsg', 'Ошибка загрузки данных')
             commit('setSnackbarType', 'error')
           }
         )
-    }
+    },
+    async createColumn ({commit, getters}, payload) {
+      return fetch(`${URL}/api/v1/column`, {
+        mode: 'cors',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Headers': '*',
+          'Authorization': getters.user,
+        },
+        method: 'POST',
+        body: JSON.stringify(payload)
+      })
+        .then(response => {
+          commit('setUserHeader', response)
+          return response.json()
+        }).then(result => {
+          console.log(result)
+          if (result.status === 1) {
+            commit('clearSnackbar')
+            commit('setSnackbarMsg', 'Создан новый столбец')
+            commit('setSnackbarType', 'success')
+          } else if (result.status === -1) {
+            commit('clearSnackbar')
+            commit('setSnackbarMsg', Object.values(json.message).join('; '))
+            commit('setSnackbarType', 'error')
+          } else if (result.status === 401) {
+            commit('clearSnackbar')
+            commit('setSnackbarMsg', 'Требуется авторизация')
+            commit('setSnackbarType', 'error')
+          }
+        })
+        .catch(
+          error => {
+            console.error(error)
+            commit('clearSnackbar')
+            commit('setSnackbarMsg', 'Ошибка загрузки данных')
+            commit('setSnackbarType', 'error')
+          }
+        )
+    },
   },
   getters: {
     boards (state) {

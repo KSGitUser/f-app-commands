@@ -11,10 +11,9 @@
                 indeterminate
         ></v-progress-circular>
     </div>
-    <div v-else class="demo">
 
+    <div v-else class="demo">
         <v-layout grey lighten-3 row>
-            <h3>id: {{id}}</h3>
             <v-spacer></v-spacer>
             <v-menu
                     :close-on-content-click="false"
@@ -73,7 +72,8 @@
 
             <div
                     class="scrollbar-box mt-5 mb-5 mr-2 ml-2"
-                    v-for="(column) in columns" :key="column.id"
+                    v-for="column in columns"
+                    :key="column.id"
             >
                 <div class="bg pa-3">
                     <h2><b>{{column.title}}</b></h2>
@@ -103,11 +103,22 @@
                 </div>
 
                 <v-card-actions class="bg pa-3">
-                    <v-btn flat small @click="add(idx)">+ добавить карточку</v-btn>
+                    <v-btn flat small @click="add(idx)">
+                        <v-icon>add</v-icon>
+                        добавить карточку
+                    </v-btn>
                 </v-card-actions>
 
             </div>
 
+            <div class="scrollbar-box mt-5 mb-5 mr-2 ml-2">
+                <v-card-actions class="bg pa-3">
+                    <v-btn flat small @click="addList">
+                        <v-icon>add</v-icon>
+                        добавить столбец
+                    </v-btn>
+                </v-card-actions>
+            </div>
 
             <div class="text-xs-center">
                 <v-dialog
@@ -163,7 +174,7 @@
                     max-width="500"
             >
                 <v-card>
-                    <create-column></create-column>
+                    <create-column :id="id"></create-column>
                 </v-card>
             </v-dialog>
 
@@ -182,7 +193,6 @@
   export default {
     props: ['id'],
     name: 'Board',
-    newCollumnDialog: false,
     order: 14,
     components: {
       CreateColumn,
@@ -190,6 +200,7 @@
     },
     data () {
       return {
+        newCollumnDialog: false,
         dialog: false,
         showMenu: false,
         x: 0,
@@ -244,7 +255,12 @@
       this.$nextTick(async () => {
         const {commit, dispatch} = this.$store
         commit('setLoading', true)
-        await dispatch('fetchBoard', this.id)
+        let res = await dispatch('fetchBoard', this.id)
+        if (res === -1) {
+          this.$router.push('/boards')
+        } else if (res === 401) {
+          this.$router.push('/')
+        }
         commit('setLoading', false)
       })
     },
