@@ -12,13 +12,14 @@
         <v-card-text>
             <v-form ref="form" v-model="valid" lazy-validation>
                 <v-text-field
-                    prepend-icon="mail"
-                    name="email"
-                    label="e-mail"
-                    type="email"
-                    v-model="email"
-                    :rules="emailRules"
+                    prepend-icon="person"
+                    name="login"
+                    label="Логин"
+                    type="text"
+                    v-model="login"
+                    :rules="loginRules"
                     required
+                    @keyup.enter="onLogin"
                 ></v-text-field>
                 <v-text-field
                     prepend-icon="lock"
@@ -28,6 +29,7 @@
                     v-model="password"
                     :rules="pasRules"
                     required
+                    @keyup.enter="onLogin"
                 ></v-text-field>
             </v-form>
         </v-card-text>
@@ -65,12 +67,12 @@
         name: 'LoginForm',
         data() {
             return {
-                email: '',
+                login: '',
                 password: '',
                 valid: false,
-                emailRules: [
+                loginRules: [
                     v => !!v || 'Обязательное поле',
-                    v => emailRegex.test(v) || 'E-mail некорректное значение'
+                    v => v.length >= 3 || 'Минимум 3  символа'
                 ],
                 pasRules: [
                     v => !!v || 'Обязательное поле',
@@ -95,31 +97,20 @@
                 this.togleLoginDialog();
                 this.$store.dispatch('togleResetPasswordDialog');
             },
-            onLogin() {
+            async onLogin() {
                 if (this.$refs.form.validate()) {
                     const user = {
-                        email: this.email,
+                        login: this.login,
                         password: this.password
                     };
 
-                    this.$store
-                        .dispatch('loginUser', user)
-                        .then(() => {
-                            this.$store.dispatch('togleLoginDialog', false);
-                            this.$store.dispatch(
-                                'setSnackbarMsg',
-                                'Успешная авторизация'
-                            );
-                            this.$store.dispatch('setSnackbarType', 'success');
-                        })
-                        .catch(error => {
-                            console.log(error);
-                            this.$store.dispatch(
-                                'setSnackbarMsg',
-                                error.message
-                            );
-                            this.$store.dispatch('setSnackbarType', 'error');
-                        });
+                    this.$store.dispatch('setLoading', true);
+                    let login = await this.$store.dispatch('loginUser', user);
+                    if (login) {
+                        this.togleLoginDialog();
+                        this.$router.push('/boards');
+                    }
+                    this.$store.dispatch('setLoading', false);
                 }
             }
         }

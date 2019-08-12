@@ -22,6 +22,7 @@
                         v-model="name"
                         :rules="nameRules"
                         required
+                        @keyup.enter="onLogin"
                 ></v-text-field>
                 <v-text-field
                         prepend-icon="mail"
@@ -31,6 +32,7 @@
                         v-model="email"
                         :rules="emailRules"
                         required
+                        @keyup.enter="onLogin"
                 ></v-text-field>
                 <v-text-field
                         prepend-icon="lock"
@@ -40,6 +42,7 @@
                         v-model="password"
                         :rules="pasRules"
                         required
+                        @keyup.enter="onLogin"
                 ></v-text-field>
                 <v-text-field
                         prepend-icon="lock"
@@ -49,6 +52,7 @@
                         v-model="confirmPassword"
                         :rules="confirmPasRules"
                         required
+                        @keyup.enter="onLogin"
                 ></v-text-field>
             </v-form>
         </v-card-text>
@@ -105,27 +109,16 @@
       togleRegisterDialog ({commit}, payload) {
         this.$store.dispatch('togleRegisterDialog')
       },
-      onLogin () {
+      async onLogin () {
         if (this.$refs.form.validate()) {
           const user = {
             email: this.email,
-            password: this.password
+            password: this.password,
+            login: this.name,
           }
-
-          this.$store.dispatch('registerUser', user)
-            .then(() => {
-              this.$router.push('/user')
-              this.$store.dispatch('togleRegisterDialog', false)
-              this.$store.dispatch('setSnackbarMsg', 'Успешная регистрация')
-              this.$store.dispatch('setSnackbarType', 'success')
-            })
-            .catch(
-              error => {
-                console.log(error)
-                this.$store.dispatch('setSnackbarMsg', error.message)
-                this.$store.dispatch('setSnackbarType', 'error')
-              }
-            )
+          this.$store.dispatch('setLoading', true)
+          await this.$store.dispatch('registerUser', user)
+          this.$store.dispatch('setLoading', false)
         }
       }
     }

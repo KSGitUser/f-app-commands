@@ -22,6 +22,7 @@
                         v-model="email"
                         :rules="emailRules"
                         required
+                        @keyup.enter="onLogin"
                 ></v-text-field>
 
             </v-form>
@@ -55,11 +56,14 @@
       togleResetPasswordDialog ({commit}, payload) {
         this.$store.dispatch('togleResetPasswordDialog')
       },
-      onLogin () {
+      async onLogin () {
         if (this.$refs.form.validate()) {
-          const user = {
+          const email = {
             email: this.email
           }
+          this.$store.dispatch('setLoading', true)
+          await this.$store.dispatch('resetPassword', email)
+          this.$store.dispatch('setLoading', false)
         }
       }
     }

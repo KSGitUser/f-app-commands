@@ -3,8 +3,12 @@ import Router from 'vue-router';
 
 import Home from '../components/Home';
 import Page404 from '../components/Page/404';
-import store from '../store';
-// import UserProfile from '@/components/User/UserProfile';
+
+const Boards = resolve => {
+    require.ensure(['../components/Boards'], () => {
+        resolve(require('../components/Boards'));
+    });
+};
 
 const Board = resolve => {
     require.ensure(['../components/Board'], () => {
@@ -17,16 +21,16 @@ const User = resolve => {
     });
 };
 
-const UserProfile = resolve => {
+/* const UserProfile = resolve => {
     require.ensure(['../components/User/UserProfile'], () => {
         resolve(require('../components/User/UserProfile'));
     });
-};
+}; */
 
 Vue.use(Router);
 
 const ifAuth = (to, from, next) => {
-    if (store.getters.user) {
+    if (localStorage.getItem('user')) {
         next();
     } else {
         next('/');
@@ -41,22 +45,16 @@ export default new Router({
             component: Home
         },
         {
-            path: '/board',
-            name: 'board',
-            component: Board
-            /* beforeEnter: ifAuth */
+            path: '/boards',
+            name: 'boards',
+            component: Boards,
+            beforeEnter: ifAuth
         },
         {
             path: '/user',
             name: 'user',
-            component: User
-            /* beforeEnter: ifAuth */
-        },
-        {
-            path: '/user/userprofile',
-            name: 'UserProfile',
-            /* beforeEnter: ifAuth, */
-            component: UserProfile
+            component: User,
+            beforeEnter: ifAuth
         },
         {
             path: '*',

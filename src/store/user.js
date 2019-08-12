@@ -1,4 +1,4 @@
-import * as firebase from 'firebase';
+import URL from '../URL';
 
 class User {
     constructor(id) {
@@ -22,70 +22,133 @@ export default {
     mutations: {
         setUser(state, payload) {
             state.user = payload;
+            localStorage.setItem('user', payload);
+            console.log('======USER======== ', localStorage.getItem('user'));
         },
         loadUser(state, object) {
             state.user = { ...object };
         }
     },
     actions: {
-        async registerUser({ commit }, { email, password }) {
+        async registerUser({ commit }, payload) {
             commit('clearSnackbar');
-            try {
-                const user = await firebase
-                    .auth()
-                    .createUserWithEmailAndPassword(email, password);
-                commit('setUser', new User(user.uid));
-            } catch (error) {
-                commit('setSnackbarMsg', error.message);
-                commit('setSnackbarType', 'error');
-                throw error;
-            }
+            return fetch(`${URL}/api/v1/user`, {
+                mode: 'cors',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Headers': '*'
+                },
+                method: 'POST',
+                body: JSON.stringify(payload)
+            })
+                .then(response => response.json())
+                .then(json => {
+                    console.log(json);
+                    if (json.status === -1) {
+                        console.log(json.message);
+                        commit('setSnackbarMsg', json.message);
+                        commit('setSnackbarType', 'error');
+                        return false;
+                    } else {
+                        commit('togleRegisterDialog');
+                        commit('setSnackbarMsg', 'Успешная регистрация');
+                        commit('setSnackbarType', 'success');
+                        return true;
+                    }
+                })
+                .catch(error => {
+                    console.error(error);
+                    commit('setSnackbarMsg', 'Ошибка регистрации');
+                    commit('setSnackbarType', 'error');
+                    return false;
+                });
         },
-        async loginUser({ commit }, { email, password }) {
+        async loginUser({ commit }, payload) {
             commit('clearSnackbar');
-            try {
-                const user = await firebase
-                    .auth()
-                    .signInWithEmailAndPassword(email, password);
-                commit('setUser', new User(user.uid));
-            } catch (error) {
-                commit('setSnackbarMsg', error.message);
-                commit('setSnackbarType', 'error');
-                throw error;
-            }
+
+            return fetch(`${URL}/api/v1/user/auth`, {
+                mode: 'cors',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Headers': '*'
+                },
+                method: 'POST',
+                body: JSON.stringify(payload)
+            })
+                .then(response => {
+                    const Authorization = response.headers.get('Authorization');
+                    if (Authorization) {
+                        commit('setUser', Authorization);
+                    }
+                    return response.json();
+                })
+                .then(json => {
+                    console.log(json);
+                    if (json.status === 1) {
+                        commit('togleLoginDialog');
+                        commit('setSnackbarMsg', 'Успешная авторизация');
+                        commit('setSnackbarType', 'success');
+                        return true;
+                    } else {
+                        commit('setSnackbarMsg', json.message);
+                        commit('setSnackbarType', 'error');
+                        return false;
+                    }
+                })
+                .catch(error => {
+                    console.error(error);
+                    commit('setSnackbarMsg', 'Ошибка авторизации');
+                    commit('setSnackbarType', 'error');
+                    return false;
+                });
+        },
+        async resetPassword({ commit }, payload) {
+            commit('clearSnackbar');
+            return fetch(`${URL}/api/v1/user/recovery`, {
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                method: 'POST',
+                body: JSON.stringify(payload)
+            })
+                .then(response => response.json())
+                .then(json => {
+                    console.log(json);
+                    if (json.status === -1) {
+                        commit('setSnackbarMsg', json.message);
+                        commit('setSnackbarType', 'error');
+                        return false;
+                    } else {
+                        commit('setSnackbarMsg', 'Пароль выслан на e-mail');
+                        commit('setSnackbarType', 'success');
+                        return true;
+                    }
+                })
+                .catch(error => {
+                    console.error(error);
+                    commit('setSnackbarMsg', 'Ошибка восстановления пароля');
+                    commit('setSnackbarType', 'error');
+                    return false;
+                });
         },
         autoLoginUser({ commit }, payload) {
-            commit('setUser', new User(payload.uid));
+            commit('setUser', payload);
+            localStorage.setItem('user', payload);
         },
         logoutUser({ commit }) {
-            firebase
-                .auth()
-                .signOut()
-                .then(() => {
-                    commit('setUser', null);
-                })
-                .catch(err => {
-                    console.error(err);
-                    commit('setSnackbarMsg', err.message);
-                    commit('setSnackbarType', 'error');
-                });
+            commit('setUser', null);
+            localStorage.removeItem('user');
         },
         async fetchUser({ commit }) {
             const dataFromBase = [];
             try {
                 const userData = await fetch(
-                    'https://gb-teamproject.herokuapp.com/api/v1/user',
-                    {
-                        method: 'POST',
-                        body: JSON.stringify({
-                            login: 'user123',
-                            password: '111111',
-                            email: 'test@test.net'
-                        }),
-                        headers: {
-                            'Content-Type': 'application/json'
-                        }
-                    }
+                    'https://gb-teamproject.herokuapp.com/api/v1/user'
                 )
                     .then(response => {
                         console.log('Response => ', response);
@@ -102,6 +165,9 @@ export default {
         }
     },
     getters: {
+        user(state) {
+            return state.user;
+        },
         getUser(state) {
             return state.user;
         },
