@@ -5,6 +5,7 @@ export default {
     boards: [],
     columns: [],
     labels: [],
+    board: {}
   },
   mutations: {
     setBoards (state, payload) {
@@ -20,6 +21,9 @@ export default {
       state.labels = [...payload]
       console.log('state.labels', payload)
     },
+    setBoardTitle (state, payload) {
+      state.board.title = payload
+    }
   },
   actions: {
     async fetchBoard ({commit, getters}, payload) {
@@ -147,6 +151,49 @@ export default {
           }
         )
     },
+    async updateBoardTitle ({commit, getters}, payload) {
+      let { id_board } = payload
+      return fetch(`${URL}/api/v1/board/${id_board}`, {
+        mode: 'cors',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Headers': '*',
+          'Authorization': getters.user,
+        },
+        method: 'PATCH',
+        body: JSON.stringify(payload)
+      })
+        .then(response => {
+          commit('setUserHeader', response)
+          return response.json()
+        }).then(result => {
+          console.log(result)
+          if (result.status === 1) {
+            commit('clearSnackbar')
+            commit('setSnackbarMsg', 'Название доски успешно изменено')
+            commit('setSnackbarType', 'success')
+            this.boardName = ''
+          } else if (result.status === -1) {
+            commit('clearSnackbar')
+            commit('setSnackbarMsg', Object.values(json.message).join('; '))
+            commit('setSnackbarType', 'error')
+          } else if (result.status === 401) {
+            commit('clearSnackbar')
+            commit('setSnackbarMsg', 'Требуется авторизация')
+            commit('setSnackbarType', 'error')
+          }
+        })
+        .catch(
+          error => {
+            console.error(error)
+            commit('clearSnackbar')
+            commit('setSnackbarMsg', 'Ошибка загрузки данных')
+            commit('setSnackbarType', 'error')
+          }
+        )
+    },
     async createColumn ({commit, getters}, payload) {
       return fetch(`${URL}/api/v1/column`, {
         mode: 'cors',
@@ -188,6 +235,11 @@ export default {
           }
         )
     },
+    async saveBoardTitleToStore ({ commit, getters }, { id_board, title}) {
+      const [board] = getters.boardById(id_board)
+      board.title = title
+      commit('setBoardTitle', board)
+    }
   },
   getters: {
     boards (state) {
@@ -198,6 +250,11 @@ export default {
     },
     labels (state) {
       return state.labels
+    },
+    boardById (state) {
+      return boardId => {
+        return state.boards.filter(board => board.id === +boardId)
+      }
     },
   }
 }
