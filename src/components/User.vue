@@ -15,10 +15,28 @@
             </div>
 
             <div v-else>
-                <pre>email: {{email}}</pre>
+                <pre>email: {{email}} | <v-btn @click="emailForm = true">изменить</v-btn></pre>
                 <pre>login: {{login}}</pre>
-                <pre>password: {{password}}</pre>
+                <pre>password: {{password}} | <v-btn @click="passwordForm = true">изменить</v-btn></pre>
             </div>
+
+            <v-dialog
+                    v-model="passwordForm"
+                    max-width="500"
+            >
+                <v-card>
+                    <update-password-form></update-password-form>
+                </v-card>
+            </v-dialog>
+
+            <v-dialog
+                    v-model="emailForm"
+                    max-width="500"
+            >
+                <v-card>
+                    <update-email-form></update-email-form>
+                </v-card>
+            </v-dialog>
 
         </v-flex>
     </v-layout>
@@ -26,8 +44,18 @@
 </template>
 
 <script>
+  import UpdatePasswordForm from './UpdateUserPassword'
+  import UpdateEmailForm from './UpdateUserEmail'
+
   export default {
     name: 'User',
+    data () {
+      return {
+        passwordForm: false,
+        emailForm: false,
+      }
+    },
+    components: {UpdateEmailForm, UpdatePasswordForm},
     mounted: function () {
       this.$nextTick(async () => {
         const {commit, dispatch} = this.$store
