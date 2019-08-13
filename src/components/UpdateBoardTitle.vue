@@ -68,9 +68,9 @@
           const {commit, dispatch} = this.$store
           commit('setLoading', true)
           await dispatch('updateBoardTitle', board)
+          await commit('setBoardTitle', this.boardName)
           this.boardName = ''
           commit('setLoading', false)
-          await dispatch('saveBoardTitleToStore', board)
         }
       }
     }

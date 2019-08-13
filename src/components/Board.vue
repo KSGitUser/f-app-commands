@@ -21,7 +21,7 @@
                     large
                     @click="updateBoardTitle"
             >
-                {{ board.title }}
+                {{ boardTitle }}
             </v-btn>
             <v-spacer></v-spacer>
             <v-menu
@@ -299,9 +299,8 @@
       loading () {
         return this.$store.getters.loading
       },
-      board () {
-        const [board] = this.$store.getters.boardById(this.id)
-        return board
+      boardTitle () {
+        return this.$store.getters.boardTitle
       }
     }
   }

@@ -5,12 +5,16 @@ export default {
     boards: [],
     columns: [],
     labels: [],
-    board: {}
+    title: ''
   },
   mutations: {
     setBoards (state, payload) {
       state.boards = [...payload]
       console.log('state.boards', payload)
+    },
+    setBoardTitle (state, payload) {
+      state.title = payload
+      console.log('state.title', payload)
     },
     setColumns (state, payload) {
       state.columns = [...payload]
@@ -20,9 +24,6 @@ export default {
     setLabels (state, payload) {
       state.labels = [...payload]
       console.log('state.labels', payload)
-    },
-    setBoardTitle (state, payload) {
-      state.board.title = payload
     }
   },
   actions: {
@@ -46,8 +47,9 @@ export default {
         .then(json => {
             console.log('json ', json)
             if (json.status === 1) {
-              const {columns, labels} = json.data
+              const {title, columns, labels} = json.data
               commit('clearSnackbar')
+              commit('setBoardTitle', title)
               commit('setColumns', columns)
               commit('setLabels', labels)
               return 1
@@ -234,11 +236,6 @@ export default {
             commit('setSnackbarType', 'error')
           }
         )
-    },
-    async saveBoardTitleToStore ({ commit, getters }, { id_board, title}) {
-      const [board] = getters.boardById(id_board)
-      board.title = title
-      commit('setBoardTitle', board)
     }
   },
   getters: {
@@ -251,10 +248,8 @@ export default {
     labels (state) {
       return state.labels
     },
-    boardById (state) {
-      return boardId => {
-        return state.boards.filter(board => board.id === +boardId)
-      }
+    boardTitle (state) {
+      return state.title
     },
   }
 }
