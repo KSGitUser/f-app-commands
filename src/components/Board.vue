@@ -13,7 +13,16 @@
     </div>
 
     <div v-else class="demo">
-        <v-layout grey lighten-3 row>
+        <v-layout grey lighten-3 row
+                  class="align-center"
+        >
+            <v-btn
+                    flat
+                    large
+                    @click="updateBoardTitle"
+            >
+                {{ board.title }}
+            </v-btn>
             <v-spacer></v-spacer>
             <v-menu
                     :close-on-content-click="false"
@@ -178,6 +187,15 @@
                 </v-card>
             </v-dialog>
 
+            <v-dialog
+                    v-model="updateBoardTitleDialog"
+                    max-width="500"
+            >
+                <v-card>
+                    <update-board-title :id="id"></update-board-title>
+                </v-card>
+            </v-dialog>
+
         </div>
 
     </div>
@@ -188,6 +206,7 @@
 <script>
   import draggable from 'vuedraggable'
   import CreateColumn from './CreateColumn'
+  import UpdateBoardTitle from './UpdateBoardTitle'
 
   let id = 1
   export default {
@@ -196,11 +215,13 @@
     order: 14,
     components: {
       CreateColumn,
-      draggable
+      draggable,
+      UpdateBoardTitle
     },
     data () {
       return {
         newCollumnDialog: false,
+        updateBoardTitleDialog: false,
         dialog: false,
         showMenu: false,
         x: 0,
@@ -241,6 +262,9 @@
       demo: function () {
         this.dialog = !this.dialog
       },
+      updateBoardTitle: function () {
+        this.updateBoardTitleDialog = !this.updateBoardTitleDialog
+      },
       show (e) {
         e.preventDefault()
         this.showMenu = false
@@ -262,6 +286,7 @@
           this.$router.push('/')
         }
         commit('setLoading', false)
+        console.log('board-boards', this.$store.getters.boards)
       })
     },
     computed: {
@@ -274,7 +299,11 @@
       loading () {
         return this.$store.getters.loading
       },
-    },
+      board () {
+        const [board] = this.$store.getters.boardById(this.id)
+        return board
+      }
+    }
   }
 </script>
 <style lang="scss" scoped>
