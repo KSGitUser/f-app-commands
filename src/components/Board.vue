@@ -84,10 +84,19 @@
                     v-for="column in columns"
                     :key="column.id"
             >
-                <div class="bg pa-3">
-                    <h2><b>{{column.title}}</b></h2>
-                    <hr>
+                <div class="bg pa-3"> 
+                    <v-flex>
+                        <v-text-field
+                          label="Название колонки"
+                           solo
+                           flat
+                          v-model = "column.title"
+                        ></v-text-field>
+                      </v-flex>                 
+                   
+                
                 </div>
+             
 
                 <div class="scrollbar style-1 bg pa-1">
 
