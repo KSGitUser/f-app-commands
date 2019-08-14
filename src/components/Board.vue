@@ -1,7 +1,7 @@
 <template>
     <!--загрузка данных-->
     <div
-            v-if="loading"
+            v-if="localLoading"
             class="text-xs-center align-center mt-5"
     >
         <v-progress-circular
@@ -16,13 +16,9 @@
         <v-layout grey lighten-3 row
                   class="align-center"
         >
-            <v-btn
-                    flat
-                    large
-                    @click="updateBoardTitle"
-            >
-                {{ boardTitle }}
-            </v-btn>
+
+            <update-board-title></update-board-title>
+
             <v-spacer></v-spacer>
             <v-menu
                     :close-on-content-click="false"
@@ -187,14 +183,6 @@
                 </v-card>
             </v-dialog>
 
-            <v-dialog
-                    v-model="updateBoardTitleDialog"
-                    max-width="500"
-            >
-                <v-card>
-                    <update-board-title :id="id"></update-board-title>
-                </v-card>
-            </v-dialog>
 
         </div>
 
@@ -220,6 +208,7 @@
     },
     data () {
       return {
+        localLoading: false,
         newCollumnDialog: false,
         updateBoardTitleDialog: false,
         dialog: false,
@@ -239,16 +228,6 @@
             value: 'https://ns328286.ip-37-187-113.eu/ew/wallpapers/800x480/02715_800x480.jpg'
           }
         ],
-        // lists: [
-        //   {
-        //     title: `name | ${id}`,
-        //     items: [
-        //       {name: 'Jonny', id: id++},
-        //       {name: 'Jonny', id: id++},
-        //       {name: 'Jonny', id: id++}
-        //     ]
-        //   },
-        // ]
       }
     },
     methods: {
@@ -256,14 +235,10 @@
         this.lists[idx].items.push({name: 'Juan ' + id, id: id++})
       },
       addList: function () {
-        //this.lists.push({title: `title ${id}`, items: [{name: 'Juan ' + id, id: id++}]})
         this.newCollumnDialog = !this.newCollumnDialog
       },
       demo: function () {
         this.dialog = !this.dialog
-      },
-      updateBoardTitle: function () {
-        this.updateBoardTitleDialog = !this.updateBoardTitleDialog
       },
       show (e) {
         e.preventDefault()
@@ -279,14 +254,16 @@
       this.$nextTick(async () => {
         const {commit, dispatch} = this.$store
         commit('setLoading', true)
+        this.localLoading = true
         let res = await dispatch('fetchBoard', this.id)
         if (res === -1) {
           this.$router.push('/boards')
         } else if (res === 401) {
+          dispatch('logoutUser')
           this.$router.push('/')
         }
         commit('setLoading', false)
-        console.log('board-boards', this.$store.getters.boards)
+        this.localLoading = false
       })
     },
     computed: {
@@ -301,7 +278,10 @@
       },
       boardTitle () {
         return this.$store.getters.boardTitle
-      }
+      },
+      boardId () {
+        return this.$store.getters.boardId
+      },
     }
   }
 </script>
