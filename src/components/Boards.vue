@@ -117,7 +117,11 @@
       this.$nextTick(async () => {
         const {commit, dispatch} = this.$store
         this.loadingLocal = true
-        await dispatch('fetchBoards')
+        const fetchBoards = await dispatch('fetchBoards')
+        if(fetchBoards === 401){
+          dispatch('logoutUser')
+          this.$router.push('/')
+        }
         this.loadingLocal = false
       })
     },
