@@ -17,12 +17,18 @@
                   class="align-center"
         >
 
-            <update-board-title></update-board-title>
+            <!--<update-board-title></update-board-title>-->
+
+
 
             <v-spacer></v-spacer>
+            <labels-component></labels-component>
             <v-menu
                     :close-on-content-click="false"
             >
+
+
+
                 <template v-slot:activator="{ on }">
                     <v-btn
                             icon
@@ -195,6 +201,7 @@
   import draggable from 'vuedraggable'
   import CreateColumn from './CreateColumn'
   import UpdateBoardTitle from './UpdateBoardTitle'
+  import LabelsComponent from './labelsComponent'
 
   let id = 1
   export default {
@@ -202,6 +209,7 @@
     name: 'Board',
     order: 14,
     components: {
+      LabelsComponent,
       CreateColumn,
       draggable,
       UpdateBoardTitle

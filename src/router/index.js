@@ -66,7 +66,7 @@ export default new Router({
     {
       path: '*',
       component: Page404,
-    }
+    },
   ],
   mode: 'history'
 })

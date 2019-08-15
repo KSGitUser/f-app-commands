@@ -41,6 +41,10 @@ export default {
       console.log('state.labels add', payload)
       console.log('state.labels', state.labels)
     },
+    updateLabels (state, payload) {
+      const idx = state.labels.findIndex(el => +el.id === +payload.id)
+      state.labels[idx] = payload
+    },
     setBoardId (state, payload) {
       state.boardId = +payload
       console.log('state.boardId', +payload)
@@ -256,7 +260,88 @@ export default {
             commit('setSnackbarType', 'error')
           }
         )
-    }
+    },
+    async createLabel ({commit, getters}, payload) {
+      return fetch(`${URL}/api/v1/label`, {
+        mode: 'cors',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Headers': '*',
+          'Authorization': getters.user,
+        },
+        method: 'POST',
+        body: JSON.stringify(payload)
+      })
+        .then(response => {
+          commit('setUserHeader', response)
+          return response.json()
+        }).then(result => {
+          console.log(result)
+          if (result.status === 1) {
+            payload.id = result.data.id
+            commit('addLabels', payload)
+          } else if (result.status === -1) {
+            commit('clearSnackbar')
+            commit('setSnackbarMsg', Object.values(json.message).join('; '))
+            commit('setSnackbarType', 'error')
+          } else if (result.status === 401) {
+            commit('clearSnackbar')
+            commit('setSnackbarMsg', 'Требуется авторизация')
+            commit('setSnackbarType', 'error')
+          }
+          return result.status
+        })
+        .catch(
+          error => {
+            console.error(error)
+            commit('clearSnackbar')
+            commit('setSnackbarMsg', 'Ошибка загрузки данных')
+            commit('setSnackbarType', 'error')
+          }
+        )
+    },
+    async updateLabel ({commit, getters}, {newData, id_label}) {
+      return fetch(`${URL}/api/v1/label/${id_label}`, {
+        mode: 'cors',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Headers': '*',
+          'Authorization': getters.user,
+        },
+        method: 'PATCH',
+        body: JSON.stringify(newData)
+      })
+        .then(response => {
+          commit('setUserHeader', response)
+          return response.json()
+        }).then(result => {
+          console.log('updateLabel', result)
+          if (result.status === 1) {
+            commit('updateLabels', newData)
+          } else if (result.status === -1) {
+            commit('clearSnackbar')
+            commit('setSnackbarMsg', Object.values(json.message).join('; '))
+            commit('setSnackbarType', 'error')
+          } else if (result.status === 401) {
+            commit('clearSnackbar')
+            commit('setSnackbarMsg', 'Требуется авторизация')
+            commit('setSnackbarType', 'error')
+          }
+          return result.status
+        })
+        .catch(
+          error => {
+            console.error(error)
+            commit('clearSnackbar')
+            commit('setSnackbarMsg', 'Ошибка загрузки данных')
+            commit('setSnackbarType', 'error')
+          }
+        )
+    },
   },
   getters: {
     boards (state) {
