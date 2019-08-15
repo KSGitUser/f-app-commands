@@ -9,7 +9,6 @@
             <v-btn
                     v-on="on"
                     icon
-                    fab
             >
                 <v-icon>bookmark_border</v-icon>
             </v-btn>

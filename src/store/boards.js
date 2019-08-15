@@ -196,9 +196,6 @@ export default {
         }).then(result => {
           console.log(result)
           if (result.status === 1) {
-            commit('clearSnackbar')
-            commit('setSnackbarMsg', 'Название доски успешно изменено')
-            commit('setSnackbarType', 'success')
             this.boardName = ''
           } else if (result.status === -1) {
             commit('clearSnackbar')

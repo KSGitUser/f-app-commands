@@ -17,7 +17,7 @@
                   class="align-center"
         >
 
-            <!--<update-board-title></update-board-title>-->
+            <update-board-title></update-board-title>
 
 
 
@@ -33,7 +33,7 @@
                     <v-btn
                             icon
                             v-on="on"
-                            fab
+
                     >
                         <v-icon>insert_photo</v-icon>
                     </v-btn>
@@ -51,7 +51,6 @@
             <v-btn
                     icon
                     @click="addList"
-                    fab
             >
                 <v-icon>add_circle</v-icon>
             </v-btn>

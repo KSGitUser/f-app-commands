@@ -1,6 +1,21 @@
 <template>
     <v-flex class="pa-2">
-        <div style="display: flex">
+
+        <v-flex v-if="!update">
+            <h2>{{boardTitle}}
+                <v-btn
+                        @click="updateForm"
+                        :loading="loading"
+                        :disabled="loading"
+                        icon
+                >
+                    <v-icon>more_vert</v-icon>
+                </v-btn>
+            </h2>
+        </v-flex>
+
+
+        <div v-else style="display: flex">
             <v-flex>
                 <v-form
                         ref="form"
@@ -9,7 +24,7 @@
                 >
                     <v-text-field
                             name="name"
-                            :label="boardTitle"
+                            label="Доска"
                             type="text"
                             v-model="boardName"
                             required
@@ -21,12 +36,11 @@
 
             <v-btn
                     icon
-                    fab
                     @click="saveNewBoardTitle"
                     :loading="loading"
                     :disabled="loading"
             >
-                <v-icon>edit</v-icon>
+                <v-icon>done</v-icon>
             </v-btn>
         </div>
     </v-flex>
@@ -37,6 +51,7 @@
     name: 'UpdateBoardTitle',
     data () {
       return {
+        update: false,
         boardName: '',
         valid: false,
         boardNameRules: [
@@ -67,9 +82,14 @@
           commit('setLoading', true)
           await dispatch('updateBoardTitle', board)
           commit('setBoardTitle', this.boardName)
+          this.update = false
           commit('setLoading', false)
         }
-      }
+      },
+      updateForm () {
+        this.update = true
+        this.boardName = this.boardTitle
+      },
     }
   }
 </script>
