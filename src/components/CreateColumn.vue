@@ -68,13 +68,11 @@
             title: this.columnTitle.trim(),
             id_board: this.id,
           }
-          //console.log(column)
           const {commit, dispatch} = this.$store
           commit('setLoading', true)
           await dispatch('createColumn', column)
           this.columnTitle = ''
           commit('setLoading', false)
-          await dispatch('fetchBoard', this.id)
         }
       }
     }

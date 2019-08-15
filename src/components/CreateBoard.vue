@@ -68,11 +68,12 @@
           }
           const {commit, dispatch} = this.$store
           commit('setLoading', true)
-          await dispatch('createBoard', board)
-          this.boardName = ''
-          dispatch('toggleBoardDialog')
+          const newBoard = await dispatch('createBoard', board)
+          if (newBoard === 1) {
+            this.boardName = ''
+            dispatch('toggleBoardDialog')
+          }
           commit('setLoading', false)
-          await dispatch('fetchBoards')
         }
       }
     },

@@ -1,54 +1,111 @@
 <template>
-    <v-card class="elevation-12">
-        <v-toolbar dark color="primary">
-            <v-toolbar-title>Изменить название доски</v-toolbar-title>
-        </v-toolbar>
-        <v-card-text>
-            <v-form
-                    ref="form"
-                    v-model="valid"
-                    lazy-validation
-            >
-                <v-text-field
-                        name="name"
-                        label="Ведите новое название доски"
-                        type="text"
-                        v-model="boardName"
-                        required
-                        :rules="boardNameRules"
-                        @keypress.enter.prevent
-                        :autofocus="true"
-                ></v-text-field>
-            </v-form>
-        </v-card-text>
-        <v-card-actions>
+
+    <div v-if="!update">
+        <v-toolbar-title>
             <v-btn
-                    color="primary"
-                    @click="saveNewBoardTitle"
+                    @click="updateForm"
                     :loading="loading"
                     :disabled="loading"
-            >Сохранить название доски
+                    icon
+            >
+                <v-icon>more_vert</v-icon>
             </v-btn>
-            <v-spacer></v-spacer>
-            <v-btn
-                    color="warning"
-                    @click="boardName=''"
-            >Очистить
-            </v-btn>
-        </v-card-actions>
-    </v-card>
+            {{boardTitle}}
+        </v-toolbar-title>
+    </div>
+
+
+    <v-layout class="w100"
+            v-else
+    >
+        <v-form
+                class="w100"
+                ref="form"
+                v-model="valid"
+                lazy-validation
+        >
+            <v-text-field
+                    class="w100"
+                    name="name"
+                    type="text"
+                    v-model="boardName"
+                    required
+                    :rules="boardNameRules"
+                    @keypress.enter.prevent
+            ></v-text-field>
+        </v-form>
+
+        <v-btn
+                icon
+                v-if="boardTitle.trim() !== boardName.trim()"
+                @click="saveNewBoardTitle"
+                :loading="loading"
+                :disabled="loading"
+        >
+            <v-icon>done</v-icon>
+        </v-btn>
+        <v-btn
+                icon
+                @click="update=false"
+                :loading="loading"
+                :disabled="loading"
+        >
+            <v-icon>reply</v-icon>
+        </v-btn>
+    </v-layout>
+
+
+    <!--<v-card v-else  single-line>-->
+
+    <!--<v-form-->
+    <!--ref="form"-->
+    <!--v-model="valid"-->
+    <!--lazy-validation-->
+    <!--&gt;-->
+    <!--<v-text-field-->
+    <!--name="name"-->
+    <!--label="Доска"-->
+    <!--type="text"-->
+    <!--v-model="boardName"-->
+    <!--required-->
+    <!--:rules="boardNameRules"-->
+    <!--@keypress.enter.prevent-->
+    <!--&gt;</v-text-field>-->
+    <!--</v-form>-->
+
+
+    <!--<v-btn-->
+    <!--icon-->
+    <!--v-if="boardTitle.trim() !== boardName.trim()"-->
+    <!--@click="saveNewBoardTitle"-->
+    <!--:loading="loading"-->
+    <!--:disabled="loading"-->
+    <!--&gt;-->
+    <!--<v-icon>done</v-icon>-->
+    <!--</v-btn>-->
+    <!--<v-btn-->
+    <!--icon-->
+    <!--@click="update=false"-->
+    <!--:loading="loading"-->
+    <!--:disabled="loading"-->
+    <!--&gt;-->
+    <!--<v-icon>reply</v-icon>-->
+    <!--</v-btn>-->
+
+    <!--</v-card>-->
+
 </template>
 
 <script>
   export default {
     name: 'UpdateBoardTitle',
-    props: ['id'],
     data () {
       return {
+        update: false,
         boardName: '',
         valid: false,
         boardNameRules: [
-          v => !!v || 'Обязательное поле',
+          v => !!v || 'Название доски не может быть пустым',
           v => v.length >= 3 || 'Минимум 3 символа'
         ],
       }
@@ -57,26 +114,38 @@
       loading () {
         return this.$store.getters.loading
       },
+      boardTitle () {
+        return this.$store.getters.boardTitle
+      },
+      boardId () {
+        return this.$store.getters.boardId
+      },
     },
     methods: {
       async saveNewBoardTitle () {
         if (this.$refs.form.validate()) {
           const board = {
             title: this.boardName.trim(),
-            id_board: this.id,
+            id_board: this.boardId,
           }
           const {commit, dispatch} = this.$store
           commit('setLoading', true)
           await dispatch('updateBoardTitle', board)
-          this.boardName = ''
+          commit('setBoardTitle', this.boardName)
+          this.update = false
           commit('setLoading', false)
-          await dispatch('saveBoardTitleToStore', board)
         }
-      }
+      },
+      updateForm () {
+        this.update = true
+        this.boardName = this.boardTitle
+      },
     }
   }
 </script>
 
 <style scoped>
-
+.w100{
+    width: 100%;
+}
 </style>

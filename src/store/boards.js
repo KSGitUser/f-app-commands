@@ -5,25 +5,55 @@ export default {
     boards: [],
     columns: [],
     labels: [],
-    board: {}
+    title: '',
+    boardId: null,
   },
   mutations: {
     setBoards (state, payload) {
       state.boards = [...payload]
       console.log('state.boards', payload)
     },
+    addBoards (state, payload) {
+      state.boards = state.boards.concat(payload)
+      console.log('state.boards add', payload)
+      console.log('state.boards', state.boards)
+    },
+    setBoardTitle (state, payload) {
+      state.title = payload
+      console.log('state.title', payload)
+    },
     setColumns (state, payload) {
       state.columns = [...payload]
       console.log('state.columns', payload)
 
     },
+    addColumns (state, payload) {
+      state.columns = state.columns.concat(payload)
+      console.log('state.columns add', payload)
+      console.log('state.columns', state.columns)
+    },
     setLabels (state, payload) {
       state.labels = [...payload]
       console.log('state.labels', payload)
     },
-    setBoardTitle (state, payload) {
-      state.board.title = payload
-    }
+    addLabels (state, payload) {
+      state.labels = state.labels.concat(payload)
+      console.log('state.labels add', payload)
+      console.log('state.labels', state.labels)
+    },
+    updateLabels (state, payload) {
+      const idx = state.labels.findIndex(el => +el.id === +payload.id)
+      state.labels[idx] = payload
+    },
+    updateColumn (state, payload) {
+      const idx = state.columns.findIndex(el => +el.id === +payload.id)
+      state.columns[idx] = payload
+      state.columns = state.columns.concat()
+    },
+    setBoardId (state, payload) {
+      state.boardId = +payload
+      console.log('state.boardId', +payload)
+    },
   },
   actions: {
     async fetchBoard ({commit, getters}, payload) {
@@ -46,22 +76,21 @@ export default {
         .then(json => {
             console.log('json ', json)
             if (json.status === 1) {
-              const {columns, labels} = json.data
-              commit('clearSnackbar')
+              const {title, columns, labels, id} = json.data
+              commit('setBoardTitle', title)
               commit('setColumns', columns)
               commit('setLabels', labels)
-              return 1
+              commit('setBoardId', id)
             } else if (json.status === -1) {
               commit('clearSnackbar')
               commit('setSnackbarMsg', Object.values(json.message).join('; '))
               commit('setSnackbarType', 'error')
-              return -1
             } else if (json.status === 401) {
               commit('clearSnackbar')
               commit('setSnackbarMsg', 'Требуется авторизация')
               commit('setSnackbarType', 'error')
-              return 401
             }
+            return json.status
           }
         )
         .catch(
@@ -72,7 +101,7 @@ export default {
           }
         )
     },
-    async fetchBoards ({commit, getters}, payload) {
+    async fetchBoards ({commit, getters}) {
       return fetch(`${URL}/api/v1/board`,
         {
           mode: 'cors',
@@ -93,17 +122,18 @@ export default {
             console.log('json ', json)
             if (json.status === 1) {
               commit('setBoards', json.data.boards)
-            }
-            if (json.status === 401) {
+            } else if (json.status === 401) {
               commit('clearSnackbar')
               commit('setSnackbarMsg', 'Требуется авторизация')
               commit('setSnackbarType', 'error')
             }
+            return json.status
           }
         )
         .catch(
           error => {
             console.error(error)
+            commit('clearSnackbar')
             commit('setSnackbarMsg', 'Ошибка загрузки данных')
             commit('setSnackbarType', 'error')
           }
@@ -128,9 +158,8 @@ export default {
         }).then(result => {
           console.log(result)
           if (result.status === 1) {
-            commit('clearSnackbar')
-            commit('setSnackbarMsg', 'Создана новая доска')
-            commit('setSnackbarType', 'success')
+            payload.id = result.data.id
+            commit('addBoards', payload)
             this.boardName = ''
           } else if (result.status === -1) {
             commit('clearSnackbar')
@@ -141,6 +170,7 @@ export default {
             commit('setSnackbarMsg', 'Требуется авторизация')
             commit('setSnackbarType', 'error')
           }
+          return result.status
         })
         .catch(
           error => {
@@ -152,7 +182,7 @@ export default {
         )
     },
     async updateBoardTitle ({commit, getters}, payload) {
-      let { id_board } = payload
+      let {id_board} = payload
       return fetch(`${URL}/api/v1/board/${id_board}`, {
         mode: 'cors',
         headers: {
@@ -171,9 +201,6 @@ export default {
         }).then(result => {
           console.log(result)
           if (result.status === 1) {
-            commit('clearSnackbar')
-            commit('setSnackbarMsg', 'Название доски успешно изменено')
-            commit('setSnackbarType', 'success')
             this.boardName = ''
           } else if (result.status === -1) {
             commit('clearSnackbar')
@@ -184,6 +211,7 @@ export default {
             commit('setSnackbarMsg', 'Требуется авторизация')
             commit('setSnackbarType', 'error')
           }
+          return result.status
         })
         .catch(
           error => {
@@ -213,9 +241,8 @@ export default {
         }).then(result => {
           console.log(result)
           if (result.status === 1) {
-            commit('clearSnackbar')
-            commit('setSnackbarMsg', 'Создан новый столбец')
-            commit('setSnackbarType', 'success')
+            payload.id = result.data.id
+            commit('addColumns', payload)
           } else if (result.status === -1) {
             commit('clearSnackbar')
             commit('setSnackbarMsg', Object.values(json.message).join('; '))
@@ -225,6 +252,7 @@ export default {
             commit('setSnackbarMsg', 'Требуется авторизация')
             commit('setSnackbarType', 'error')
           }
+          return result.status
         })
         .catch(
           error => {
@@ -235,11 +263,127 @@ export default {
           }
         )
     },
-    async saveBoardTitleToStore ({ commit, getters }, { id_board, title}) {
-      const [board] = getters.boardById(id_board)
-      board.title = title
-      commit('setBoardTitle', board)
-    }
+    async createLabel ({commit, getters}, payload) {
+      return fetch(`${URL}/api/v1/label`, {
+        mode: 'cors',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Headers': '*',
+          'Authorization': getters.user,
+        },
+        method: 'POST',
+        body: JSON.stringify(payload)
+      })
+        .then(response => {
+          commit('setUserHeader', response)
+          return response.json()
+        }).then(result => {
+          console.log(result)
+          if (result.status === 1) {
+            payload.id = result.data.id
+            commit('addLabels', payload)
+          } else if (result.status === -1) {
+            commit('clearSnackbar')
+            commit('setSnackbarMsg', Object.values(json.message).join('; '))
+            commit('setSnackbarType', 'error')
+          } else if (result.status === 401) {
+            commit('clearSnackbar')
+            commit('setSnackbarMsg', 'Требуется авторизация')
+            commit('setSnackbarType', 'error')
+          }
+          return result.status
+        })
+        .catch(
+          error => {
+            console.error(error)
+            commit('clearSnackbar')
+            commit('setSnackbarMsg', 'Ошибка загрузки данных')
+            commit('setSnackbarType', 'error')
+          }
+        )
+    },
+    async updateLabel ({commit, getters}, {newData, id_label}) {
+      return fetch(`${URL}/api/v1/label/${id_label}`, {
+        mode: 'cors',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Headers': '*',
+          'Authorization': getters.user,
+        },
+        method: 'PATCH',
+        body: JSON.stringify(newData)
+      })
+        .then(response => {
+          commit('setUserHeader', response)
+          return response.json()
+        }).then(result => {
+          console.log('updateLabel', result)
+          if (result.status === 1) {
+            commit('updateLabels', newData)
+          } else if (result.status === -1) {
+            commit('clearSnackbar')
+            commit('setSnackbarMsg', Object.values(json.message).join('; '))
+            commit('setSnackbarType', 'error')
+          } else if (result.status === 401) {
+            commit('clearSnackbar')
+            commit('setSnackbarMsg', 'Требуется авторизация')
+            commit('setSnackbarType', 'error')
+          }
+          return result.status
+        })
+        .catch(
+          error => {
+            console.error(error)
+            commit('clearSnackbar')
+            commit('setSnackbarMsg', 'Ошибка загрузки данных')
+            commit('setSnackbarType', 'error')
+          }
+        )
+    },
+    async updateColumnTitle ({commit, getters}, payload) {
+      return fetch(`${URL}/api/v1/column/${payload.id}`, {
+        mode: 'cors',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Headers': '*',
+          'Authorization': getters.user,
+        },
+        method: 'PATCH',
+        body: JSON.stringify(payload)
+      })
+        .then(response => {
+          commit('setUserHeader', response)
+          return response.json()
+        }).then(result => {
+          console.log('updateLabel', result)
+          if (result.status === 1) {
+            commit('updateColumn', payload)
+          } else if (result.status === -1) {
+            commit('clearSnackbar')
+            commit('setSnackbarMsg', Object.values(json.message).join('; '))
+            commit('setSnackbarType', 'error')
+          } else if (result.status === 401) {
+            commit('clearSnackbar')
+            commit('setSnackbarMsg', 'Требуется авторизация')
+            commit('setSnackbarType', 'error')
+          }
+          return result.status
+        })
+        .catch(
+          error => {
+            console.error(error)
+            commit('clearSnackbar')
+            commit('setSnackbarMsg', 'Ошибка загрузки данных')
+            commit('setSnackbarType', 'error')
+          }
+        )
+    },
   },
   getters: {
     boards (state) {
@@ -251,10 +395,11 @@ export default {
     labels (state) {
       return state.labels
     },
-    boardById (state) {
-      return boardId => {
-        return state.boards.filter(board => board.id === +boardId)
-      }
+    boardTitle (state) {
+      return state.title
+    },
+    boardId (state) {
+      return state.boardId
     },
   }
 }
