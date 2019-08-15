@@ -20,13 +20,11 @@
             <update-board-title></update-board-title>
 
 
-
             <v-spacer></v-spacer>
             <labels-component></labels-component>
             <v-menu
                     :close-on-content-click="false"
             >
-
 
 
                 <template v-slot:activator="{ on }">
@@ -57,27 +55,9 @@
         </v-layout>
 
         <div class="root-box pre style-1"
-             @contextmenu="show"
+
              :style="{'background': `url('${bf}')`}"
         >
-
-            <v-menu
-                    v-model="showMenu"
-                    :position-x="x"
-                    :position-y="y"
-                    absolute
-                    offset-y
-            >
-                <v-list>
-                    <v-list-tile
-                            v-for="(item, index) in showMenuItems"
-                            :key="index"
-                            @click="item.action"
-                    >
-                        <v-list-tile-title>{{ item.title }}</v-list-tile-title>
-                    </v-list-tile>
-                </v-list>
-            </v-menu>
 
 
             <div
@@ -85,10 +65,24 @@
                     v-for="column in columns"
                     :key="column.id"
             >
-                <div class="bg pa-3">
-                    <h2><b>{{column.title}}</b></h2>
-                    <hr>
-                </div>
+                <!--<div class="bg pa-3">-->
+                    <!--<div class="title align-start" style="display: flex">-->
+                        <!--{{column.title}}-->
+                        <!--<v-spacer></v-spacer>-->
+                        <!--<v-btn-->
+                                <!--class="ma-0"-->
+                                <!--icon-->
+                                <!--small-->
+                                <!--:disabled="loading"-->
+                                <!--@click=""-->
+                        <!--&gt;-->
+                            <!--<v-icon>more_vert</v-icon>-->
+                        <!--</v-btn>-->
+                    <!--</div>-->
+                    <!--<hr class="mt-2">-->
+                <!--</div>-->
+
+                <update-column-title :column="column"></update-column-title>
 
                 <div class="scrollbar style-1 bg pa-1">
 
@@ -113,7 +107,10 @@
                 </div>
 
                 <v-card-actions class="bg pa-3">
-                    <v-btn flat small @click="add(idx)">
+                    <v-btn
+                            flat
+                            small
+                            @click="">
                         <v-icon>add</v-icon>
                         добавить карточку
                     </v-btn>
@@ -201,6 +198,7 @@
   import CreateColumn from './CreateColumn'
   import UpdateBoardTitle from './UpdateBoardTitle'
   import LabelsComponent from './labelsComponent'
+  import UpdateColumnTitle from './UpdateColumnTitle'
 
   let id = 1
   export default {
@@ -208,6 +206,7 @@
     name: 'Board',
     order: 14,
     components: {
+      UpdateColumnTitle,
       LabelsComponent,
       CreateColumn,
       draggable,
@@ -219,12 +218,6 @@
         newCollumnDialog: false,
         updateBoardTitleDialog: false,
         dialog: false,
-        showMenu: false,
-        x: 0,
-        y: 0,
-        showMenuItems: [
-          {title: 'Добавить колонку', action: this.addList},
-        ],
         bf: 'https://cdn.vuetifyjs.com/images/parallax/material2.jpg',
         bfOptions: [
           {
@@ -346,8 +339,8 @@
         border-radius: 3px;
         margin: 10px;
         padding: 10px;
-        min-width: 270px;
-        max-width: 270px;
+        min-width: 300px;
+        max-width: 300px;
     }
 
     .style-1::-webkit-scrollbar {

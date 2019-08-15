@@ -34,14 +34,23 @@
                 </v-form>
             </v-flex>
 
-            <v-btn
-                    icon
-                    @click="saveNewBoardTitle"
-                    :loading="loading"
-                    :disabled="loading"
-            >
-                <v-icon>done</v-icon>
-            </v-btn>
+                <v-btn
+                        icon
+                        @click="saveNewBoardTitle"
+                        :loading="loading"
+                        :disabled="loading"
+                >
+                    <v-icon>done</v-icon>
+                </v-btn>
+                <v-btn
+                        icon
+                        @click="update=false"
+                        :loading="loading"
+                        :disabled="loading"
+                >
+                    <v-icon>reply</v-icon>
+                </v-btn>
+
         </div>
     </v-flex>
 </template>
