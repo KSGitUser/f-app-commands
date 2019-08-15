@@ -1,58 +1,99 @@
 <template>
-    <v-flex class="pa-2">
 
-        <v-flex v-if="!update">
-            <h2>{{boardTitle}}
-                <v-btn
-                        @click="updateForm"
-                        :loading="loading"
-                        :disabled="loading"
-                        icon
-                >
-                    <v-icon>more_vert</v-icon>
-                </v-btn>
-            </h2>
-        </v-flex>
+    <div v-if="!update">
+        <v-toolbar-title>
+            <v-btn
+                    @click="updateForm"
+                    :loading="loading"
+                    :disabled="loading"
+                    icon
+            >
+                <v-icon>more_vert</v-icon>
+            </v-btn>
+            {{boardTitle}}
+        </v-toolbar-title>
+    </div>
 
 
-        <div v-else style="display: flex">
-            <v-flex>
-                <v-form
-                        ref="form"
-                        v-model="valid"
-                        lazy-validation
-                >
-                    <v-text-field
-                            name="name"
-                            label="Доска"
-                            type="text"
-                            v-model="boardName"
-                            required
-                            :rules="boardNameRules"
-                            @keypress.enter.prevent
-                    ></v-text-field>
-                </v-form>
-            </v-flex>
+    <v-layout class="w100"
+            v-else
+    >
+        <v-form
+                class="w100"
+                ref="form"
+                v-model="valid"
+                lazy-validation
+        >
+            <v-text-field
+                    class="w100"
+                    name="name"
+                    type="text"
+                    v-model="boardName"
+                    required
+                    :rules="boardNameRules"
+                    @keypress.enter.prevent
+            ></v-text-field>
+        </v-form>
 
-                <v-btn
-                        icon
-                        @click="saveNewBoardTitle"
-                        :loading="loading"
-                        :disabled="loading"
-                >
-                    <v-icon>done</v-icon>
-                </v-btn>
-                <v-btn
-                        icon
-                        @click="update=false"
-                        :loading="loading"
-                        :disabled="loading"
-                >
-                    <v-icon>reply</v-icon>
-                </v-btn>
+        <v-btn
+                icon
+                v-if="boardTitle.trim() !== boardName.trim()"
+                @click="saveNewBoardTitle"
+                :loading="loading"
+                :disabled="loading"
+        >
+            <v-icon>done</v-icon>
+        </v-btn>
+        <v-btn
+                icon
+                @click="update=false"
+                :loading="loading"
+                :disabled="loading"
+        >
+            <v-icon>reply</v-icon>
+        </v-btn>
+    </v-layout>
 
-        </div>
-    </v-flex>
+
+    <!--<v-card v-else  single-line>-->
+
+    <!--<v-form-->
+    <!--ref="form"-->
+    <!--v-model="valid"-->
+    <!--lazy-validation-->
+    <!--&gt;-->
+    <!--<v-text-field-->
+    <!--name="name"-->
+    <!--label="Доска"-->
+    <!--type="text"-->
+    <!--v-model="boardName"-->
+    <!--required-->
+    <!--:rules="boardNameRules"-->
+    <!--@keypress.enter.prevent-->
+    <!--&gt;</v-text-field>-->
+    <!--</v-form>-->
+
+
+    <!--<v-btn-->
+    <!--icon-->
+    <!--v-if="boardTitle.trim() !== boardName.trim()"-->
+    <!--@click="saveNewBoardTitle"-->
+    <!--:loading="loading"-->
+    <!--:disabled="loading"-->
+    <!--&gt;-->
+    <!--<v-icon>done</v-icon>-->
+    <!--</v-btn>-->
+    <!--<v-btn-->
+    <!--icon-->
+    <!--@click="update=false"-->
+    <!--:loading="loading"-->
+    <!--:disabled="loading"-->
+    <!--&gt;-->
+    <!--<v-icon>reply</v-icon>-->
+    <!--</v-btn>-->
+
+    <!--</v-card>-->
+
 </template>
 
 <script>
@@ -104,5 +145,7 @@
 </script>
 
 <style scoped>
-
+.w100{
+    width: 100%;
+}
 </style>

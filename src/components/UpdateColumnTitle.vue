@@ -20,17 +20,6 @@
                 <hr class="mt-2">
             </div>
 
-            <!--<h2>{{columnTitle}}-->
-            <!--<v-btn-->
-            <!--@click="updateForm"-->
-            <!--:loading="loading"-->
-            <!--:disabled="loading"-->
-            <!--icon-->
-            <!--&gt;-->
-            <!--<v-icon>more_vert</v-icon>-->
-            <!--</v-btn>-->
-            <!--</h2>-->
-
         </v-flex>
 
 
@@ -55,6 +44,7 @@
                 <v-btn
                         icon
                         small
+                        v-if="columnName.trim() !== column.title.trim()"
                         @click="saveNewColumnTitle"
                         :loading="loading"
                         :disabled="loading"

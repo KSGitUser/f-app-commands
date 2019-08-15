@@ -101,7 +101,7 @@ export default {
           }
         )
     },
-    async fetchBoards ({commit, getters}, payload) {
+    async fetchBoards ({commit, getters}) {
       return fetch(`${URL}/api/v1/board`,
         {
           mode: 'cors',

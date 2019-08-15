@@ -1,39 +1,17 @@
 <template>
-    <!--загрузка данных-->
-    <div
-            v-if="localLoading"
-            class="text-xs-center align-center mt-5"
-    >
-        <v-progress-circular
-                :size="100"
-                :width="3"
-                color="primary"
-                indeterminate
-        ></v-progress-circular>
-    </div>
+    <div class="demo">
 
-    <div v-else class="demo">
-        <v-toolbar
-
-        >
-
-            <!--<update-board-title></update-board-title>-->
-            <!--<v-toolbar-side-icon></v-toolbar-side-icon>-->
-            <v-toolbar-title class="w100">
-                <update-board-title></update-board-title>
-            </v-toolbar-title>
+        <v-layout grey lighten-3 row>
+            <h3>id: {{id}}</h3>
             <v-spacer></v-spacer>
-            <labels-component></labels-component>
             <v-menu
                     :close-on-content-click="false"
             >
-
-
                 <template v-slot:activator="{ on }">
                     <v-btn
                             icon
                             v-on="on"
-
+                            fab
                     >
                         <v-icon>insert_photo</v-icon>
                     </v-btn>
@@ -51,127 +29,72 @@
             <v-btn
                     icon
                     @click="addList"
+                    fab
             >
                 <v-icon>add_circle</v-icon>
             </v-btn>
-
-        </v-toolbar>
-
-
-        <!--<v-layout  lighten-3 row-->
-        <!--class="align-center"-->
-        <!--&gt;-->
-
-        <!--<update-board-title></update-board-title>-->
-
-
-        <!--<v-spacer></v-spacer>-->
-        <!--<labels-component></labels-component>-->
-        <!--<v-menu-->
-        <!--:close-on-content-click="false"-->
-        <!--&gt;-->
-
-
-        <!--<template v-slot:activator="{ on }">-->
-        <!--<v-btn-->
-        <!--icon-->
-        <!--v-on="on"-->
-
-        <!--&gt;-->
-        <!--<v-icon>insert_photo</v-icon>-->
-        <!--</v-btn>-->
-        <!--</template>-->
-
-        <!--<v-card>-->
-        <!--<form class="pa-3">-->
-        <!--<v-select v-model="bf"-->
-        <!--:items="bfOptions"-->
-        <!--label="выберите фон"-->
-        <!--&gt;</v-select>-->
-        <!--</form>-->
-        <!--</v-card>-->
-        <!--</v-menu>-->
-        <!--<v-btn-->
-        <!--icon-->
-        <!--@click="addList"-->
-        <!--&gt;-->
-        <!--<v-icon>add_circle</v-icon>-->
-        <!--</v-btn>-->
-        <!--</v-layout>-->
-
+        </v-layout>
 
         <div class="root-box pre style-1"
-
+             @contextmenu="show"
              :style="{'background': `url('${bf}')`}"
         >
 
+            <v-menu
+                    v-model="showMenu"
+                    :position-x="x"
+                    :position-y="y"
+                    absolute
+                    offset-y
+            >
+                <v-list>
+                    <v-list-tile
+                            v-for="(item, index) in showMenuItems"
+                            :key="index"
+                            @click="item.action"
+                    >
+                        <v-list-tile-title>{{ item.title }}</v-list-tile-title>
+                    </v-list-tile>
+                </v-list>
+            </v-menu>
 
             <div
                     class="scrollbar-box mt-5 mb-5 mr-2 ml-2"
-                    v-for="column in columns"
-                    :key="column.id"
+                    v-for="(list, idx) in lists" :key="idx"
             >
-                <!--<div class="bg pa-3">-->
-                <!--<div class="title align-start" style="display: flex">-->
-                <!--{{column.title}}-->
-                <!--<v-spacer></v-spacer>-->
-                <!--<v-btn-->
-                <!--class="ma-0"-->
-                <!--icon-->
-                <!--small-->
-                <!--:disabled="loading"-->
-                <!--@click=""-->
-                <!--&gt;-->
-                <!--<v-icon>more_vert</v-icon>-->
-                <!--</v-btn>-->
-                <!--</div>-->
-                <!--<hr class="mt-2">-->
-                <!--</div>-->
-
-                <update-column-title :column="column"></update-column-title>
+                <div class="bg pa-3">
+                    <h2><b>{{list.title}}</b></h2>
+                    <hr>
+                </div>
 
                 <div class="scrollbar style-1 bg pa-1">
 
-                    <!--<draggable-->
-                    <!--id="first"-->
-                    <!--data-source="juju"-->
-                    <!--:list="column.items"-->
-                    <!--draggable=".item"-->
-                    <!--group="a"-->
-                    <!--&gt;-->
-                    <!--<div-->
-                    <!--class=" item"-->
-                    <!--v-for="element in list.items"-->
-                    <!--:key="element.id"-->
-                    <!--@click="demo"-->
-                    <!--&gt;-->
-                    <!--{{ element.name }} | {{ element.id }}-->
-                    <!--</div>-->
+                    <draggable
+                            id="first"
+                            data-source="juju"
+                            :list="list.items"
+                            draggable=".item"
+                            group="a"
+                    >
+                        <div
+                                class=" item"
+                                v-for="element in list.items"
+                                :key="element.id"
+                                @click="demo"
+                        >
+                            {{ element.name }} | {{ element.id }}
+                        </div>
 
-                    <!--</draggable>-->
-                    <!--<pre> {{ list.items }} </pre>-->
+                    </draggable>
+                    <pre> {{ list.items }} </pre>
                 </div>
 
                 <v-card-actions class="bg pa-3">
-                    <v-btn
-                            flat
-                            small
-                            @click="">
-                        <v-icon>add</v-icon>
-                        добавить карточку
-                    </v-btn>
+                    <v-btn flat small @click="add(idx)">+ добавить карточку</v-btn>
                 </v-card-actions>
 
             </div>
 
-            <div class="scrollbar-box mt-5 mb-5 mr-2 ml-2">
-                <v-card-actions class="bg pa-3">
-                    <v-btn flat small @click="addList">
-                        <v-icon>add</v-icon>
-                        добавить столбец
-                    </v-btn>
-                </v-card-actions>
-            </div>
 
             <div class="text-xs-center">
                 <v-dialog
@@ -222,16 +145,6 @@
                 </v-dialog>
             </div>
 
-            <v-dialog
-                    v-model="newCollumnDialog"
-                    max-width="500"
-            >
-                <v-card>
-                    <create-column :id="id"></create-column>
-                </v-card>
-            </v-dialog>
-
-
         </div>
 
     </div>
@@ -241,10 +154,6 @@
 
 <script>
   import draggable from 'vuedraggable'
-  import CreateColumn from './CreateColumn'
-  import UpdateBoardTitle from './UpdateBoardTitle'
-  import LabelsComponent from './labelsComponent'
-  import UpdateColumnTitle from './UpdateColumnTitle'
 
   let id = 1
   export default {
@@ -252,18 +161,17 @@
     name: 'Board',
     order: 14,
     components: {
-      UpdateColumnTitle,
-      LabelsComponent,
-      CreateColumn,
-      draggable,
-      UpdateBoardTitle
+      draggable
     },
     data () {
       return {
-        localLoading: false,
-        newCollumnDialog: false,
-        updateBoardTitleDialog: false,
         dialog: false,
+        showMenu: false,
+        x: 0,
+        y: 0,
+        showMenuItems: [
+          {title: 'Добавить список', action: this.addList}
+        ],
         bf: 'https://cdn.vuetifyjs.com/images/parallax/material2.jpg',
         bfOptions: [
           {
@@ -274,6 +182,23 @@
             value: 'https://ns328286.ip-37-187-113.eu/ew/wallpapers/800x480/02715_800x480.jpg'
           }
         ],
+        lists: [
+          {
+            title: `name | ${id}`,
+            items: [
+              {name: 'Jonny', id: id++},
+              {name: 'Jonny', id: id++},
+              {name: 'Jonny', id: id++}
+            ]
+          },
+          {
+            title: `name | ${id}`,
+            items: [
+              {name: 'Jonny', id: id++},
+              {name: 'Jonny', id: id++}
+            ]
+          }
+        ]
       }
     },
     methods: {
@@ -281,7 +206,7 @@
         this.lists[idx].items.push({name: 'Juan ' + id, id: id++})
       },
       addList: function () {
-        this.newCollumnDialog = !this.newCollumnDialog
+        this.lists.push({title: `title ${id}`, items: [{name: 'Juan ' + id, id: id++}]})
       },
       demo: function () {
         this.dialog = !this.dialog
@@ -295,46 +220,10 @@
           this.showMenu = true
         })
       }
-    },
-    mounted: function () {
-      this.$nextTick(async () => {
-        const {commit, dispatch} = this.$store
-        commit('setLoading', true)
-        this.localLoading = true
-        let res = await dispatch('fetchBoard', this.id)
-        if (res === -1) {
-          this.$router.push('/boards')
-        } else if (res === 401) {
-          dispatch('logoutUser')
-          this.$router.push('/')
-        }
-        commit('setLoading', false)
-        this.localLoading = false
-      })
-    },
-    computed: {
-      labels () {
-        return this.$store.getters.labels
-      },
-      columns () {
-        return this.$store.getters.columns
-      },
-      loading () {
-        return this.$store.getters.loading
-      },
-      boardTitle () {
-        return this.$store.getters.boardTitle
-      },
-      boardId () {
-        return this.$store.getters.boardId
-      },
     }
   }
 </script>
 <style lang="scss" scoped>
-    .w100 {
-        width: 100%;
-    }
 
     .list-group {
         background: #f0f0f0;
@@ -388,8 +277,8 @@
         border-radius: 3px;
         margin: 10px;
         padding: 10px;
-        min-width: 300px;
-        max-width: 300px;
+        min-width: 270px;
+        max-width: 270px;
     }
 
     .style-1::-webkit-scrollbar {
