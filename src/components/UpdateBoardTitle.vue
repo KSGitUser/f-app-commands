@@ -32,6 +32,7 @@
                     required
                     :rules="boardNameRules"
                     @keypress.enter.prevent
+                    :autofocus="true"
             ></v-text-field>
         </v-form>
 
@@ -53,46 +54,6 @@
             <v-icon>reply</v-icon>
         </v-btn>
     </v-layout>
-
-
-    <!--<v-card v-else  single-line>-->
-
-    <!--<v-form-->
-    <!--ref="form"-->
-    <!--v-model="valid"-->
-    <!--lazy-validation-->
-    <!--&gt;-->
-    <!--<v-text-field-->
-    <!--name="name"-->
-    <!--label="Доска"-->
-    <!--type="text"-->
-    <!--v-model="boardName"-->
-    <!--required-->
-    <!--:rules="boardNameRules"-->
-    <!--@keypress.enter.prevent-->
-    <!--&gt;</v-text-field>-->
-    <!--</v-form>-->
-
-
-    <!--<v-btn-->
-    <!--icon-->
-    <!--v-if="boardTitle.trim() !== boardName.trim()"-->
-    <!--@click="saveNewBoardTitle"-->
-    <!--:loading="loading"-->
-    <!--:disabled="loading"-->
-    <!--&gt;-->
-    <!--<v-icon>done</v-icon>-->
-    <!--</v-btn>-->
-    <!--<v-btn-->
-    <!--icon-->
-    <!--@click="update=false"-->
-    <!--:loading="loading"-->
-    <!--:disabled="loading"-->
-    <!--&gt;-->
-    <!--<v-icon>reply</v-icon>-->
-    <!--</v-btn>-->
-
-    <!--</v-card>-->
 
 </template>
 

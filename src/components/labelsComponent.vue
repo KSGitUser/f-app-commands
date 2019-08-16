@@ -15,6 +15,7 @@
         </template>
 
         <v-card>
+
             <v-list>
                 <v-list-tile>
 
@@ -39,31 +40,46 @@
                 <div class="pa-2" style="display: flex">
                     <v-flex>
                         <div style="display: flex">
-                            <v-flex>
-                                <v-form
-                                        ref="formNewLabel"
-                                        lazy-validation
-                                >
-                                    <v-text-field
-                                            name="labelName"
-                                            label="Новый ярлык"
-                                            type="text"
-                                            v-model="labelName"
-                                            required
-                                            :rules="labelNameRules"
-                                            @keypress.enter.prevent
-                                    ></v-text-field>
-                                </v-form>
-                            </v-flex>
 
-                            <v-btn
-                                    icon
-                                    @click="addLabels"
-                                    :loading="loading"
-                                    :disabled="loading"
+                            <v-form
+                                    class="w100"
+                                    ref="formNewLabel"
+                                    v-model="valid"
+                                    lazy-validation
                             >
-                                <v-icon>done</v-icon>
-                            </v-btn>
+                                <v-text-field
+                                        name="labelName"
+                                        label="Новый ярлык"
+                                        type="text"
+                                        v-model="labelName"
+                                        required
+                                        :rules="labelNameRules"
+                                        @keypress.enter.prevent
+                                        :autofocus="true"
+                                ></v-text-field>
+                            </v-form>
+
+                            <v-card-actions>
+                                <v-btn
+                                        icon
+                                        small
+                                        @click="addLabels"
+                                        :loading="loading"
+                                        :disabled="loading"
+                                >
+                                    <v-icon>done</v-icon>
+                                </v-btn>
+                                <v-btn
+                                        icon
+                                        small
+                                        @click="inputNewLabel=!inputNewLabel"
+                                        :loading="loading"
+                                        :disabled="loading"
+                                >
+                                    <v-icon>close</v-icon>
+                                </v-btn>
+                            </v-card-actions>
+
                         </div>
                     </v-flex>
                 </div>
@@ -74,36 +90,48 @@
                 <div class="pa-2" style="display: flex">
                     <v-flex>
                         <div style="display: flex">
-                            <v-flex>
-                                <v-form
-                                        ref="formUpdateLabel"
-                                        lazy-validation
-                                >
-                                    <v-text-field
-                                            name="labelName"
-                                            label="Новое название"
-                                            type="text"
-                                            v-model="UpdatelabelName"
-                                            required
-                                            :rules="labelNameRules"
-                                            @keypress.enter.prevent
-                                    ></v-text-field>
-                                </v-form>
-                            </v-flex>
-
-                            <v-btn
-                                    icon
-                                    @click="updateLabels"
-                                    :loading="loading"
-                                    :disabled="loading"
+                            <v-form class="w100"
+                                    ref="formUpdateLabel"
+                                    lazy-validation
                             >
-                                <v-icon>done</v-icon>
-                            </v-btn>
+                                <v-text-field
+                                        name="labelName"
+                                        label="Новое название"
+                                        type="text"
+                                        v-model="UpdatelabelName"
+                                        required
+                                        :rules="labelNameRules"
+                                        @keypress.enter.prevent
+                                ></v-text-field>
+                            </v-form>
+
+                            <v-card-actions>
+                                <v-btn
+                                        icon
+                                        small
+                                        @click="updateLabels"
+                                        :loading="loading"
+                                        :disabled="loading"
+                                >
+                                    <v-icon>done</v-icon>
+                                </v-btn>
+                                <v-btn
+                                        icon
+                                        small
+                                        @click="inputUpdateLabel = !inputUpdateLabel"
+                                        :loading="loading"
+                                        :disabled="loading"
+                                >
+                                    <v-icon>close</v-icon>
+                                </v-btn>
+                            </v-card-actions>
+
                         </div>
                     </v-flex>
                 </div>
                 <v-divider></v-divider>
             </V-flex>
+
 
             <v-list>
                 <v-list-tile
@@ -118,6 +146,7 @@
                             ></v-checkbox>
                         </v-list-tile-action>
                     </v-flex>
+
                     <v-btn
                             icon
                             @click="updateLabelForm(demo.id)"
@@ -138,6 +167,8 @@
 
             </v-list>
 
+
+            <v-divider></v-divider>
             <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn flat @click="menu = false">Готово</v-btn>
@@ -151,6 +182,7 @@
   export default {
     data: () => ({
       fav: true,
+      valid: false,
       menu: false,
       inputNewLabel: false,
       inputUpdateLabel: false,
@@ -220,3 +252,9 @@
     },
   }
 </script>
+
+<style lang="scss" scoped>
+    .w100{
+        width: 100%;
+    }
+</style>

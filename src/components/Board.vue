@@ -166,7 +166,7 @@
 
             <div class="scrollbar-box mt-5 mb-5 mr-2 ml-2">
                 <v-card-actions class="bg pa-3">
-                    <v-btn flat small @click="addList">
+                    <v-btn class="w100" flat small @click="addList">
                         <v-icon>add</v-icon>
                         добавить столбец
                     </v-btn>
@@ -388,8 +388,8 @@
         border-radius: 3px;
         margin: 10px;
         padding: 10px;
-        min-width: 300px;
-        max-width: 300px;
+        min-width: 350px;
+        max-width: 350px;
     }
 
     .style-1::-webkit-scrollbar {

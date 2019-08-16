@@ -23,8 +23,9 @@
         </v-flex>
 
 
-        <v-flex v-else>
+        <v-flex style="display: flex" v-else>
             <v-form
+                    class="w100"
                     ref="form"
                     v-model="valid"
                     lazy-validation
@@ -39,8 +40,9 @@
                         @keypress.enter.prevent
                 ></v-text-field>
             </v-form>
+            <!--<v-card-actions>-->
+                <!--<v-spacer></v-spacer>-->
             <v-card-actions>
-                <v-spacer></v-spacer>
                 <v-btn
                         icon
                         small
@@ -61,6 +63,8 @@
                     <v-icon>reply</v-icon>
                 </v-btn>
             </v-card-actions>
+
+            <!--</v-card-actions>-->
         </v-flex>
     </div>
 </template>
@@ -114,5 +118,7 @@
 </script>
 
 <style scoped>
-
+.w100{
+    width: 100%;
+}
 </style>
