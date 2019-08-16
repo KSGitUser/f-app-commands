@@ -5,25 +5,25 @@ import Home from '../components/Home'
 import Page404 from '../components/Page/404'
 
 const Boards = resolve => {
-  require.ensure(['../components/Boards'], () => {
+  require.ensure(['../components/Board/Boards'], () => {
     resolve(
-      require('../components/Boards')
+      require('../components/Board/Boards')
     )
   })
 }
 
 const Board = resolve => {
-  require.ensure(['../components/Board'], () => {
+  require.ensure(['../components/Board/Board'], () => {
     resolve(
-      require('../components/Board')
+      require('../components/Board/Board')
     )
   })
 }
 
 const User = resolve => {
-  require.ensure(['../components/User'], () => {
+  require.ensure(['../components/User/User'], () => {
     resolve(
-      require('../components/User')
+      require('../components/User/User')
     )
   })
 }
