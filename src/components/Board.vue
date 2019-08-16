@@ -16,13 +16,11 @@
         <v-toolbar
 
         >
-
-            <!--<update-board-title></update-board-title>-->
-            <!--<v-toolbar-side-icon></v-toolbar-side-icon>-->
             <v-toolbar-title class="w100">
                 <update-board-title></update-board-title>
             </v-toolbar-title>
             <v-spacer></v-spacer>
+
             <labels-component></labels-component>
             <v-menu
                     :close-on-content-click="false"
@@ -48,85 +46,25 @@
                     </form>
                 </v-card>
             </v-menu>
-            <v-btn
-                    icon
-                    @click="addList"
-            >
-                <v-icon>add_circle</v-icon>
-            </v-btn>
+
+            <!--<v-btn-->
+                    <!--icon-->
+                    <!--@click="addList"-->
+            <!--&gt;-->
+                <!--<v-icon>add_circle</v-icon>-->
+            <!--</v-btn>-->
 
         </v-toolbar>
 
-
-        <!--<v-layout  lighten-3 row-->
-        <!--class="align-center"-->
-        <!--&gt;-->
-
-        <!--<update-board-title></update-board-title>-->
-
-
-        <!--<v-spacer></v-spacer>-->
-        <!--<labels-component></labels-component>-->
-        <!--<v-menu-->
-        <!--:close-on-content-click="false"-->
-        <!--&gt;-->
-
-
-        <!--<template v-slot:activator="{ on }">-->
-        <!--<v-btn-->
-        <!--icon-->
-        <!--v-on="on"-->
-
-        <!--&gt;-->
-        <!--<v-icon>insert_photo</v-icon>-->
-        <!--</v-btn>-->
-        <!--</template>-->
-
-        <!--<v-card>-->
-        <!--<form class="pa-3">-->
-        <!--<v-select v-model="bf"-->
-        <!--:items="bfOptions"-->
-        <!--label="выберите фон"-->
-        <!--&gt;</v-select>-->
-        <!--</form>-->
-        <!--</v-card>-->
-        <!--</v-menu>-->
-        <!--<v-btn-->
-        <!--icon-->
-        <!--@click="addList"-->
-        <!--&gt;-->
-        <!--<v-icon>add_circle</v-icon>-->
-        <!--</v-btn>-->
-        <!--</v-layout>-->
-
-
         <div class="root-box pre style-1"
-
              :style="{'background': `url('${bf}')`}"
         >
-
 
             <div
                     class="scrollbar-box mt-5 mb-5 mr-2 ml-2"
                     v-for="column in columns"
                     :key="column.id"
             >
-                <!--<div class="bg pa-3">-->
-                <!--<div class="title align-start" style="display: flex">-->
-                <!--{{column.title}}-->
-                <!--<v-spacer></v-spacer>-->
-                <!--<v-btn-->
-                <!--class="ma-0"-->
-                <!--icon-->
-                <!--small-->
-                <!--:disabled="loading"-->
-                <!--@click=""-->
-                <!--&gt;-->
-                <!--<v-icon>more_vert</v-icon>-->
-                <!--</v-btn>-->
-                <!--</div>-->
-                <!--<hr class="mt-2">-->
-                <!--</div>-->
 
                 <update-column-title :column="column"></update-column-title>
 
@@ -150,76 +88,20 @@
 
                     <!--</draggable>-->
                     <!--<pre> {{ list.items }} </pre>-->
+
                 </div>
 
-                <v-card-actions class="bg pa-3">
-                    <v-btn
-                            flat
-                            small
-                            @click="">
-                        <v-icon>add</v-icon>
-                        добавить карточку
-                    </v-btn>
-                </v-card-actions>
+                <create-new-task :id="column.id"></create-new-task>
 
             </div>
 
-            <div class="scrollbar-box mt-5 mb-5 mr-2 ml-2">
+            <div class="scrollbar-box mt-5 mb-5 mr-2 ml-2 pr-3">
                 <v-card-actions class="bg pa-3">
                     <v-btn class="w100" flat small @click="addList">
                         <v-icon>add</v-icon>
                         добавить столбец
                     </v-btn>
                 </v-card-actions>
-            </div>
-
-            <div class="text-xs-center">
-                <v-dialog
-                        v-model="dialog"
-                        width="700"
-                >
-                    <v-card>
-                        <v-card-title
-                                class="headline grey lighten-2"
-                                primary-title
-                        >
-                            Карточка задачи
-                        </v-card-title>
-
-                        <v-card-text>
-                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab dolorem, exercitationem hic
-                            odio quaerat temporibus tenetur. Asperiores cupiditate delectus dolorum esse, labore quam
-                            quas quo suscipit. Architecto atque aut blanditiis distinctio dolor ea error ipsum,
-                            laudantium minus mollitia officiis quae. Accusantium amet aperiam asperiores atque
-                            blanditiis consequatur delectus deleniti dolorum est eum, excepturi facere harum id incidunt
-                            ipsa ipsam maiores natus, nisi non officia officiis omnis possimus quaerat reiciendis
-                            reprehenderit tempore ut voluptatum. A ab accusantium aliquam aperiam asperiores blanditiis
-                            consequuntur culpa cum debitis dicta dolore earum eligendi esse excepturi exercitationem
-                            fugiat id illo illum impedit iste laudantium minus non nostrum officiis possimus quam quia
-                            quibusdam quidem quisquam quo reiciendis rem reprehenderit repudiandae sed suscipit, velit
-                            voluptate? Ab accusamus modi nesciunt nisi praesentium repellendus repudiandae similique
-                            suscipit tenetur velit. A, accusamus, ea esse et eum facere harum ipsum iusto nesciunt
-                            numquam officiis quaerat recusandae rerum sapiente sit? Atque magni odio quae qui! Aliquam
-                            aspernatur doloremque ducimus eius enim ipsam labore pariatur repudiandae tenetur velit. Ab,
-                            aperiam assumenda atque commodi consectetur deleniti ducimus error eum expedita harum illum
-                            incidunt libero magnam minima mollitia nihil porro quam quas quasi quidem, ratione
-                            reiciendis rem repellendus rerum suscipit temporibus ullam ut vel veritatis voluptatem?
-                        </v-card-text>
-
-                        <v-divider></v-divider>
-
-                        <v-card-actions>
-                            <v-spacer></v-spacer>
-                            <v-btn
-                                    color="primary"
-                                    flat
-                                    @click="dialog = false"
-                            >
-                                закрыть
-                            </v-btn>
-                        </v-card-actions>
-                    </v-card>
-                </v-dialog>
             </div>
 
             <v-dialog
@@ -231,11 +113,9 @@
                 </v-card>
             </v-dialog>
 
-
         </div>
 
     </div>
-
 
 </template>
 
@@ -245,13 +125,14 @@
   import UpdateBoardTitle from './UpdateBoardTitle'
   import LabelsComponent from './labelsComponent'
   import UpdateColumnTitle from './UpdateColumnTitle'
+  import CreateNewTask from './CreateNewTask'
 
-  let id = 1
   export default {
     props: ['id'],
     name: 'Board',
     order: 14,
     components: {
+      CreateNewTask,
       UpdateColumnTitle,
       LabelsComponent,
       CreateColumn,
@@ -267,10 +148,10 @@
         bf: 'https://cdn.vuetifyjs.com/images/parallax/material2.jpg',
         bfOptions: [
           {
-            text: 'img.jpg',
+            text: '1',
             value: 'https://cdn.vuetifyjs.com/images/parallax/material2.jpg'
           }, {
-            text: 'img0.jpg',
+            text: '2',
             value: 'https://ns328286.ip-37-187-113.eu/ew/wallpapers/800x480/02715_800x480.jpg'
           }
         ],
@@ -343,14 +224,12 @@
     }
 
     .item {
-        border: 1px solid #707070;
+        border: 1px solid #b3b3b3;
         border-radius: 3px;
-        background: #9a9a9a;
-        color: #fff;
+        background: #eeeeee;
         padding: 5px;
         margin: 5px;
         transition: background-color .3s;
-
         cursor: pointer;
 
         &:hover {
@@ -386,8 +265,8 @@
         display: flex;
         flex-direction: column;
         border-radius: 3px;
-        margin: 10px;
-        padding: 10px;
+        //margin: 10px;
+        //padding: 10px;
         min-width: 350px;
         max-width: 350px;
     }
