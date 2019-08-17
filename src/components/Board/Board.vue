@@ -88,6 +88,7 @@
                     <!--<pre> {{ column.tasks }} </pre>-->
                 </div>
                 <create-new-task class="fff column" :id="column.id"></create-new-task>
+                <create-new-list class="fff column" :id="column.id"></create-new-list>
             </div>
             <!--добавить столбец-->
             <div class="scrollbar-box mt mb-5 mr-2 ml-2" style="padding-right: 10px">
@@ -108,6 +109,7 @@
   import UpdateColumnTitle from './UpdateColumnTitle'
   import CreateNewTask from './CreateNewTask'
   import TaskBox from './TaskBox'
+  import CreateNewList from './CreateNewList'
 
   export default {
     props: ['id'],
@@ -120,7 +122,8 @@
       LabelsComponent,
       CreateColumn,
       draggable,
-      UpdateBoardTitle
+      UpdateBoardTitle,
+      CreateNewList
     },
     data () {
       return {
