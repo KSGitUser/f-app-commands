@@ -7,7 +7,7 @@
                 @click="formAction=!formAction"
         >
             <v-icon>add</v-icon>
-            добавить карточку
+            добавить список
         </v-btn>
 
         <div v-else>
