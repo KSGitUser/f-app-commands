@@ -88,6 +88,25 @@
                     <!--<pre> {{ column.tasks }} </pre>-->
                 </div>
                 <create-new-task class="fff column" :id="column.id"></create-new-task>
+                <div class="scrollbar fff column style-1  pa-1">
+
+                    <draggable
+                            id="second"
+                            data-source="juju"
+                            :list="column.lists"
+                            draggable=".item"
+                            group="a"
+                    >
+                        <div
+                                class="item"
+                                v-for="element in column.lists"
+                                :key="element.id"
+                                @click=""
+                        >
+                            <list-box :list="element"></list-box>
+                        </div>
+                    </draggable>
+                </div>
                 <create-new-list class="fff column" :id="column.id"></create-new-list>
             </div>
             <!--добавить столбец-->
@@ -110,6 +129,7 @@
   import CreateNewTask from './CreateNewTask'
   import TaskBox from './TaskBox'
   import CreateNewList from './CreateNewList'
+  import ListBox from './ListBox'
 
   export default {
     props: ['id'],
@@ -123,7 +143,8 @@
       CreateColumn,
       draggable,
       UpdateBoardTitle,
-      CreateNewList
+      CreateNewList,
+      ListBox
     },
     data () {
       return {
