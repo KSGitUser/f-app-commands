@@ -250,6 +250,8 @@ export default {
           console.log(result)
           if (result.status === 1) {
             payload.id = result.data.id
+            payload.lists =  []
+            payload.tasks = []
             commit('addColumns', payload)
           } else if (result.status === -1) {
             commit('clearSnackbar')
@@ -334,7 +336,7 @@ export default {
             payload.id = result.data.id
             payload.position = result.data.position
             payload.description = null
-            payload.labelTasks = Array
+            payload.labelTasks = []
             commit('addTask', payload)
           } else if (result.status === -1) {
             commit('clearSnackbar')
