@@ -53,43 +53,42 @@
              :style="{'background': `url('${bf}')`}"
         >
 
-
             <div
-                    class="scrollbar-box mt mb-5 mr-2 ml-2"
+                    class="scrollbar-box mt mt-5 mb-5 mr-2 ml-2"
                     v-for="column in columns"
                     :key="column.id"
             >
-                <v-card>
+
+                <div class="fff column">
                     <update-column-title :column="column"></update-column-title>
+                </div>
 
-                    <div class="scrollbar style-1  pa-1">
+                <div class="scrollbar fff column style-1  pa-1">
 
-                        <!--<draggable-->
-                        <!--id="first"-->
-                        <!--data-source="juju"-->
-                        <!--:list="column.items"-->
-                        <!--draggable=".item"-->
-                        <!--group="a"-->
-                        <!--&gt;-->
-                        <!--<div-->
-                        <!--class=" item"-->
-                        <!--v-for="element in list.items"-->
-                        <!--:key="element.id"-->
-                        <!--@click="demo"-->
-                        <!--&gt;-->
-                        <!--{{ element.name }} | {{ element.id }}-->
-                        <!--</div>-->
+                    <draggable
+                            id="first"
+                            data-source="juju"
+                            :list="column.tasks"
+                            draggable=".item"
+                            group="a"
+                    >
+                        <div
+                                class="item"
+                                v-for="element in column.tasks"
+                                :key="element.id"
+                                @click=""
+                        >
+                            <!--<p class="body-2">{{ element.title }}</p>-->
 
-                        <!--</draggable>-->
-                        <!--<pre> {{ list.items }} </pre>-->
+                            <task-box :task="element"></task-box>
 
-                    </div>
-
-                    <create-new-task :id="column.id"></create-new-task>
-
-                </v-card>
+                            <!--<v-chip class="caption" v-for="(el, idx) in 2">ярлык {{idx+1}}</v-chip>-->
+                        </div>
+                    </draggable>
+                    <!--<pre> {{ column.tasks }} </pre>-->
+                </div>
+                <create-new-task class="fff column" :id="column.id"></create-new-task>
             </div>
-
             <!--добавить столбец-->
             <div class="scrollbar-box mt mb-5 mr-2 ml-2" style="padding-right: 10px">
                 <v-card>
@@ -97,17 +96,8 @@
                 </v-card>
             </div>
 
-
-            <!--<div class="scrollbar-box mt mt-5 mb-5 mr-2 ml-2 pr-3 ">-->
-            <!--<v-card-actions class="pa-3">-->
-            <!--<create-column class="w100" :id="id"></create-column>-->
-            <!--</v-card-actions>-->
-            <!--</div>-->
-
         </div>
-
     </div>
-
 </template>
 
 <script>
@@ -117,12 +107,14 @@
   import LabelsComponent from './labelsComponent'
   import UpdateColumnTitle from './UpdateColumnTitle'
   import CreateNewTask from './CreateNewTask'
+  import TaskBox from './TaskBox'
 
   export default {
     props: ['id'],
     name: 'Board',
     order: 14,
     components: {
+      TaskBox,
       CreateNewTask,
       UpdateColumnTitle,
       LabelsComponent,
@@ -204,6 +196,15 @@
   }
 </script>
 <style lang="scss" scoped>
+    .column {
+        box-shadow: 0 3px 1px -2px rgba(0, 0, 0, .2), 0 2px 2px 0 rgba(0, 0, 0, .14), 0 1px 5px 0 rgba(0, 0, 0, .12);
+        z-index: 1;
+    }
+
+    .fff {
+        background: #fff;
+    }
+
     .w100 {
         width: 100%;
     }
@@ -220,7 +221,7 @@
         background: #eeeeee;
         padding: 5px;
         margin: 5px;
-        //transition: background-color .3s;
+        transition: background-color .3s;
         cursor: pointer;
 
         &:hover {
@@ -256,8 +257,6 @@
         display: flex;
         flex-direction: column;
         border-radius: 3px;
-        //margin: 10px;
-        //padding: 10px;
         min-width: 350px;
         max-width: 350px;
     }
@@ -266,14 +265,14 @@
         width: 10px;
         height: 15px;
         background-color: #F5F5F5;
-        //transition: .5s;
+        transition: .5s;
     }
 
     .style-1::-webkit-scrollbar-thumb {
         border-radius: 5px;
         -webkit-box-shadow: inset 0 0 2px rgba(0, 0, 0, .3);
         background-color: #555;
-        //transition: .5s;
+        transition: .5s;
 
         &:hover {
             background-color: #79a2e4;
@@ -281,7 +280,7 @@
     }
 
     .root-box {
-        //transition: background .3s;
+        transition: background .3s;
         background-size: cover !important;
         height: 100vh;
     }

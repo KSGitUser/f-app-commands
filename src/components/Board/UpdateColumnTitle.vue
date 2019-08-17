@@ -2,7 +2,6 @@
     <div class="pa-3">
 
         <v-flex v-if="!update">
-
             <div>
                 <div class="title align-start" style="display: flex">
                     {{column.title}}
@@ -17,11 +16,8 @@
                         <v-icon>more_vert</v-icon>
                     </v-btn>
                 </div>
-                <hr class="mt-2">
             </div>
-
         </v-flex>
-
 
         <v-flex style="display: flex" v-else>
             <v-form
@@ -40,8 +36,6 @@
                         @keypress.enter.prevent
                 ></v-text-field>
             </v-form>
-            <!--<v-card-actions>-->
-                <!--<v-spacer></v-spacer>-->
             <v-card-actions>
                 <v-btn
                         icon
@@ -63,8 +57,6 @@
                     <v-icon>reply</v-icon>
                 </v-btn>
             </v-card-actions>
-
-            <!--</v-card-actions>-->
         </v-flex>
     </div>
 </template>

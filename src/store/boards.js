@@ -7,6 +7,7 @@ export default {
     labels: [],
     title: '',
     boardId: null,
+    task: null,
   },
   mutations: {
     setBoards (state, payload) {
@@ -25,12 +26,15 @@ export default {
     setColumns (state, payload) {
       state.columns = [...payload]
       console.log('state.columns', payload)
-
     },
     addColumns (state, payload) {
       state.columns = state.columns.concat(payload)
       console.log('state.columns add', payload)
       console.log('state.columns', state.columns)
+    },
+    addTask (state, payload) {
+      const idx = state.columns.findIndex(el => +el.id === +payload.id_column)
+      state.columns[idx].tasks = state.columns[idx].tasks.concat(payload)
     },
     setLabels (state, payload) {
       state.labels = [...payload]
@@ -53,6 +57,10 @@ export default {
     setBoardId (state, payload) {
       state.boardId = +payload
       console.log('state.boardId', +payload)
+    },
+    setTask (state, payload) {
+      state.task = payload
+      console.log('state.task', payload)
     },
   },
   actions: {
@@ -323,8 +331,11 @@ export default {
         }).then(result => {
           console.log(result)
           if (result.status === 1) {
-            //result.data.id
-            //commit('addCard', payload)
+            payload.id = result.data.id
+            payload.position = result.data.position
+            payload.description = null
+            payload.labelTasks = Array
+            commit('addTask', payload)
           } else if (result.status === -1) {
             commit('clearSnackbar')
             commit('setSnackbarMsg', Object.values(result.message).join('; '))
@@ -425,6 +436,47 @@ export default {
           }
         )
     },
+    async fetchTask ({commit, getters}, payload) {
+      return fetch(`${URL}/api/v1/task?id=${payload}`,
+        {
+          mode: 'cors',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Headers': '*',
+            'Authorization': getters.user,
+          },
+          method: 'GET',
+        })
+        .then(response => {
+          commit('setUserHeader', response)
+          return response.json()
+        })
+        .then(json => {
+            console.log('json ', json)
+            if (json.status === 1) {
+              commit('setTask', json.data)
+            } else if (json.status === -1) {
+              commit('clearSnackbar')
+              commit('setSnackbarMsg', Object.values(json.message).join('; '))
+              commit('setSnackbarType', 'error')
+            } else if (json.status === 401) {
+              commit('clearSnackbar')
+              commit('setSnackbarMsg', 'Требуется авторизация')
+              commit('setSnackbarType', 'error')
+            }
+            return json.status
+          }
+        )
+        .catch(
+          error => {
+            console.error(error)
+            commit('setSnackbarMsg', 'Ошибка загрузки данных')
+            commit('setSnackbarType', 'error')
+          }
+        )
+    },
   },
   getters: {
     boards (state) {
@@ -441,6 +493,9 @@ export default {
     },
     boardId (state) {
       return state.boardId
+    },
+    task (state) {
+      return state.task
     },
   }
 }

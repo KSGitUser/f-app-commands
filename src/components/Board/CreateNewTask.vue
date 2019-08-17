@@ -1,6 +1,5 @@
 <template>
     <div class="pa-3">
-        <hr>
         <v-btn
                 v-if="!formAction"
                 flat
@@ -12,7 +11,7 @@
         </v-btn>
 
         <div v-else>
-
+            <hr>
             <v-form
 
                     class="w100"

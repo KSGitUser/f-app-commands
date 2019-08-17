@@ -84,10 +84,10 @@
         const {commit, dispatch} = this.$store
         this.loadingLocal = true
         const res = await dispatch('profileUser')
-        if (res !== 1) {
-          dispatch('logoutUser')
-          this.$router.push('/')
-        }
+        // if (res !== 1) {
+        //   dispatch('logoutUser')
+        //   this.$router.push('/')
+        // }
         this.loadingLocal = false
       })
     },
