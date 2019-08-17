@@ -1,5 +1,5 @@
 <template>
-    <div class="bg pa-3">
+    <div class="pa-3">
 
         <v-flex v-if="!update">
 

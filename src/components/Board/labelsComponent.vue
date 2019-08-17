@@ -73,7 +73,6 @@
                                         icon
                                         small
                                         @click="inputNewLabel=!inputNewLabel"
-                                        :loading="loading"
                                         :disabled="loading"
                                 >
                                     <v-icon>close</v-icon>
@@ -119,7 +118,6 @@
                                         icon
                                         small
                                         @click="inputUpdateLabel = !inputUpdateLabel"
-                                        :loading="loading"
                                         :disabled="loading"
                                 >
                                     <v-icon>close</v-icon>

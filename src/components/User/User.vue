@@ -8,7 +8,7 @@
                 xs12>
             <h1 class="text--secondary mb-3">Профиль пользователя</h1>
             <div
-                    v-if="loading"
+                    v-if="loadingLocal"
                     class="text-xs-center align-center"
             >
                 <v-progress-circular
@@ -31,10 +31,7 @@
                             <v-list-tile-title>{{email}}</v-list-tile-title>
                         </v-list-tile-content>
                         <v-list-tile-action>
-                            <v-toolbar-side-icon
-                                    @click="emailForm = true"
-                                    class="primary"
-                            ></v-toolbar-side-icon>
+                            <update-email-form></update-email-form>
                         </v-list-tile-action>
                     </v-list-tile>
                     <v-list-tile>
@@ -43,10 +40,7 @@
                             <v-list-tile-title>{{login}}</v-list-tile-title>
                         </v-list-tile-content>
                         <v-list-tile-action>
-                            <v-toolbar-side-icon
-                                    @click="loginForm = true"
-                                    class="primary"
-                            ></v-toolbar-side-icon>
+                            <update-login-form></update-login-form>
                         </v-list-tile-action>
                     </v-list-tile>
                     <v-list-tile>
@@ -55,43 +49,13 @@
                             <v-list-tile-title>{{password}}</v-list-tile-title>
                         </v-list-tile-content>
                         <v-list-tile-action>
-                            <v-toolbar-side-icon
-                                    @click="passwordForm = true"
-                                    class="primary"
-                            ></v-toolbar-side-icon>
+                            <update-password-form></update-password-form>
                         </v-list-tile-action>
                     </v-list-tile>
 
                 </v-list>
 
             </div>
-
-            <v-dialog
-                    v-model="passwordForm"
-                    max-width="500"
-            >
-                <v-card>
-                    <update-password-form></update-password-form>
-                </v-card>
-            </v-dialog>
-
-            <v-dialog
-                    v-model="loginForm"
-                    max-width="500"
-            >
-                <v-card>
-                    <update-login-form></update-login-form>
-                </v-card>
-            </v-dialog>
-
-            <v-dialog
-                    v-model="emailForm"
-                    max-width="500"
-            >
-                <v-card>
-                    <update-email-form></update-email-form>
-                </v-card>
-            </v-dialog>
 
         </v-flex>
     </v-layout>
@@ -107,9 +71,7 @@
     name: 'User',
     data () {
       return {
-        passwordForm: false,
-        emailForm: false,
-        loginForm: false,
+        loadingLocal: false,
       }
     },
     components: {
@@ -120,7 +82,13 @@
     mounted: function () {
       this.$nextTick(async () => {
         const {commit, dispatch} = this.$store
-        await dispatch('profileUser')
+        this.loadingLocal = true
+        const res = await dispatch('profileUser')
+        if (res !== 1) {
+          dispatch('logoutUser')
+          this.$router.push('/')
+        }
+        this.loadingLocal = false
       })
     },
     computed: {

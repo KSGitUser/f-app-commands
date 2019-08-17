@@ -3,7 +3,6 @@ export default {
     loginDialog: false,
     registerDialog: false,
     resetPasswordDialog: false,
-    boardDialog: false
   },
   mutations: {
     setLoginDialog (state, payload) {
@@ -15,9 +14,6 @@ export default {
     setResetPasswordDialog (state, payload) {
       state.resetPasswordDialog = !state.resetPasswordDialog
     },
-     setBoardDialog (state, payload) {
-       state.boardDialog = !state.boardDialog
-     },
   },
   actions: {
     togleLoginDialog ({commit}, payload) {
@@ -29,9 +25,6 @@ export default {
     togleResetPasswordDialog ({commit}, payload) {
       commit('setResetPasswordDialog')
     },
-    toggleBoardDialog ({commit}, payload) {
-      commit('setBoardDialog')
-    },
   },
   getters: {
     loginDialog (state) {
@@ -42,9 +35,6 @@ export default {
     },
     resetPasswordDialog (state) {
       return state.resetPasswordDialog
-    },
-      boardDialog (state) {
-      return state.boardDialog
     },
   },
 }

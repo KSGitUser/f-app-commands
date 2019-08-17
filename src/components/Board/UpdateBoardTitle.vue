@@ -15,7 +15,8 @@
     </div>
 
 
-    <v-layout class="w100"
+    <v-layout
+            class="w100 mw500"
             v-else
     >
         <v-form
@@ -48,7 +49,6 @@
         <v-btn
                 icon
                 @click="update=false"
-                :loading="loading"
                 :disabled="loading"
         >
             <v-icon>reply</v-icon>
@@ -66,7 +66,7 @@
         boardName: '',
         valid: false,
         boardNameRules: [
-          v => !!v || 'Название доски не может быть пустым',
+          v => !!v || 'Обязательное поле',
           v => v.length >= 3 || 'Минимум 3 символа'
         ],
       }
@@ -109,4 +109,7 @@
 .w100{
     width: 100%;
 }
+    .mw500{
+        max-width: 500px;
+    }
 </style>

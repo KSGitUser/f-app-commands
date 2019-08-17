@@ -1,5 +1,5 @@
 <template>
-    <div class="bg pa-3">
+    <div class="pa-3">
         <hr>
         <v-btn
                 v-if="!formAction"
@@ -98,5 +98,8 @@
 </script>
 
 <style scoped>
+    .w100{
+        width: 100%;
+    }
 
 </style>

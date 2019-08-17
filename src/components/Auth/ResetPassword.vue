@@ -63,7 +63,11 @@
             email: this.email
           }
           this.$store.dispatch('setLoading', true)
-          await this.$store.dispatch('resetPassword', email)
+          const res = await this.$store.dispatch('resetPassword', email)
+          if (res === 1) {
+            this.email = ''
+            this.$store.dispatch('togleResetPasswordDialog')
+          }
           this.$store.dispatch('setLoading', false)
         }
       }

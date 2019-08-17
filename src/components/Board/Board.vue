@@ -13,8 +13,9 @@
     </div>
 
     <div v-else class="demo">
-        <v-toolbar
 
+        <v-toolbar
+                style="position: absolute; z-index: 1; left: 0; right: 0"
         >
             <v-toolbar-title class="w100">
                 <update-board-title></update-board-title>
@@ -25,7 +26,6 @@
             <v-menu
                     :close-on-content-click="false"
             >
-
 
                 <template v-slot:activator="{ on }">
                     <v-btn
@@ -47,71 +47,62 @@
                 </v-card>
             </v-menu>
 
-            <!--<v-btn-->
-                    <!--icon-->
-                    <!--@click="addList"-->
-            <!--&gt;-->
-                <!--<v-icon>add_circle</v-icon>-->
-            <!--</v-btn>-->
-
         </v-toolbar>
 
         <div class="root-box pre style-1"
              :style="{'background': `url('${bf}')`}"
         >
 
+
             <div
-                    class="scrollbar-box mt-5 mb-5 mr-2 ml-2"
+                    class="scrollbar-box mt mb-5 mr-2 ml-2"
                     v-for="column in columns"
                     :key="column.id"
             >
-
-                <update-column-title :column="column"></update-column-title>
-
-                <div class="scrollbar style-1 bg pa-1">
-
-                    <!--<draggable-->
-                    <!--id="first"-->
-                    <!--data-source="juju"-->
-                    <!--:list="column.items"-->
-                    <!--draggable=".item"-->
-                    <!--group="a"-->
-                    <!--&gt;-->
-                    <!--<div-->
-                    <!--class=" item"-->
-                    <!--v-for="element in list.items"-->
-                    <!--:key="element.id"-->
-                    <!--@click="demo"-->
-                    <!--&gt;-->
-                    <!--{{ element.name }} | {{ element.id }}-->
-                    <!--</div>-->
-
-                    <!--</draggable>-->
-                    <!--<pre> {{ list.items }} </pre>-->
-
-                </div>
-
-                <create-new-task :id="column.id"></create-new-task>
-
-            </div>
-
-            <div class="scrollbar-box mt-5 mb-5 mr-2 ml-2 pr-3">
-                <v-card-actions class="bg pa-3">
-                    <v-btn class="w100" flat small @click="addList">
-                        <v-icon>add</v-icon>
-                        добавить столбец
-                    </v-btn>
-                </v-card-actions>
-            </div>
-
-            <v-dialog
-                    v-model="newCollumnDialog"
-                    max-width="500"
-            >
                 <v-card>
-                    <create-column :id="id"></create-column>
+                    <update-column-title :column="column"></update-column-title>
+
+                    <div class="scrollbar style-1  pa-1">
+
+                        <!--<draggable-->
+                        <!--id="first"-->
+                        <!--data-source="juju"-->
+                        <!--:list="column.items"-->
+                        <!--draggable=".item"-->
+                        <!--group="a"-->
+                        <!--&gt;-->
+                        <!--<div-->
+                        <!--class=" item"-->
+                        <!--v-for="element in list.items"-->
+                        <!--:key="element.id"-->
+                        <!--@click="demo"-->
+                        <!--&gt;-->
+                        <!--{{ element.name }} | {{ element.id }}-->
+                        <!--</div>-->
+
+                        <!--</draggable>-->
+                        <!--<pre> {{ list.items }} </pre>-->
+
+                    </div>
+
+                    <create-new-task :id="column.id"></create-new-task>
+
                 </v-card>
-            </v-dialog>
+            </div>
+
+            <!--добавить столбец-->
+            <div class="scrollbar-box mt mb-5 mr-2 ml-2" style="padding-right: 10px">
+                <v-card>
+                    <create-column class="w100" :id="id"></create-column>
+                </v-card>
+            </div>
+
+
+            <!--<div class="scrollbar-box mt mt-5 mb-5 mr-2 ml-2 pr-3 ">-->
+            <!--<v-card-actions class="pa-3">-->
+            <!--<create-column class="w100" :id="id"></create-column>-->
+            <!--</v-card-actions>-->
+            <!--</div>-->
 
         </div>
 
@@ -229,7 +220,7 @@
         background: #eeeeee;
         padding: 5px;
         margin: 5px;
-        transition: background-color .3s;
+        //transition: background-color .3s;
         cursor: pointer;
 
         &:hover {
@@ -238,7 +229,7 @@
     }
 
     .pre {
-        max-height: 100%;
+        max-height: 100vh;
         display: flex;
         position: relative;
         overflow-y: hidden;
@@ -275,14 +266,14 @@
         width: 10px;
         height: 15px;
         background-color: #F5F5F5;
-        transition: .5s;
+        //transition: .5s;
     }
 
     .style-1::-webkit-scrollbar-thumb {
         border-radius: 5px;
         -webkit-box-shadow: inset 0 0 2px rgba(0, 0, 0, .3);
         background-color: #555;
-        transition: .5s;
+        //transition: .5s;
 
         &:hover {
             background-color: #79a2e4;
@@ -290,9 +281,9 @@
     }
 
     .root-box {
-        transition: background .3s;
+        //transition: background .3s;
         background-size: cover !important;
-        height: 100%;
+        height: 100vh;
     }
 
     .demo {
@@ -319,5 +310,9 @@
         position: fixed;
         left: 0;
         right: 0;
+    }
+
+    .mt {
+        margin-top: 75px !important;
     }
 </style>
