@@ -8,6 +8,7 @@ export default {
     title: '',
     boardId: null,
     task: null,
+    list: null
   },
   mutations: {
     setBoards (state, payload) {
@@ -61,6 +62,14 @@ export default {
     setTask (state, payload) {
       state.task = payload
       console.log('state.task', payload)
+    },
+    setList (state, payload) {
+      state.list = payload
+      console.log('state.list', payload)
+    },
+    addList (state, payload) {
+      const idx = state.columns.findIndex(el => +el.id === +payload.id_column)
+      state.columns[idx].lists = state.columns[idx].lists.concat(payload)
     },
   },
   actions: {
@@ -479,6 +488,89 @@ export default {
           }
         )
     },
+    async createList ({commit, getters}, payload) {
+      return fetch(`${URL}/api/v1/list`, {
+        mode: 'cors',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Headers': '*',
+          'Authorization': getters.user,
+        },
+        method: 'POST',
+        body: JSON.stringify(payload)
+      })
+        .then(response => {
+          commit('setUserHeader', response)
+          return response.json()
+        }).then(result => {
+          console.log(result)
+          if (result.status === 1) {
+            payload.id = result.data.id
+            payload.position = result.data.position
+            commit('addList', payload)
+          } else if (result.status === -1) {
+            commit('clearSnackbar')
+            commit('setSnackbarMsg', Object.values(result.message).join('; '))
+            commit('setSnackbarType', 'error')
+          } else if (result.status === 401) {
+            commit('clearSnackbar')
+            commit('setSnackbarMsg', 'Требуется авторизация')
+            commit('setSnackbarType', 'error')
+          }
+          return result.status
+        })
+        .catch(
+          error => {
+            console.error(error)
+            commit('clearSnackbar')
+            commit('setSnackbarMsg', 'Ошибка загрузки данных')
+            commit('setSnackbarType', 'error')
+          }
+        )
+    },
+    async fetchList ({commit, getters}, payload) {
+      return fetch(`${URL}/api/v1/list?id=${payload}`,
+        {
+          mode: 'cors',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Headers': '*',
+            'Authorization': getters.user,
+          },
+          method: 'GET',
+        })
+        .then(response => {
+          commit('setUserHeader', response)
+          return response.json()
+        })
+        .then(json => {
+            console.log('json ', json)
+            if (json.status === 1) {
+              commit('setList', json.data)
+            } else if (json.status === -1) {
+              commit('clearSnackbar')
+              commit('setSnackbarMsg', Object.values(json.message).join('; '))
+              commit('setSnackbarType', 'error')
+            } else if (json.status === 401) {
+              commit('clearSnackbar')
+              commit('setSnackbarMsg', 'Требуется авторизация')
+              commit('setSnackbarType', 'error')
+            }
+            return json.status
+          }
+        )
+        .catch(
+          error => {
+            console.error(error)
+            commit('setSnackbarMsg', 'Ошибка загрузки данных')
+            commit('setSnackbarType', 'error')
+          }
+        )
+    },
   },
   getters: {
     boards (state) {
@@ -499,5 +591,8 @@ export default {
     task (state) {
       return state.task
     },
+    list (state) {
+      return state.list
+    }
   }
 }
