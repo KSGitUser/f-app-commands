@@ -14,9 +14,8 @@
                 <v-card-title
                         class="headline  lighten-2"
                 >
-                    {{task.title}}
+                    <update-task-title :columnId="columnId" :id="task.id" :taskTitle="task.title"></update-task-title>
                 </v-card-title>
-
                 <div
                         v-if="loadingLocal"
                         class="text-xs-center align-center mt-5"
@@ -30,50 +29,14 @@
                     <br> <br> <br>
                 </div>
                 <div v-else>
-                    <v-card-text>
-                        <pre>{{storeTask}}</pre>
-                    </v-card-text>
+
+                    <update-task-description></update-task-description>
+
+                    <!--<v-card-text>-->
+                        <!--<hr>-->
+                        <!--<pre>{{storeTask}}</pre>-->
+                    <!--</v-card-text>-->
                 </div>
-
-                <!--<div class="pa-3" >-->
-                <!--<v-form-->
-                <!--ref="form"-->
-                <!--v-model="valid"-->
-                <!--lazy-validation-->
-                <!--&gt;-->
-                <!--<v-text-field-->
-                <!--name="title"-->
-                <!--label="Ведите название столбца"-->
-                <!--type="text"-->
-                <!--v-model="columnTitle"-->
-                <!--required-->
-                <!--:rules="columnTitleRules"-->
-                <!--@keypress.enter.prevent-->
-                <!--:autofocus="true"-->
-                <!--&gt;</v-text-field>-->
-                <!--</v-form>-->
-                <!--<v-card-actions>-->
-                <!--<v-spacer></v-spacer>-->
-                <!--<v-btn-->
-                <!--icon-->
-                <!--small-->
-                <!--@click="createNewColumn"-->
-                <!--:loading="loading"-->
-                <!--:disabled="loading"-->
-                <!--&gt;-->
-                <!--<v-icon>done</v-icon>-->
-                <!--</v-btn>-->
-                <!--<v-btn-->
-                <!--icon-->
-                <!--small-->
-                <!--@click="columnForm=!columnForm"-->
-                <!--:disabled="loading"-->
-                <!--&gt;-->
-                <!--<v-icon>close</v-icon>-->
-                <!--</v-btn>-->
-                <!--</v-card-actions>-->
-                <!--</div>-->
-
             </v-card>
         </v-dialog>
 
@@ -81,10 +44,12 @@
 </template>
 
 <script>
+  import UpdateTaskTitle from './UpdateTaskTitle'
+  import UpdateTaskDescription from './UpdateTaskDescription'
   export default {
     name: 'TaskBox',
-
-    props: ['task'],
+    components: {UpdateTaskDescription, UpdateTaskTitle},
+    props: ['task', 'columnId'],
     data () {
       return {
         dialog: false,

@@ -65,13 +65,13 @@
 
                 <div class="scrollbar fff column style-1  pa-1">
 
-                    <draggable
-                            id="first"
-                            data-source="juju"
-                            :list="column.tasks"
-                            draggable=".item"
-                            group="a"
-                    >
+                    <!--<draggable-->
+                            <!--id="first"-->
+                            <!--data-source="juju"-->
+                            <!--:list="column.tasks"-->
+                            <!--draggable=".item"-->
+                            <!--group="a"-->
+                    <!--&gt;-->
                         <div
                                 class="item"
                                 v-for="element in column.tasks"
@@ -80,11 +80,11 @@
                         >
                             <!--<p class="body-2">{{ element.title }}</p>-->
 
-                            <task-box :task="element"></task-box>
+                            <task-box :columnId="column.id" :task="element"></task-box>
 
                             <!--<v-chip class="caption" v-for="(el, idx) in 2">ярлык {{idx+1}}</v-chip>-->
                         </div>
-                    </draggable>
+                    <!--</draggable>-->
                     <!--<pre> {{ column.tasks }} </pre>-->
                 </div>
                 <create-new-task class="fff column" :id="column.id"></create-new-task>
@@ -126,8 +126,8 @@
   import UpdateBoardTitle from './UpdateBoardTitle'
   import LabelsComponent from './labelsComponent'
   import UpdateColumnTitle from './UpdateColumnTitle'
-  import CreateNewTask from './CreateNewTask'
-  import TaskBox from './TaskBox'
+  import CreateNewTask from './Task/CreateNewTask'
+  import TaskBox from './Task/TaskBox'
   import CreateNewList from './CreateNewList'
   import ListBox from './ListBox'
 

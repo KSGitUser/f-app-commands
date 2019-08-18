@@ -7,7 +7,7 @@ export default {
     labels: [],
     title: '',
     boardId: null,
-    task: null,
+    task: {},
     list: null
   },
   mutations: {
@@ -55,11 +55,19 @@ export default {
       state.columns[idx] = payload
       state.columns = state.columns.concat()
     },
+    updateTaskTitle (state, payload) {
+      const idxCol = state.columns.findIndex(el => +el.id === +payload.columnId)
+      const idxTask = state.columns[idxCol].tasks.findIndex(el => +el.id === +payload.id)
+      state.columns[idxCol].tasks[idxTask].title = payload.title
+      state.columns = state.columns.concat()
+      state.task.title = payload.title
+    },
     setBoardId (state, payload) {
       state.boardId = +payload
       console.log('state.boardId', +payload)
     },
     setTask (state, payload) {
+      payload.description = payload.description !== null ? payload.description : ''
       state.task = payload
       console.log('state.task', payload)
     },
@@ -70,6 +78,9 @@ export default {
     addList (state, payload) {
       const idx = state.columns.findIndex(el => +el.id === +payload.id_column)
       state.columns[idx].lists = state.columns[idx].lists.concat(payload)
+    },
+    updateTaskDescription(state, payload) {
+      state.task.description = payload.description
     },
   },
   actions: {
@@ -259,7 +270,7 @@ export default {
           console.log(result)
           if (result.status === 1) {
             payload.id = result.data.id
-            payload.lists =  []
+            payload.lists = []
             payload.tasks = []
             commit('addColumns', payload)
           } else if (result.status === -1) {
@@ -566,6 +577,86 @@ export default {
         .catch(
           error => {
             console.error(error)
+            commit('setSnackbarMsg', 'Ошибка загрузки данных')
+            commit('setSnackbarType', 'error')
+          }
+        )
+    },
+    async updateTaskTitle ({commit, getters}, payload) {
+      return fetch(`${URL}/api/v1/task/${payload.id}`, {
+        mode: 'cors',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Headers': '*',
+          'Authorization': getters.user,
+        },
+        method: 'PATCH',
+        body: JSON.stringify(payload)
+      })
+        .then(response => {
+          commit('setUserHeader', response)
+          return response.json()
+        }).then(result => {
+          console.log('updateLabel', result)
+          if (result.status === 1) {
+            commit('updateTaskTitle', payload)
+          } else if (result.status === -1) {
+            commit('clearSnackbar')
+            commit('setSnackbarMsg', Object.values(result.message).join('; '))
+            commit('setSnackbarType', 'error')
+          } else if (result.status === 401) {
+            commit('clearSnackbar')
+            commit('setSnackbarMsg', 'Требуется авторизация')
+            commit('setSnackbarType', 'error')
+          }
+          return result.status
+        })
+        .catch(
+          error => {
+            console.error(error)
+            commit('clearSnackbar')
+            commit('setSnackbarMsg', 'Ошибка загрузки данных')
+            commit('setSnackbarType', 'error')
+          }
+        )
+    },
+    async updateTaskDescription ({commit, getters}, payload) {
+      return fetch(`${URL}/api/v1/task/${payload.id}`, {
+        mode: 'cors',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Headers': '*',
+          'Authorization': getters.user,
+        },
+        method: 'PATCH',
+        body: JSON.stringify(payload)
+      })
+        .then(response => {
+          commit('setUserHeader', response)
+          return response.json()
+        }).then(result => {
+          console.log(result)
+          if (result.status === 1) {
+            commit('updateTaskDescription', payload)
+          } else if (result.status === -1) {
+            commit('clearSnackbar')
+            commit('setSnackbarMsg', Object.values(result.message).join('; '))
+            commit('setSnackbarType', 'error')
+          } else if (result.status === 401) {
+            commit('clearSnackbar')
+            commit('setSnackbarMsg', 'Требуется авторизация')
+            commit('setSnackbarType', 'error')
+          }
+          return result.status
+        })
+        .catch(
+          error => {
+            console.error(error)
+            commit('clearSnackbar')
             commit('setSnackbarMsg', 'Ошибка загрузки данных')
             commit('setSnackbarType', 'error')
           }
