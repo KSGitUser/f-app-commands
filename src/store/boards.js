@@ -82,6 +82,13 @@ export default {
     updateTaskDescription(state, payload) {
       state.task.description = payload.description
     },
+    updateListTitle (state, payload) {
+      const idxCol = state.columns.findIndex(el => +el.id === +payload.columnId)
+      const idxList = state.columns[idxCol].lists.findIndex(el => +el.id === +payload.id)
+      state.columns[idxCol].lists[idxList].title = payload.title
+      state.columns = state.columns.concat()
+      state.list.title = payload.title
+    },
   },
   actions: {
     async fetchBoard ({commit, getters}, payload) {
@@ -642,6 +649,46 @@ export default {
           console.log(result)
           if (result.status === 1) {
             commit('updateTaskDescription', payload)
+          } else if (result.status === -1) {
+            commit('clearSnackbar')
+            commit('setSnackbarMsg', Object.values(result.message).join('; '))
+            commit('setSnackbarType', 'error')
+          } else if (result.status === 401) {
+            commit('clearSnackbar')
+            commit('setSnackbarMsg', 'Требуется авторизация')
+            commit('setSnackbarType', 'error')
+          }
+          return result.status
+        })
+        .catch(
+          error => {
+            console.error(error)
+            commit('clearSnackbar')
+            commit('setSnackbarMsg', 'Ошибка загрузки данных')
+            commit('setSnackbarType', 'error')
+          }
+        )
+    },
+    async updateListTitle ({commit, getters}, payload) {
+      return fetch(`${URL}/api/v1/list/${payload.id}`, {
+        mode: 'cors',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Headers': '*',
+          'Authorization': getters.user,
+        },
+        method: 'PATCH',
+        body: JSON.stringify(payload)
+      })
+        .then(response => {
+          commit('setUserHeader', response)
+          return response.json()
+        }).then(result => {
+          console.log('updateListTitle', result)
+          if (result.status === 1) {
+            commit('updateListTitle', payload)
           } else if (result.status === -1) {
             commit('clearSnackbar')
             commit('setSnackbarMsg', Object.values(result.message).join('; '))

@@ -103,7 +103,7 @@
                                 :key="element.id"
                                 @click=""
                         >
-                            <list-box :list="element"></list-box>
+                            <list-box :columnId="column.id" :list="element"></list-box>
                         </div>
                     </draggable>
                 </div>
@@ -128,8 +128,8 @@
   import UpdateColumnTitle from './UpdateColumnTitle'
   import CreateNewTask from './Task/CreateNewTask'
   import TaskBox from './Task/TaskBox'
-  import CreateNewList from './CreateNewList'
-  import ListBox from './ListBox'
+  import CreateNewList from './List/CreateNewList'
+  import ListBox from './List/ListBox'
 
   export default {
     props: ['id'],
