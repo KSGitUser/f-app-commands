@@ -14,7 +14,7 @@
                 <v-card-title
                         class="headline  lighten-2"
                 >
-                    {{list.title}}
+                    <update-list-title :columnId="columnId" :id="list.id" :listTitle="list.title" :list="list"></update-list-title>
                 </v-card-title>
 
                 <div
@@ -31,7 +31,7 @@
                 </div>
                 <div v-else>
                     <v-card-text>
-                        <pre>{{storeTask}}</pre>
+                        <list-items :list="list"></list-items>
                     </v-card-text>
                 </div>
             </v-card>
@@ -41,10 +41,16 @@
 </template>
 
 <script>
+  import UpdateListTitle from './UpdateListTitle'
+  import ListItems from './ListItems'
+
   export default {
     name: 'ListBox',
-
-    props: ['list'],
+    components: {
+      UpdateListTitle,
+      ListItems
+    },
+    props: ['list', 'columnId'],
     data () {
       return {
         dialog: false,
@@ -61,27 +67,8 @@
       loading () {
         return this.$store.getters.loading
       },
-      storeTask () {
-        return this.$store.getters.list
-      }
     },
     methods: {
-      async createNewColumn () {
-        if (this.$refs.form.validate()) {
-          const column = {
-            title: this.columnTitle.trim(),
-            id_board: this.id,
-          }
-          const {commit, dispatch} = this.$store
-          commit('setLoading', true)
-          const res = await dispatch('createColumn', column)
-          if (res === 1) {
-            this.columnTitle = ''
-            this.columnForm = false
-          }
-          commit('setLoading', false)
-        }
-      },
       async fetchList () {
         const {commit, dispatch} = this.$store
         this.dialog = !this.dialog
@@ -91,7 +78,7 @@
         this.loadingLocal = false
         commit('setLoading', false)
       }
-    },
+    }
   }
 </script>
 
