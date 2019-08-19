@@ -38,8 +38,7 @@ export default {
     },
   },
   actions: {
-    registerUser ({commit}, payload) {
-      commit('clearSnackbar')
+    async registerUser ({commit}, payload) {
       commit('setLoading', true)
       return fetch(`${URL}/api/v1/user`,
         {
@@ -58,30 +57,30 @@ export default {
           json => {
             console.log(json)
             if (json.status === -1) {
-              commit('setLoading', false)
+              commit('clearSnackbar')
               commit('setSnackbarMsg', Object.values(json.message).join('; '))
               commit('setSnackbarType', 'error')
-              return false
             } else {
-              commit('setLoading', false)
-              commit('togleRegisterDialog')
+              commit('clearSnackbar')
               commit('setSnackbarMsg', 'Успешная регистрация')
               commit('setSnackbarType', 'success')
-              return true
             }
+            commit('setLoading', false)
+            return json.status
           }
         )
         .catch(
           error => {
             console.error(error)
+            commit('clearSnackbar')
             commit('setSnackbarMsg', 'Ошибка регистрации')
             commit('setSnackbarType', 'error')
-            return false
+            commit('setLoading', false)
           }
         )
     },
-    loginUser ({commit}, payload) {
-      commit('clearSnackbar')
+    async loginUser ({commit}, payload) {
+      commit('setLoading', true)
       return fetch(`${URL}/api/v1/user/auth`,
         {
           mode: 'cors',
@@ -101,28 +100,30 @@ export default {
         .then(
           json => {
             if (json.status === 1) {
-              commit('togleLoginDialog')
+              commit('clearSnackbar')
               commit('setSnackbarMsg', 'Успешная авторизация')
               commit('setSnackbarType', 'success')
-              return true
             } else {
+              commit('clearSnackbar')
               commit('setSnackbarMsg', Object.values(json.message).join('; '))
               commit('setSnackbarType', 'error')
-              return false
             }
+            commit('setLoading', false)
+            return json.status
           }
         )
         .catch(
           error => {
             console.error(error)
+            commit('clearSnackbar')
             commit('setSnackbarMsg', 'Ошибка авторизации')
             commit('setSnackbarType', 'error')
-            return false
+            commit('setLoading', false)
           }
         )
     },
-    resetPassword ({commit}, payload) {
-      commit('clearSnackbar')
+    async resetPassword ({commit}, payload) {
+      commit('setLoading', true)
       return fetch(`${URL}/api/v1/user/recovery`,
         {
           headers: {
@@ -136,22 +137,25 @@ export default {
         .then(
           json => {
             if (json.status === -1) {
+              commit('clearSnackbar')
               commit('setSnackbarMsg', Object.values(json.message).join('; '))
               commit('setSnackbarType', 'error')
-              return false
             } else {
+              commit('clearSnackbar')
               commit('setSnackbarMsg', 'Пароль выслан на e-mail')
               commit('setSnackbarType', 'success')
-              return true
             }
+            commit('setLoading', false)
+            return json.status
           }
         )
         .catch(
           error => {
             console.error(error)
+            commit('clearSnackbar')
             commit('setSnackbarMsg', 'Ошибка восстановления пароля')
             commit('setSnackbarType', 'error')
-            return false
+            commit('setLoading', false)
           }
         )
     },
@@ -159,7 +163,7 @@ export default {
       commit('setUser', payload)
       localStorage.setItem('user', payload)
     },
-    logoutUser ({commit, getters}, payload) {
+    async logoutUser ({commit, getters}, payload) {
       fetch(`${URL}/api/v1/user`,
         {
           headers: {
@@ -253,6 +257,7 @@ export default {
               commit('setSnackbarMsg', 'Подтвердите новый email пройдя по сслыке в письме')
               commit('setSnackbarType', 'success')
             }
+            return json.status
           }
         )
         .catch(
@@ -295,6 +300,7 @@ export default {
               commit('setSnackbarMsg', 'Пароль изменен')
               commit('setSnackbarType', 'success')
             }
+            return json.status
           }
         )
         .catch(
@@ -337,6 +343,7 @@ export default {
               commit('setSnackbarMsg', 'Имя изменено')
               commit('setSnackbarType', 'success')
             }
+            return json.status
           }
         )
         .catch(

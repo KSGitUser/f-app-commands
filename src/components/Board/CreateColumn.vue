@@ -1,9 +1,15 @@
 <template>
-    <v-card class="elevation-12">
-        <v-toolbar dark color="primary">
-            <v-toolbar-title>Создать столбец</v-toolbar-title>
-        </v-toolbar>
-        <v-card-text>
+    <div>
+        <div v-if="!columnForm">
+            <v-card-actions>
+                <v-btn flat small @click="columnForm = !columnForm">
+                    <v-icon>add</v-icon>
+                    добавить столбец
+                </v-btn>
+            </v-card-actions>
+        </div>
+
+        <div class="pa-3" v-else>
             <v-form
                     ref="form"
                     v-model="valid"
@@ -17,26 +23,32 @@
                         required
                         :rules="columnTitleRules"
                         @keypress.enter.prevent
+                        @keypress.enter="createNewColumn"
                         :autofocus="true"
                 ></v-text-field>
             </v-form>
-        </v-card-text>
-        <v-card-actions>
-            <v-btn
-                    color="primary"
-                    @click="createNewColumn"
-                    :loading="loading"
-                    :disabled="loading"
-            >Создать столбец
-            </v-btn>
-            <v-spacer></v-spacer>
-            <v-btn
-                    color="warning"
-                    @click="columnTitle=''"
-            >Очистить
-            </v-btn>
-        </v-card-actions>
-    </v-card>
+            <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn
+                        icon
+                        small
+                        @click="createNewColumn"
+                        :loading="loading"
+                        :disabled="loading"
+                >
+                    <v-icon>done</v-icon>
+                </v-btn>
+                <v-btn
+                        icon
+                        small
+                        @click="columnForm=!columnForm"
+                        :disabled="loading"
+                >
+                    <v-icon>close</v-icon>
+                </v-btn>
+            </v-card-actions>
+        </div>
+    </div>
 </template>
 
 <script>
@@ -45,6 +57,7 @@
     props: ['id'],
     data () {
       return {
+        columnForm: false,
         columnTitle: '',
         valid: false,
         columnTitleRules: [
@@ -59,9 +72,6 @@
       }
     },
     methods: {
-      //   toggleBoardDialog () {
-      //     this.$store.dispatch('toggleBoardDialog')
-      //   },
       async createNewColumn () {
         if (this.$refs.form.validate()) {
           const column = {
@@ -70,8 +80,11 @@
           }
           const {commit, dispatch} = this.$store
           commit('setLoading', true)
-          await dispatch('createColumn', column)
-          this.columnTitle = ''
+          const res = await dispatch('createColumn', column)
+          if (res === 1) {
+            this.columnTitle = ''
+            this.columnForm = false
+          }
           commit('setLoading', false)
         }
       }
@@ -79,6 +92,6 @@
   }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 
 </style>

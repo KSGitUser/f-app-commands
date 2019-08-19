@@ -1,20 +1,11 @@
 <template>
     <v-container grid-list-lg>
 
-        <v-dialog
-                v-model="boardDialog"
-                max-width="500"
-        >
-            <v-card>
-                <create-board></create-board>
-            </v-card>
-        </v-dialog>
-
+        <create-board></create-board>
 
         <v-layout row>
             <v-flex xs12>
                 <h1 class="text--secondary mb-3">Мои доски</h1>
-
                 <!--загрузка данных-->
                 <div
                         v-if="loadingLocal"
@@ -27,19 +18,16 @@
                             indeterminate
                     ></v-progress-circular>
                 </div>
-
                 <!--если нет записей -->
                 <div v-else-if="boards.length===0">
                     <h2>Пока пусто...</h2>
                 </div>
-
                 <!--список досок-->
                 <v-layout
                         v-else
                         row
                         wrap
                 >
-
                     <v-flex
                             d-flex
                             xs12
@@ -61,25 +49,10 @@
                                 </v-card-title>
                             </v-card>
                         </v-hover>
-
                     </v-flex>
                 </v-layout>
-
-                <!--добавление новых досок -->
-                <div class="toggleBoardDialog">
-                    <v-btn
-                            @click="toggleBoardDialog"
-                            fab
-                            dark
-                            color="primary"
-                    >
-                        <v-icon dark>add</v-icon>
-                    </v-btn>
-                </div>
-
             </v-flex>
         </v-layout>
-
     </v-container>
 </template>
 
@@ -108,17 +81,12 @@
         loadingLocal: false,
       }
     },
-    methods: {
-      toggleBoardDialog () {
-        this.$store.dispatch('toggleBoardDialog')
-      },
-    },
     mounted: function () {
       this.$nextTick(async () => {
         const {commit, dispatch} = this.$store
         this.loadingLocal = true
         const fetchBoards = await dispatch('fetchBoards')
-        if(fetchBoards === 401){
+        if (fetchBoards === 401) {
           dispatch('logoutUser')
           this.$router.push('/')
         }
@@ -128,9 +96,5 @@
   }
 </script>
 <style lang="scss" scoped>
-    .toggleBoardDialog {
-        position: fixed;
-        bottom: 2rem;
-        right: 2rem;
-    }
+
 </style>

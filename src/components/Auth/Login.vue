@@ -93,21 +93,32 @@ export default {
       this.togleLoginDialog()
       this.$store.dispatch('togleRegisterDialog')
     },
-    togleResetPasswordDialog () {
-      this.togleLoginDialog()
-      this.$store.dispatch('togleResetPasswordDialog')
-    },
-    async onLogin () {
-      if (this.$refs.form.validate()) {
-        const user = {
-          login: this.login,
-          password: this.password
-        }
-        this.$store.dispatch('setLoading', true)
-        let login = await this.$store.dispatch('loginUser', user)
-        if (login){
-          this.togleLoginDialog()
-          this.$router.push('/boards')
+    methods: {
+      togleLoginDialog () {
+        this.$store.dispatch('togleLoginDialog')
+      },
+      togleRegisterDialog () {
+        this.togleLoginDialog()
+        this.$store.dispatch('togleRegisterDialog')
+      },
+      togleResetPasswordDialog () {
+        this.togleLoginDialog()
+        this.$store.dispatch('togleResetPasswordDialog')
+      },
+      async onLogin () {
+        if (this.$refs.form.validate()) {
+          const user = {
+            login: this.login,
+            password: this.password
+          }
+
+          this.$store.dispatch('setLoading', true)
+          let res = await this.$store.dispatch('loginUser', user)
+          if (res === 1){
+            this.togleLoginDialog()
+            this.$router.push('/boards')
+          }
+          this.$store.dispatch('setLoading', false)
         }
         this.$store.dispatch('setLoading', false)
       }

@@ -3,7 +3,6 @@ import URL from '../URL'
 export default {
   state: {
     boards: [],
-    columns: [],
     labels: [],
     title: '',
     boardId: null,
@@ -22,16 +21,6 @@ export default {
       state.title = payload
       console.log('state.title', payload)
     },
-    setColumns (state, payload) {
-      state.columns = [...payload]
-      console.log('state.columns', payload)
-
-    },
-    addColumns (state, payload) {
-      state.columns = state.columns.concat(payload)
-      console.log('state.columns add', payload)
-      console.log('state.columns', state.columns)
-    },
     setLabels (state, payload) {
       state.labels = [...payload]
       console.log('state.labels', payload)
@@ -44,11 +33,6 @@ export default {
     updateLabels (state, payload) {
       const idx = state.labels.findIndex(el => +el.id === +payload.id)
       state.labels[idx] = payload
-    },
-    updateColumn (state, payload) {
-      const idx = state.columns.findIndex(el => +el.id === +payload.id)
-      state.columns[idx] = payload
-      state.columns = state.columns.concat()
     },
     setBoardId (state, payload) {
       state.boardId = +payload
@@ -163,7 +147,7 @@ export default {
             this.boardName = ''
           } else if (result.status === -1) {
             commit('clearSnackbar')
-            commit('setSnackbarMsg', Object.values(json.message).join('; '))
+            commit('setSnackbarMsg', Object.values(result.message).join('; '))
             commit('setSnackbarType', 'error')
           } else if (result.status === 401) {
             commit('clearSnackbar')
@@ -204,48 +188,7 @@ export default {
             this.boardName = ''
           } else if (result.status === -1) {
             commit('clearSnackbar')
-            commit('setSnackbarMsg', Object.values(json.message).join('; '))
-            commit('setSnackbarType', 'error')
-          } else if (result.status === 401) {
-            commit('clearSnackbar')
-            commit('setSnackbarMsg', 'Требуется авторизация')
-            commit('setSnackbarType', 'error')
-          }
-          return result.status
-        })
-        .catch(
-          error => {
-            console.error(error)
-            commit('clearSnackbar')
-            commit('setSnackbarMsg', 'Ошибка загрузки данных')
-            commit('setSnackbarType', 'error')
-          }
-        )
-    },
-    async createColumn ({commit, getters}, payload) {
-      return fetch(`${URL}/api/v1/column`, {
-        mode: 'cors',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Headers': '*',
-          'Authorization': getters.user,
-        },
-        method: 'POST',
-        body: JSON.stringify(payload)
-      })
-        .then(response => {
-          commit('setUserHeader', response)
-          return response.json()
-        }).then(result => {
-          console.log(result)
-          if (result.status === 1) {
-            payload.id = result.data.id
-            commit('addColumns', payload)
-          } else if (result.status === -1) {
-            commit('clearSnackbar')
-            commit('setSnackbarMsg', Object.values(json.message).join('; '))
+            commit('setSnackbarMsg', Object.values(result.message).join('; '))
             commit('setSnackbarType', 'error')
           } else if (result.status === 401) {
             commit('clearSnackbar')
@@ -286,7 +229,7 @@ export default {
             commit('addLabels', payload)
           } else if (result.status === -1) {
             commit('clearSnackbar')
-            commit('setSnackbarMsg', Object.values(json.message).join('; '))
+            commit('setSnackbarMsg', Object.values(result.message).join('; '))
             commit('setSnackbarType', 'error')
           } else if (result.status === 401) {
             commit('clearSnackbar')
@@ -326,47 +269,7 @@ export default {
             commit('updateLabels', newData)
           } else if (result.status === -1) {
             commit('clearSnackbar')
-            commit('setSnackbarMsg', Object.values(json.message).join('; '))
-            commit('setSnackbarType', 'error')
-          } else if (result.status === 401) {
-            commit('clearSnackbar')
-            commit('setSnackbarMsg', 'Требуется авторизация')
-            commit('setSnackbarType', 'error')
-          }
-          return result.status
-        })
-        .catch(
-          error => {
-            console.error(error)
-            commit('clearSnackbar')
-            commit('setSnackbarMsg', 'Ошибка загрузки данных')
-            commit('setSnackbarType', 'error')
-          }
-        )
-    },
-    async updateColumnTitle ({commit, getters}, payload) {
-      return fetch(`${URL}/api/v1/column/${payload.id}`, {
-        mode: 'cors',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Headers': '*',
-          'Authorization': getters.user,
-        },
-        method: 'PATCH',
-        body: JSON.stringify(payload)
-      })
-        .then(response => {
-          commit('setUserHeader', response)
-          return response.json()
-        }).then(result => {
-          console.log('updateLabel', result)
-          if (result.status === 1) {
-            commit('updateColumn', payload)
-          } else if (result.status === -1) {
-            commit('clearSnackbar')
-            commit('setSnackbarMsg', Object.values(json.message).join('; '))
+            commit('setSnackbarMsg', Object.values(result.message).join('; '))
             commit('setSnackbarType', 'error')
           } else if (result.status === 401) {
             commit('clearSnackbar')
@@ -388,9 +291,6 @@ export default {
   getters: {
     boards (state) {
       return state.boards
-    },
-    columns (state) {
-      return state.columns
     },
     labels (state) {
       return state.labels

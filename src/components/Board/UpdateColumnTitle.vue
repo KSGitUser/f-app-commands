@@ -1,8 +1,7 @@
 <template>
-    <div class="bg pa-3">
+    <div class="pa-3">
 
         <v-flex v-if="!update">
-
             <div>
                 <div class="title align-start" style="display: flex">
                     {{column.title}}
@@ -17,14 +16,12 @@
                         <v-icon>more_vert</v-icon>
                     </v-btn>
                 </div>
-                <hr class="mt-2">
             </div>
-
         </v-flex>
 
-
-        <v-flex v-else>
+        <v-flex style="display: flex" v-else>
             <v-form
+                    class="w100"
                     ref="form"
                     v-model="valid"
                     lazy-validation
@@ -37,10 +34,10 @@
                         required
                         :rules="columnNameRules"
                         @keypress.enter.prevent
+                        @keypress.enter="saveNewColumnTitle"
                 ></v-text-field>
             </v-form>
             <v-card-actions>
-                <v-spacer></v-spacer>
                 <v-btn
                         icon
                         small
@@ -114,5 +111,7 @@
 </script>
 
 <style scoped>
-
+.w100{
+    width: 100%;
+}
 </style>

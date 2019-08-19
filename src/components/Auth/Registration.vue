@@ -110,15 +110,21 @@
       togleRegisterDialog ({commit}, payload) {
         this.$store.dispatch('togleRegisterDialog')
       },
-      onLogin () {
+      async onLogin () {
         if (this.$refs.form.validate()) {
           const user = {
             email: this.email,
             password: this.password,
             login: this.name,
           }
-          this.$store.dispatch('registerUser', user)
-            .then(() => this.$store.dispatch('togleRegisterDialog'))
+          const res = await this.$store.dispatch('registerUser', user)
+          if (res === 1) {
+            this.email = ''
+            this.password = ''
+            this.confirmPassword = ''
+            this.name = ''
+            this.$store.dispatch('togleRegisterDialog')
+          }
         }
       }
     }
