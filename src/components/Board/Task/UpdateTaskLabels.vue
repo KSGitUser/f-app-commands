@@ -1,0 +1,131 @@
+<template>
+
+    <div v-if="!update" style="display: flex" class="w100 pa-3">
+        <div class="w100">
+            <h4>Ярлыки</h4>
+            <pre>
+                {{task.labelTasks}}
+            </pre>
+        </div>
+        <div>
+            <v-btn
+                    @click="updateForm"
+                    :disabled="loading"
+                    icon
+            >
+                <v-icon>edit</v-icon>
+            </v-btn>
+        </div>
+    </div>
+
+    <v-layout
+            class="w100 pa-3"
+            v-else
+    >
+        <!--<pre>{{labelsTask}}</pre>-->
+        <v-form class="w100">
+            <v-autocomplete
+                    v-model="labelsTask"
+                    :items="labels"
+                    box
+                    chips
+                    label="Ярлыки"
+                    item-text="title"
+                    item-value="id"
+                    multiple
+            >
+                <template v-slot:selection="data">
+                    <v-chip
+                            :selected="data.selected"
+                            close
+                            @input="remove(data.item)"
+                    >
+                        {{data.item.title}}
+                    </v-chip>
+                </template>
+                <template v-slot:item="data">
+                    <v-list-tile-title>{{data.item.title}}</v-list-tile-title>
+                </template>
+            </v-autocomplete>
+
+
+        </v-form>
+        <div>
+
+            <v-btn
+                    icon
+                    small
+                    @click="saveTaskLabels"
+                    :loading="loading"
+                    :disabled="loading"
+            >
+                <v-icon>done</v-icon>
+            </v-btn>
+            <br>
+            <v-btn
+                    icon
+                    small
+                    @click="update=false"
+                    :disabled="loading"
+            >
+                <v-icon>close</v-icon>
+            </v-btn>
+        </div>
+
+    </v-layout>
+
+</template>
+
+<script>
+  export default {
+    name: 'UpdateTaskLabels',
+    props: ['columnId'],
+    data () {
+      return {
+        update: false,
+        labelsTask: [],
+      }
+    },
+    computed: {
+      loading () {
+        return this.$store.getters.loading
+      },
+      task () {
+        return this.$store.getters.task
+      },
+      labels () {
+        return this.$store.getters.labels
+      },
+    },
+    methods: {
+      async saveTaskLabels () {
+        const newLabels = {
+          labels: this.labelsTask,
+          id: this.task.id,
+          columnId: this.columnId,
+        }
+        const {commit, dispatch} = this.$store
+        commit('setLoading', true)
+        const res = await dispatch('updateTaskLabels', newLabels)
+        if (res === 1) {
+          this.update = false
+        }
+        commit('setLoading', false)
+      },
+      updateForm () {
+        this.labelsTask = this.task.labelTasks
+        this.update = true
+      },
+      remove (item) {
+        console.log(this.labelsTask, item)
+        this.labelsTask = this.labelsTask.filter(el => +el !== +item.id)
+      }
+    }
+  }
+</script>
+
+<style scoped>
+    .w100 {
+        width: 100%;
+    }
+</style>

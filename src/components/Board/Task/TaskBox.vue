@@ -4,6 +4,8 @@
                 @click="fetchTask"
         >
             {{task.title}}
+            <!--<hr>-->
+            <!--{{task.labelTasks}}-->
         </div>
 
         <v-dialog
@@ -32,6 +34,10 @@
 
                     <update-task-description></update-task-description>
 
+                    <hr>
+
+                    <update-task-labels :columnId="columnId"></update-task-labels>
+
                     <!--<v-card-text>-->
                         <!--<hr>-->
                         <!--<pre>{{storeTask}}</pre>-->
@@ -46,9 +52,10 @@
 <script>
   import UpdateTaskTitle from './UpdateTaskTitle'
   import UpdateTaskDescription from './UpdateTaskDescription'
+  import UpdateTaskLabels from './UpdateTaskLabels'
   export default {
     name: 'TaskBox',
-    components: {UpdateTaskDescription, UpdateTaskTitle},
+    components: {UpdateTaskLabels, UpdateTaskDescription, UpdateTaskTitle},
     props: ['task', 'columnId'],
     data () {
       return {
