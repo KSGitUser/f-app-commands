@@ -6,11 +6,12 @@ import user from './user'
 import common from './common'
 import infoSnackbar from './infoSnackbar'
 import boards from './boards'
+import taskslists from './taskslists'
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   modules: {
-    dialog, user, common, infoSnackbar, boards
+    dialog, user, common, infoSnackbar, boards, taskslists
   },
 })
