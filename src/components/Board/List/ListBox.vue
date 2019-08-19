@@ -31,7 +31,7 @@
                 </div>
                 <div v-else>
                     <v-card-text>
-                        <pre>{{storeList}}</pre>
+                        <list-items :list="list"></list-items>
                     </v-card-text>
                 </div>
             </v-card>
@@ -42,11 +42,13 @@
 
 <script>
   import UpdateListTitle from './UpdateListTitle'
+  import ListItems from './ListItems'
 
   export default {
     name: 'ListBox',
     components: {
-      UpdateListTitle
+      UpdateListTitle,
+      ListItems
     },
     props: ['list', 'columnId'],
     data () {
@@ -65,9 +67,6 @@
       loading () {
         return this.$store.getters.loading
       },
-      storeList () {
-        return this.$store.getters.list
-      }
     },
     methods: {
       async fetchList () {
