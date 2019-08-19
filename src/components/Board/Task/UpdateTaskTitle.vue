@@ -37,6 +37,7 @@
                     required
                     :rules="taskNameRules"
                     @keypress.enter.prevent
+                    @keypress.enter="saveNewTaskTitle"
                     :autofocus="true"
             ></v-text-field>
         </v-form>

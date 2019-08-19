@@ -23,6 +23,7 @@
                         required
                         :rules="columnTitleRules"
                         @keypress.enter.prevent
+                        @keypress.enter="createNewColumn"
                         :autofocus="true"
                 ></v-text-field>
             </v-form>

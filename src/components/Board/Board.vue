@@ -243,7 +243,7 @@
         border: 1px solid #b3b3b3;
         border-radius: 3px;
         background: #eeeeee;
-        padding: 5px;
+        padding: 10px;
         margin: 5px;
         transition: background-color .3s;
         cursor: pointer;

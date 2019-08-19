@@ -34,6 +34,7 @@
                         required
                         :rules="columnNameRules"
                         @keypress.enter.prevent
+                        @keypress.enter="saveNewColumnTitle"
                 ></v-text-field>
             </v-form>
             <v-card-actions>

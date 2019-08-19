@@ -19,7 +19,7 @@ export default {
     },
     updateColumn (state, payload) {
       const idx = state.columns.findIndex(el => +el.id === +payload.id)
-      state.columns[idx] = payload
+      state.columns[idx].title = payload.title
       state.columns = state.columns.concat()
     },
     addTask (state, payload) {
@@ -65,9 +65,9 @@ export default {
     updateTaskLabels (state, payload) {
       const idxCol = state.columns.findIndex(el => +el.id === +payload.columnId)
       const idxTask = state.columns[idxCol].tasks.findIndex(el => +el.id === +payload.id)
-      state.columns[idxCol].tasks[idxTask].labelTasks = payload.labels
+      state.columns[idxCol].tasks[idxTask].labels = payload.labels
       state.columns = state.columns.concat()
-      state.task.labelTasks = payload.labels
+      state.task.labels = payload.labels
     },
   },
   actions: {

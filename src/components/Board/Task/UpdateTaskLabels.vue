@@ -3,9 +3,14 @@
     <div v-if="!update" style="display: flex" class="w100 pa-3">
         <div class="w100">
             <h4>Ярлыки</h4>
-            <pre>
-                {{task.labelTasks}}
-            </pre>
+            <v-chip
+                    v-for="(label, idx) in labelsList"
+                    :key="idx"
+                    v-if="label!==-1"
+
+            >
+                {{labels[label].title}}
+            </v-chip>
         </div>
         <div>
             <v-btn
@@ -33,6 +38,8 @@
                     item-text="title"
                     item-value="id"
                     multiple
+                    @keypress.enter.prevent
+                    @keypress.enter="saveTaskLabels"
             >
                 <template v-slot:selection="data">
                     <v-chip
@@ -96,6 +103,13 @@
       labels () {
         return this.$store.getters.labels
       },
+      labelsList(){
+        if(this.task.labels){
+          return this.labels.map(el =>
+            this.task.labels.indexOf(el.id))
+        }
+        return []
+      },
     },
     methods: {
       async saveTaskLabels () {
@@ -113,7 +127,7 @@
         commit('setLoading', false)
       },
       updateForm () {
-        this.labelsTask = this.task.labelTasks
+        this.labelsTask = this.task.labels
         this.update = true
       },
       remove (item) {

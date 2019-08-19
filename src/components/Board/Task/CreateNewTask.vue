@@ -24,6 +24,7 @@
                         label="Задача"
                         type="text"
                         required
+                        auto-grow
                         v-model="taskName"
                         :rules="taskNameRules"
                         :autofocus="true"

@@ -33,6 +33,7 @@
                     required
                     :rules="boardNameRules"
                     @keypress.enter.prevent
+                    @keypress.enter="saveNewBoardTitle"
                     :autofocus="true"
             ></v-text-field>
         </v-form>

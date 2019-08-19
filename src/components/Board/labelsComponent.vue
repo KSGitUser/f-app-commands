@@ -56,6 +56,7 @@
                                         :rules="labelNameRules"
                                         @keypress.enter.prevent
                                         :autofocus="true"
+                                        @keypress.enter="addLabels"
                                 ></v-text-field>
                             </v-form>
 
@@ -101,6 +102,7 @@
                                         required
                                         :rules="labelNameRules"
                                         @keypress.enter.prevent
+                                        @keypress.enter="updateLabels"
                                 ></v-text-field>
                             </v-form>
 

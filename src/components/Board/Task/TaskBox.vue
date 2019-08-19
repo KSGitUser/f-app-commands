@@ -5,7 +5,7 @@
         >
             {{task.title}}
             <!--<hr>-->
-            <!--{{task.labelTasks}}-->
+            <!--<pre>{{task}}</pre>-->
         </div>
 
         <v-dialog
@@ -31,6 +31,7 @@
                     <br> <br> <br>
                 </div>
                 <div v-else>
+                    <hr>
 
                     <update-task-description></update-task-description>
 
@@ -39,8 +40,8 @@
                     <update-task-labels :columnId="columnId"></update-task-labels>
 
                     <!--<v-card-text>-->
-                        <!--<hr>-->
-                        <!--<pre>{{storeTask}}</pre>-->
+                    <!--<hr>-->
+                    <!--<pre>{{storeTask}}</pre>-->
                     <!--</v-card-text>-->
                 </div>
             </v-card>
@@ -53,6 +54,7 @@
   import UpdateTaskTitle from './UpdateTaskTitle'
   import UpdateTaskDescription from './UpdateTaskDescription'
   import UpdateTaskLabels from './UpdateTaskLabels'
+
   export default {
     name: 'TaskBox',
     components: {UpdateTaskLabels, UpdateTaskDescription, UpdateTaskTitle},
