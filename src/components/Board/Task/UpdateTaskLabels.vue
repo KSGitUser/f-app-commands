@@ -3,15 +3,18 @@
     <div v-if="!update" style="display: flex" class="w100 pa-3">
         <div class="w100">
             <h4>Ярлыки</h4>
+            <!--<pre>{{labelsList}}</pre>-->
+            <!--<pre>{{labels}}</pre>-->
+            <!--<pre>{{task.labels}}</pre>-->
             <v-chip
                     outline
                     color="primary"
                     v-for="(label, idx) in labelsList"
                     :key="idx"
-                    v-if="label!==-1"
+                    v-if="label !== -1"
 
             >
-                {{labels[label].title}}
+                {{labels[idx].title}}
             </v-chip>
         </div>
         <div>
@@ -25,18 +28,21 @@
         </div>
     </div>
 
-    <v-layout
+    <div
             class="w100 pa-3"
             v-else
     >
         <!--<pre>{{labelsTask}}</pre>-->
         <v-form class="w100">
             <v-autocomplete
+                    class="w100"
                     v-model="labelsTask"
                     :items="labels"
                     label="Ярлыки"
                     item-text="title"
                     item-value="id"
+                    :loading="loading"
+                    :disabled="loading"
                     multiple
                     @keypress.enter.prevent
                     @keypress.enter="saveTaskLabels"
@@ -57,8 +63,8 @@
 
 
         </v-form>
-        <div>
-
+        <v-card-actions v-if="!loading" style="margin-top: -20px">
+            <v-spacer></v-spacer>
             <v-btn
                     icon
                     small
@@ -77,9 +83,9 @@
             >
                 <v-icon>close</v-icon>
             </v-btn>
-        </div>
+        </v-card-actions>
 
-    </v-layout>
+    </div>
 
 </template>
 
@@ -105,8 +111,7 @@
       },
       labelsList(){
         if(this.task.labels){
-          return this.labels.map(el =>
-            this.task.labels.indexOf(el.id))
+          return this.labels.map(ll => this.task.labels.indexOf(ll.id))
         }
         return []
       },

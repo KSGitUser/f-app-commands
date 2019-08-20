@@ -19,7 +19,7 @@
     </div>
 
 
-    <v-layout
+    <div
             class="w100"
             v-else
     >
@@ -44,23 +44,27 @@
                     @keypress.enter="saveNewTaskTitle"
             ></v-textarea>
         </v-form>
-        <v-btn
-                icon
-                v-if="taskTitle.trim() !== taskName.trim()"
-                @click="saveNewTaskTitle"
-                :loading="loading"
-                :disabled="loading"
-        >
-            <v-icon>done</v-icon>
-        </v-btn>
-        <v-btn
-                icon
-                @click="update=false"
-                :disabled="loading"
-        >
-            <v-icon>reply</v-icon>
-        </v-btn>
-    </v-layout>
+        <v-card-actions v-if="!loading" style="margin-top: -20px">
+            <v-spacer></v-spacer>
+            <v-btn
+                    icon
+                    v-if="taskTitle.trim() !== taskName.trim()"
+                    @click="saveNewTaskTitle"
+                    :loading="loading"
+                    :disabled="loading"
+            >
+                <v-icon>done</v-icon>
+            </v-btn>
+            <v-btn
+                    icon
+                    @click="update=false"
+                    :disabled="loading"
+            >
+                <v-icon>reply</v-icon>
+            </v-btn>
+        </v-card-actions>
+
+    </div>
 
 </template>
 

@@ -180,7 +180,7 @@ export default {
             payload.id = result.data.id
             payload.position = result.data.position
             payload.description = null
-            payload.labelTasks = []
+            payload.labels = []
             commit('addTask', payload)
           } else if (result.status === -1) {
             commit('clearSnackbar')

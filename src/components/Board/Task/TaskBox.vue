@@ -12,7 +12,7 @@
                         v-if="label!==-1"
 
                 >
-                    {{labels[label].title}}
+                    {{labels[idx].title}}
                 </v-chip>
             </div>
 
