@@ -180,8 +180,6 @@
         },
         methods: {
             onTaskMoved: async function($event, column) {
-                console.log('moved =>', $event);
-                console.log('column =>', column);
                 let oldIndex = $event.moved.oldIndex;
                 let newIndex = $event.moved.newIndex;
                 if (oldIndex < newIndex) {
@@ -197,8 +195,6 @@
                     position: $event.moved.element.position,
                     id_column: column.id
                 };
-                console.log(taskToMove);
-
                 await this.$store.dispatch('updateTasksList', taskToMove);
             },
             add: function(idx) {
@@ -219,6 +215,12 @@
                 this.$nextTick(() => {
                     this.showMenu = true;
                 });
+            },
+            sortTasksForDraggable() {
+                this.draggableArray = [...this.columns];
+                this.draggableArray.forEach(element => {
+                    element.tasks = _.sortBy(element.tasks, 'position');
+                });
             }
         },
         mounted: function() {
@@ -235,14 +237,8 @@
                 }
                 commit('setLoading', false);
                 this.localLoading = false;
-                this.draggableArray = [...this.columns];
-                console.log('column tasks =>', this.draggableArray);
 
-                let newArr = _.forEach(this.draggableArray, m =>
-                    _.sortBy(m.tasks, 'position')
-                );
-
-                console.log('Sorted column tasks =>', newArr);
+                this.sortTasksForDraggable();
             });
         },
         computed: {
