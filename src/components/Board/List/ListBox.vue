@@ -14,7 +14,12 @@
                 <v-card-title
                         class="headline  lighten-2"
                 >
-                    <update-list-title :columnId="columnId" :id="list.id" :listTitle="list.title" :list="list"></update-list-title>
+                    <update-list-title
+                            :columnId="columnId"
+                            :id="list.id"
+                            :listTitle="list.title"
+                            :list="list"
+                    ></update-list-title>
                 </v-card-title>
 
                 <div
