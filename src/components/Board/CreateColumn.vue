@@ -15,19 +15,26 @@
                     v-model="valid"
                     lazy-validation
             >
-                <v-text-field
+                <v-textarea
                         name="title"
                         label="Ведите название столбца"
                         type="text"
                         v-model="columnTitle"
                         required
+                        rows="1"
+                        auto-grow
+                        :loading="loading"
+                        :disabled="loading"
                         :rules="columnTitleRules"
                         @keypress.enter.prevent
                         @keypress.enter="createNewColumn"
                         :autofocus="true"
-                ></v-text-field>
+                ></v-textarea>
             </v-form>
-            <v-card-actions>
+            <v-card-actions
+                    v-if="!loading"
+                    style="margin-top: -20px"
+            >
                 <v-spacer></v-spacer>
                 <v-btn
                         icon

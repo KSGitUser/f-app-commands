@@ -4,6 +4,8 @@
         <div class="w100">
             <h4>Ярлыки</h4>
             <v-chip
+                    outline
+                    color="primary"
                     v-for="(label, idx) in labelsList"
                     :key="idx"
                     v-if="label!==-1"
@@ -32,8 +34,6 @@
             <v-autocomplete
                     v-model="labelsTask"
                     :items="labels"
-                    box
-                    chips
                     label="Ярлыки"
                     item-text="title"
                     item-value="id"
@@ -51,7 +51,7 @@
                     </v-chip>
                 </template>
                 <template v-slot:item="data">
-                    <v-list-tile-title>{{data.item.title}}</v-list-tile-title>
+                    <div>{{data.item.title}}</div>
                 </template>
             </v-autocomplete>
 

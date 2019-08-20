@@ -16,9 +16,9 @@
         >
             <v-card>
                 <v-card class="elevation-12">
-                    <v-toolbar dark color="primary">
+                    <div class="pa-3" style="margin-bottom: -20px">
                         <v-toolbar-title>Создать доску</v-toolbar-title>
-                    </v-toolbar>
+                    </div>
                     <v-card-text>
                         <v-form
                                 ref="form"
@@ -31,35 +31,41 @@
                                     type="text"
                                     v-model="boardName"
                                     required
+                                    :loading="loading"
+                                    :disabled="loading"
                                     :rules="boardNameRules"
                                     @keypress.enter.prevent
+                                    @keypress.enter="createNewBoard"
                                     :autofocus="true"
                             ></v-text-field>
                         </v-form>
                     </v-card-text>
-                    <v-card-actions>
+
+                    <v-card-actions
+                            v-if="!loading"
+                            style="margin-top: -20px"
+                    >
+                        <v-spacer></v-spacer>
                         <v-btn
-                                color="primary"
+                                icon
                                 @click="createNewBoard"
                                 :loading="loading"
                                 :disabled="loading"
-                        >Создать доску
+                        >
+                            <v-icon>done</v-icon>
                         </v-btn>
-                        <v-spacer></v-spacer>
                         <v-btn
-                                color="warning"
-                                @click="boardName=''"
-                        >Очистить
+                                icon
+                                @click="boardDialog = !boardDialog"
+                                :disabled="loading"
+                        >
+                            <v-icon>close</v-icon>
                         </v-btn>
                     </v-card-actions>
                 </v-card>
             </v-card>
         </v-dialog>
-
-
     </div>
-
-
 </template>
 
 <script>

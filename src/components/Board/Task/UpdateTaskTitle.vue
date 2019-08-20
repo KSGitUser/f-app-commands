@@ -29,19 +29,21 @@
                 v-model="valid"
                 lazy-validation
         >
-            <v-text-field
+            <v-textarea
                     class="w100"
                     name="name"
                     type="text"
                     v-model="taskName"
                     required
+                    auto-grow
+                    rows="1"
                     :rules="taskNameRules"
-                    @keypress.enter.prevent
-                    @keypress.enter="saveNewTaskTitle"
+                    :loading="loading"
+                    :disabled="loading"
                     :autofocus="true"
-            ></v-text-field>
+                    @keypress.enter="saveNewTaskTitle"
+            ></v-textarea>
         </v-form>
-
         <v-btn
                 icon
                 v-if="taskTitle.trim() !== taskName.trim()"

@@ -1,5 +1,5 @@
 <template>
-    <div class="pa-3">
+    <div>
         <v-btn
                 v-if="!formAction"
                 flat
@@ -10,7 +10,10 @@
             добавить карточку
         </v-btn>
 
-        <div v-else>
+        <div
+                v-else
+                class="pa-2"
+        >
             <hr>
             <v-form
 
@@ -25,12 +28,17 @@
                         type="text"
                         required
                         auto-grow
+                        rows="1"
+                        :loading="loading"
+                        :disabled="loading"
                         v-model="taskName"
                         :rules="taskNameRules"
                         :autofocus="true"
+                        @keypress.enter.prevent
+                        @keypress.enter="addCard"
                 ></v-textarea>
             </v-form>
-            <v-card-actions>
+            <v-card-actions v-if="!loading" style="margin-top: -20px">
                 <v-spacer></v-spacer>
                 <v-btn
                         icon
@@ -98,7 +106,7 @@
 </script>
 
 <style scoped>
-    .w100{
+    .w100 {
         width: 100%;
     }
 
