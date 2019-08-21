@@ -529,6 +529,7 @@ export default {
           }
         )
     },
+    
     async updateListItemTitle ({commit, getters}, payload) {
       console.log(payload)
       return fetch(`${URL}/api/v1/list-item/${payload.id}`, {
