@@ -69,10 +69,10 @@ export default {
       state.columns = state.columns.concat()
       state.task.labels = payload.labels
     },
-    updateTasksList(state, payload) {
-
+    updateListItemTitle (state, {title, id}) {
+      const listItem = state.listItems.filter(listItem => +listItem.id === id)
+      listItem[0].title = title
     }
-    
   },
   actions: {
     async createColumn ({commit, getters}, payload) {
@@ -180,7 +180,7 @@ export default {
             payload.id = result.data.id
             payload.position = result.data.position
             payload.description = null
-            payload.labelTasks = []
+            payload.labels = []
             commit('addTask', payload)
           } else if (result.status === -1) {
             commit('clearSnackbar')
@@ -526,6 +526,47 @@ export default {
           }
         )
     },
+    
+    async updateListItemTitle ({commit, getters}, payload) {
+      console.log(payload)
+      return fetch(`${URL}/api/v1/list-item/${payload.id}`, {
+        mode: 'cors',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Headers': '*',
+          'Authorization': getters.user
+        },
+        method: 'PATCH',
+        body: JSON.stringify(payload)
+      })
+        .then(response => {
+          commit('setUserHeader', response)
+          return response.json()
+        }).then(result => {
+          if (result.status === 1) {
+            commit('updateListItemTitle', payload)
+          } else if (result.status === -1) {
+            commit('clearSnackbar')
+            commit('setSnackbarMsg', Object.values(result.message).join('; '))
+            commit('setSnackbarType', 'error')
+          } else if (result.status === 401) {
+            commit('clearSnackbar')
+            commit('setSnackbarMsg', 'Требуется авторизация')
+            commit('setSnackbarType', 'error')
+          }
+          return result.status
+        })
+        .catch(
+          error => {
+            console.error(error)
+            commit('clearSnackbar')
+            commit('setSnackbarMsg', 'Ошибка загрузки данных')
+            commit('setSnackbarType', 'error')
+          }
+        )
+    },
     async updateTasksList ({commit, getters}, payload) {
       return fetch(`${URL}/api/v1/task/change-position`, {
         mode: 'cors',
@@ -541,9 +582,7 @@ export default {
       })
         .then(response => {
           console.log("response =>", response.json());
-          /* commit('setUserHeader', response)
-          return response.json() */
-        })
+          })
         .catch(
           error => {
             console.error(error)
@@ -553,7 +592,6 @@ export default {
           }
         )
     },
-
   },
   getters: {
     columns (state) {

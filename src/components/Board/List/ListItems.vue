@@ -69,6 +69,53 @@
             <v-divider></v-divider>
         </v-flex>
 
+        <v-flex v-if="updateTitle">
+            <div class="pa-2" style="display: flex">
+                <v-flex>
+                    <div style="display: flex">
+                        <v-form class="inputListItem"
+                                ref="formUpdateListItemTitle"
+                                lazy-validation
+                        >
+                            <v-text-field
+                                    name="listItemName"
+                                    label="Новое название"
+                                    type="text"
+                                    v-model="updateListItemName"
+                                    required
+                                    :rules="listItemRules"
+                                    @keypress.enter.prevent
+                                    @keypress.enter="updateListItemTitle"
+                            ></v-text-field>
+                        </v-form>
+
+                        <v-card-actions>
+                            <v-btn
+                                    icon
+                                    small
+                                    @click="updateListItemTitle"
+                                    :loading="loading"
+                                    :disabled="loading"
+                            >
+                                <v-icon>done</v-icon>
+                            </v-btn>
+                            <v-btn
+                                    icon
+                                    small
+                                    @click="updateTitle = !updateTitle"
+                                    :disabled="loading"
+                            >
+                                <v-icon>close</v-icon>
+                            </v-btn>
+                        </v-card-actions>
+
+                    </div>
+                </v-flex>
+            </div>
+            <v-divider></v-divider>
+        </v-flex>
+
+
         <v-list>
             <v-list-tile
                     v-for="listItem in listItems"
@@ -85,6 +132,7 @@
 
                 <v-btn
                         icon
+                        @click="updateListItemForm(listItem.id)"
                 >
                     <v-icon>edit</v-icon>
                 </v-btn>
@@ -99,9 +147,12 @@
     props: ['list'],
     data: () => ({
       inputNewListItem: false,
+      updateTitle: false,
       listItemExecution: false,
       valid: false,
       listItemName: '',
+      updateListItemName: '',
+      updateListItemId: '',
       listItemRules: [
         v => !!v || 'Название не может быть пустым',
         v => v.length >= 1 || 'Минимум 1 символ'
@@ -131,8 +182,29 @@
           }
           commit('setLoading', false)
         }
-      }
-    }
+      },
+      updateListItemForm (id) {
+        this.updateTitle = true
+        const idx = this.listItems.findIndex(el => +el.id === +id)
+        this.updateListItemName = this.listItems[idx].title
+        this.updateListItemId = id
+      },
+      async updateListItemTitle () {
+        if (this.$refs.formUpdateListItemTitle.validate()) {
+          const newData = {
+            title: this.updateListItemName.trim(),
+            id: +this.updateListItemId
+          }
+          const {commit, dispatch} = this.$store
+          commit('setLoading', true)
+          const listItem = await dispatch('updateListItemTitle', newData)
+          if (listItem === 1) {
+            this.updateTitle = false
+          }
+          commit('setLoading', false)
+        }
+      },
+    },
   }
 </script>
 

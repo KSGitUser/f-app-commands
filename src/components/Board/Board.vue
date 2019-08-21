@@ -1,129 +1,101 @@
 <template>
-    <!--загрузка данных-->
-    <div v-if="localLoading" class="text-xs-center align-center mt-5">
-        <v-progress-circular
-            :size="100"
-            :width="3"
-            color="primary"
-            indeterminate
-        ></v-progress-circular>
-    </div>
+    <div>
+        <!--загрузка данных-->
+        <div v-if="localLoading" class="text-xs-center align-center mt-5">
+            <v-progress-circular :size="100" :width="3" color="primary" indeterminate>
+            </v-progress-circular>
+        </div>
 
-    <div v-else class="demo">
-        <v-toolbar style="position: absolute; z-index: 1; left: 0; right: 0">
-            <v-toolbar-title class="w100">
-                <update-board-title></update-board-title>
-            </v-toolbar-title>
-            <v-spacer></v-spacer>
+        <div v-else class="demo">
 
-            <labels-component></labels-component>
-            <v-menu :close-on-content-click="false">
-                <template v-slot:activator="{ on }">
-                    <v-btn icon v-on="on">
-                        <v-icon>insert_photo</v-icon>
-                    </v-btn>
-                </template>
+            <v-toolbar style="position: absolute; z-index: 1; left: 0; right: 0">
+                <v-toolbar-title class="w100">
+                    <update-board-title></update-board-title>
+                </v-toolbar-title>
+                <v-spacer></v-spacer>
 
-                <v-card>
-                    <form class="pa-3">
-                        <v-select
-                            v-model="bf"
-                            :items="bfOptions"
-                            label="выберите фон"
-                        ></v-select>
-                    </form>
-                </v-card>
-            </v-menu>
-        </v-toolbar>
+                <labels-component></labels-component>
+                <v-menu :close-on-content-click="false">
+                    <template v-slot:activator="{ on }">
+                        <v-btn icon v-on="on">
+                            <v-icon>insert_photo</v-icon>
+                        </v-btn>
+                    </template>
 
-        <div
-            class="root-box pre style-1"
-            :style="{'background': `url('${bf}')`}"
-        >
-            <div
-                class="scrollbar-box mt mt-5 mb-5 mr-2 ml-2"
-                v-for="(column, index) in columns"
-                :key="column.id"
-            >
-                <div class="fff column">
-                    <update-column-title :column="column"></update-column-title>
-                </div>
+                    <v-card style="width: 200px" class="pa-1">
+                        <p class="title pa-2">Выберите фон:</p>
+                        <v-img v-for="(el, idx) in bfOptions" :key="idx" :src="el.value" :lazy-src="el.value" aspect-ratio="1" class="grey lighten-2 ma-2" @click="bf=el.value">
+                            <template v-slot:placeholder>
+                                <v-layout fill-height align-center justify-center ma-0>
+                                    <v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>
+                                </v-layout>
+                            </template>
+                        </v-img>
+                        <!--<form class="pa-3">-->
+                        <!--<v-select v-model="bf"-->
+                        <!--:items="bfOptions"-->
+                        <!--label="выберите фон"-->
+                        <!--&gt;</v-select>-->
+                        <!--</form>-->
+                    </v-card>
+                </v-menu>
 
-                <div class="scrollbar fff column style-1  pa-1">
-                    <!--<draggable-->
-                    <!--id="first"-->
-                    <!--data-source="juju"-->
-                    <!--:list="column.tasks"-->
-                    <!--draggable=".item"-->
-                    <!--group="a"-->
-                    <!--&gt;-->
+            </v-toolbar>
 
-                    <draggable
-                        v-model="draggableArray[index].tasks"
-                        @change="onTaskMoved($event, column)"
-                    >
-                        <transition-group>
-                            <div
-                                class="item"
-                                v-for="element in draggableArray[index].tasks"
-                                :key="element.id"
-                                @click=""
-                            >
-                                <!--<p class="body-2">{{ element.title }}</p>-->
+            <div class="root-box pre style-1" :style="{'background': `url('${bf}')`}">
+                <div class="scrollbar-box mt mt-5 mb-5 mr-2 ml-2" v-for="(column, index) in columns" :key="column.id">
 
-                                <task-box
-                                    :columnId="column.id"
-                                    :task="element"
-                                ></task-box>
+                    <div class="fff column">
+                        <update-column-title :column="column"></update-column-title>
+                    </div>
 
-                                <!--<v-chip class="caption" v-for="(el, idx) in 2">ярлык {{idx+1}}</v-chip>-->
+                    <div class="scrollbar fff column style-1  pa-1">
+                        <!--<draggable-->
+                        <!--id="first"-->
+                        <!--data-source="juju"-->
+                        <!--:list="column.tasks"-->
+                        <!--draggable=".item"-->
+                        <!--group="a"-->
+                        <!--&gt;-->
+
+                        <draggable v-model="draggableArray[index].tasks" @change="onTaskMoved($event, column)">
+                            <transition-group>
+                                <div class="item" v-for="element in draggableArray[index].tasks" :key="element.id" @click="" v-show="element.labels.indexOf(labelActiv) !== -1 || !filterOff">
+                                    <!--<p class="body-2">{{ element.title }}</p>-->
+
+                                    <task-box :columnId="column.id" :task="element">
+                                    </task-box>
+
+                                    <!--<v-chip class="caption" v-for="(el, idx) in 2">ярлык {{idx+1}}</v-chip>-->
+                                </div>
+                            </transition-group>
+                        </draggable>
+                        <!--</draggable>-->
+                        <!--<pre> {{ column.tasks }} </pre>-->
+                    </div>
+                    <create-new-task class="fff column" :id="column.id">
+                    </create-new-task>
+
+                    <div class="scrollbar fff column style-1  pa-1">
+                        <draggable id="second" data-source="juju" :list="column.lists" draggable=".item" group="a">
+                            <div class="item" v-for="element in column.lists" :key="element.id" @click="">
+                                <list-box :columnId="column.id" :list="element">
+                                </list-box>
                             </div>
-                        </transition-group>
-                    </draggable>
-                    <!--</draggable>-->
-                    <!--<pre> {{ column.tasks }} </pre>-->
-                </div>
-                <create-new-task
-                    class="fff column"
-                    :id="column.id"
-                ></create-new-task>
-                <div class="scrollbar fff column style-1  pa-1">
-                    <draggable
-                        id="second"
-                        data-source="juju"
-                        :list="column.lists"
-                        draggable=".item"
-                        group="a"
-                    >
-                        <div
-                            class="item"
-                            v-for="element in column.lists"
-                            :key="element.id"
-                            @click=""
-                        >
-                            <list-box
-                                :columnId="column.id"
-                                :list="element"
-                            ></list-box>
-                        </div>
-                    </draggable>
+                        </draggable>
+                    </div>
+
+                    <create-new-list class="fff column" :id="column.id"></create-new-list>
+
                 </div>
 
-                <create-new-list
-                    class="fff column"
-                    :id="column.id"
-                ></create-new-list>
-            </div>
+                <!--добавить столбец-->
 
-            <!--добавить столбец-->
-
-            <div
-                class="scrollbar-box mt mb-5 mr-2 ml-2"
-                style="padding-right: 10px"
-            >
-                <v-card>
-                    <create-column class="w100" :id="id"></create-column>
-                </v-card>
+                <div class="scrollbar-box mt mb-5 mr-2 ml-2" style="padding-right: 10px">
+                    <v-card>
+                        <create-column class="w100" :id="id"></create-column>
+                    </v-card>
+                </div>
             </div>
         </div>
     </div>
@@ -164,22 +136,19 @@
                 draggableArray: [],
                 dialog: false,
                 bf: 'https://cdn.vuetifyjs.com/images/parallax/material2.jpg',
-                bfOptions: [
-                    {
+                bfOptions: [{
                         text: '1',
-                        value:
-                            'https://cdn.vuetifyjs.com/images/parallax/material2.jpg'
+                        value: 'https://cdn.vuetifyjs.com/images/parallax/material2.jpg'
                     },
                     {
                         text: '2',
-                        value:
-                            'https://ns328286.ip-37-187-113.eu/ew/wallpapers/800x480/02715_800x480.jpg'
+                        value: 'https://ns328286.ip-37-187-113.eu/ew/wallpapers/800x480/02715_800x480.jpg'
                     }
                 ]
             };
         },
         methods: {
-            onTaskMoved: async function($event, column) {
+            onTaskMoved: async function ($event, column) {
                 let oldIndex = $event.moved.oldIndex;
                 let newIndex = $event.moved.newIndex;
                 if (oldIndex < newIndex) {
@@ -197,13 +166,16 @@
                 };
                 await this.$store.dispatch('updateTasksList', taskToMove);
             },
-            add: function(idx) {
-                this.lists[idx].items.push({ name: 'Juan ' + id, id: id++ });
+            add: function (idx) {
+                this.lists[idx].items.push({
+                    name: 'Juan ' + id,
+                    id: id++
+                });
             },
-            addList: function() {
+            addList: function () {
                 this.newCollumnDialog = !this.newCollumnDialog;
             },
-            demo: function() {
+            demo: function () {
                 this.dialog = !this.dialog;
             },
 
@@ -223,9 +195,12 @@
                 });
             }
         },
-        mounted: function() {
+        mounted: function () {
             this.$nextTick(async () => {
-                const { commit, dispatch } = this.$store;
+                const {
+                    commit,
+                    dispatch
+                } = this.$store;
                 commit('setLoading', true);
                 this.localLoading = true;
                 let res = await dispatch('fetchBoard', this.id);
@@ -262,9 +237,16 @@
             },
             boardId() {
                 return this.$store.getters.boardId;
-            }
+            },
+            labelActiv() {
+                return this.$store.getters.labelActiv
+            },
+            filterOff() {
+                return this.$store.getters.filterOff
+            },
         }
-    };
+    }
+
 </script>
 <style lang="scss" scoped>
     .column {
@@ -290,14 +272,14 @@
     .item {
         border: 1px solid #b3b3b3;
         border-radius: 3px;
-        background: #eeeeee;
+        //background: #eeeeee;
         padding: 10px;
         margin: 5px;
         transition: background-color 0.3s;
         cursor: pointer;
 
         &:hover {
-            background: #d6d6d6;
+            background: rgba(238, 238, 238, 0.79);
         }
     }
 
@@ -386,4 +368,5 @@
     .mt {
         margin-top: 75px !important;
     }
+
 </style>

@@ -1,11 +1,21 @@
 <template>
     <div>
-        <div
-                @click="fetchTask"
+        <div class="subheading"
+             @click="fetchTask"
         >
             {{task.title}}
-            <!--<hr>-->
-            <!--<pre>{{task}}</pre>-->
+            <div class="text-truncate">
+                <v-chip
+                        class="caption pa-0"
+                        v-for="(label, idx) in labelsList"
+                        :key="idx"
+                        v-if="label!==-1"
+
+                >
+                    {{labels[idx].title}}
+                </v-chip>
+            </div>
+
         </div>
 
         <v-dialog
@@ -77,7 +87,17 @@
       },
       storeTask () {
         return this.$store.getters.task
-      }
+      },
+      labels () {
+        return this.$store.getters.labels
+      },
+      labelsList () {
+        if (this.task.labels) {
+          return this.labels.map(el =>
+            this.task.labels.indexOf(el.id))
+        }
+        return []
+      },
     },
     methods: {
       async createNewColumn () {

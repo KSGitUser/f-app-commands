@@ -19,25 +19,31 @@
             </div>
         </v-flex>
 
-        <v-flex style="display: flex" v-else>
+        <v-flex v-else>
             <v-form
                     class="w100"
                     ref="form"
                     v-model="valid"
                     lazy-validation
             >
-                <v-text-field
+                <v-textarea
                         name="name"
                         label="Столбец"
                         type="text"
                         v-model="columnName"
                         required
+                        auto-grow
+                        clearable
+                        rows="1"
+                        :loading="loading"
+                        :disabled="loading"
                         :rules="columnNameRules"
                         @keypress.enter.prevent
                         @keypress.enter="saveNewColumnTitle"
-                ></v-text-field>
+                ></v-textarea>
             </v-form>
-            <v-card-actions>
+            <v-card-actions v-if="!loading" style="margin-top: -20px">
+                <v-spacer></v-spacer>
                 <v-btn
                         icon
                         small
@@ -48,11 +54,11 @@
                 >
                     <v-icon>done</v-icon>
                 </v-btn>
+                <br>
                 <v-btn
                         icon
                         small
                         @click="update=false"
-                        :loading="loading"
                         :disabled="loading"
                 >
                     <v-icon>reply</v-icon>

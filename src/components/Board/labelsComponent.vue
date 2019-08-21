@@ -1,22 +1,13 @@
 <template>
-    <v-menu
-            v-model="menu"
-            :close-on-content-click="false"
-            :nudge-width="200"
-            offset-x
-    >
-        <template v-slot:activator="{ on }">
-            <v-btn
-                    v-on="on"
-                    icon
-            >
-                <v-icon>bookmark_border</v-icon>
-            </v-btn>
-        </template>
+    <v-layout row justify-center>
+        <v-dialog v-model="dialog" scrollable max-width="300">
+            <template v-slot:activator="{ on }">
+                <v-btn icon v-on="on">
+                    <v-icon>label</v-icon>
+                </v-btn>
+            </template>
+            <v-card>
 
-        <v-card>
-
-            <v-list>
                 <v-list-tile>
 
                     <v-list-tile-content>
@@ -32,151 +23,171 @@
                         </v-btn>
                     </v-list-tile-action>
                 </v-list-tile>
-            </v-list>
-            <v-divider></v-divider>
-
-
-            <V-flex v-if="inputNewLabel">
-                <div class="pa-2" style="display: flex">
-                    <v-flex>
-                        <div style="display: flex">
-
-                            <v-form
-                                    class="w100"
-                                    ref="formNewLabel"
-                                    v-model="valid"
-                                    lazy-validation
-                            >
-                                <v-text-field
-                                        name="labelName"
-                                        label="Новый ярлык"
-                                        type="text"
-                                        v-model="labelName"
-                                        required
-                                        :rules="labelNameRules"
-                                        @keypress.enter.prevent
-                                        :autofocus="true"
-                                        @keypress.enter="addLabels"
-                                ></v-text-field>
-                            </v-form>
-
-                            <v-card-actions>
-                                <v-btn
-                                        icon
-                                        small
-                                        @click="addLabels"
-                                        :loading="loading"
-                                        :disabled="loading"
-                                >
-                                    <v-icon>done</v-icon>
-                                </v-btn>
-                                <v-btn
-                                        icon
-                                        small
-                                        @click="inputNewLabel=!inputNewLabel"
-                                        :disabled="loading"
-                                >
-                                    <v-icon>close</v-icon>
-                                </v-btn>
-                            </v-card-actions>
-
-                        </div>
-                    </v-flex>
-                </div>
                 <v-divider></v-divider>
-            </V-flex>
 
-            <V-flex v-if="inputUpdateLabel">
-                <div class="pa-2" style="display: flex">
-                    <v-flex>
-                        <div style="display: flex">
-                            <v-form class="w100"
-                                    ref="formUpdateLabel"
-                                    lazy-validation
-                            >
-                                <v-text-field
-                                        name="labelName"
-                                        label="Новое название"
-                                        type="text"
-                                        v-model="UpdatelabelName"
-                                        required
-                                        :rules="labelNameRules"
-                                        @keypress.enter.prevent
-                                        @keypress.enter="updateLabels"
-                                ></v-text-field>
-                            </v-form>
+                <V-flex v-if="inputNewLabel">
+                    <div class="pa-3" style="margin: -15px 0">
+                        <v-flex>
+                            <div>
 
-                            <v-card-actions>
-                                <v-btn
-                                        icon
-                                        small
-                                        @click="updateLabels"
-                                        :loading="loading"
-                                        :disabled="loading"
+                                <v-form
+                                        class="w100"
+                                        ref="formNewLabel"
+                                        v-model="valid"
+                                        lazy-validation
                                 >
-                                    <v-icon>done</v-icon>
-                                </v-btn>
-                                <v-btn
-                                        icon
-                                        small
-                                        @click="inputUpdateLabel = !inputUpdateLabel"
-                                        :disabled="loading"
+                                    <v-text-field
+                                            name="labelName"
+                                            label="Новый ярлык"
+                                            type="text"
+                                            v-model="labelName"
+                                            required
+                                            :rules="labelNameRules"
+                                            @keypress.enter.prevent
+                                            :loading="loading"
+                                            :disabled="loading"
+                                            :autofocus="true"
+                                            @keypress.enter="addLabels"
+                                    ></v-text-field>
+                                </v-form>
+
+                                <v-card-actions
+                                        style="margin-top: -20px"
+                                        v-if="!loading"
                                 >
-                                    <v-icon>close</v-icon>
-                                </v-btn>
-                            </v-card-actions>
+                                    <v-spacer></v-spacer>
+                                    <v-btn
+                                            icon
+                                            small
+                                            @click="addLabels"
+                                            :loading="loading"
+                                            :disabled="loading"
+                                    >
+                                        <v-icon>done</v-icon>
+                                    </v-btn>
+                                    <v-btn
+                                            icon
+                                            small
+                                            @click="inputNewLabel=!inputNewLabel"
+                                            :disabled="loading"
+                                    >
+                                        <v-icon>close</v-icon>
+                                    </v-btn>
+                                </v-card-actions>
 
-                        </div>
-                    </v-flex>
-                </div>
-                <v-divider></v-divider>
-            </V-flex>
+                            </div>
+                        </v-flex>
+                    </div>
+                    <v-divider></v-divider>
+                </V-flex>
 
+                <V-flex v-if="inputUpdateLabel">
+                    <div class="pa-3" style="margin: -15px 0">
+                        <v-flex>
+                            <div>
+                                <v-form class="w100"
+                                        ref="formUpdateLabel"
+                                        lazy-validation
+                                >
+                                    <v-text-field
+                                            name="labelName"
+                                            label="Новое название"
+                                            type="text"
+                                            v-model="UpdatelabelName"
+                                            required
+                                            :rules="labelNameRules"
+                                            @keypress.enter.prevent
+                                            @keypress.enter="updateLabels"
+                                            :loading="loading"
+                                            :disabled="loading"
+                                            :autofocus="true"
+                                    ></v-text-field>
+                                </v-form>
 
-            <v-list>
-                <v-list-tile
-                        v-for="demo in labels"
-                        :key="demo.id"
-                >
-                    <v-flex>
-                        <v-list-tile-action>
-                            <v-checkbox
-                                    v-model="demo.off"
-                                    :label="demo.title"
-                            ></v-checkbox>
-                        </v-list-tile-action>
-                    </v-flex>
+                                <v-card-actions
+                                        style="margin-top: -20px"
+                                        v-if="!loading"
+                                >
+                                    <v-spacer></v-spacer>
+                                    <v-btn
+                                            icon
+                                            small
+                                            @click="updateLabels"
+                                            :loading="loading"
+                                            :disabled="loading"
+                                    >
+                                        <v-icon>done</v-icon>
+                                    </v-btn>
+                                    <v-btn
+                                            icon
+                                            small
+                                            @click="inputUpdateLabel = !inputUpdateLabel"
+                                            :disabled="loading"
+                                    >
+                                        <v-icon>close</v-icon>
+                                    </v-btn>
+                                </v-card-actions>
 
-                    <v-btn
-                            icon
-                            @click="updateLabelForm(demo.id)"
+                            </div>
+                        </v-flex>
+                    </div>
+                    <v-divider></v-divider>
+                </V-flex>
+
+                <v-card-text class="pa-0 w100" style="max-height: 300px;">
+
+                    <v-radio-group
+                            v-if="labels.length !== 0"
+                            v-model="labelActiv"
                     >
-                        <v-icon>edit</v-icon>
-                    </v-btn>
-                </v-list-tile>
+                        <v-list-tile
+                                v-for="demo in labels"
+                                :key="demo.id"
+                        >
+                            <v-btn
+                                    style="margin: auto 0 auto -10px"
+                                    icon
+                                    @click="updateLabelForm(demo.id)"
+                            >
+                                <v-icon>edit</v-icon>
+                            </v-btn>
+                            <v-radio
+                                    :label="demo.title"
+                                    :value="demo.id"
+                            ></v-radio>
 
-                <v-list-tile
-                        v-if="labels.length === 0"
-                >
-                    <v-flex>
-                        <v-list-tile-action>
-                            Создайте первый ярлык
-                        </v-list-tile-action>
-                    </v-flex>
-                </v-list-tile>
+                        </v-list-tile>
+                    </v-radio-group>
 
-            </v-list>
+                    <v-list-tile
+                            v-if="labels.length === 0"
+                    >
+                        <v-flex>
+                            <v-list-tile-action>
+                                Создайте первый ярлык
+                            </v-list-tile-action>
+                        </v-flex>
+                    </v-list-tile>
 
+                </v-card-text>
 
-            <v-divider></v-divider>
-            <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn flat @click="menu = false">Готово</v-btn>
-            </v-card-actions>
-        </v-card>
-    </v-menu>
+                <v-divider></v-divider>
+                <v-card-actions v-show="labels.length !== 0">
+                    <v-switch
+                            prepend-icon="filter_list"
+                            v-model="filterOff"
+                            label="Применить фильтр"
+                    ></v-switch>
+                </v-card-actions>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn flat @click="dialog = false">Готово</v-btn>
+                </v-card-actions>
+
+            </v-card>
+        </v-dialog>
+    </v-layout>
 </template>
-
 
 <script>
   export default {
@@ -188,6 +199,7 @@
       inputUpdateLabel: false,
       message: false,
       hints: true,
+      dialog: false,
       activeLabelUpdate: null,
       labelName: '',
       UpdatelabelName: '',
@@ -238,6 +250,11 @@
           commit('setLoading', false)
         }
       },
+      setFilterOff () {
+        console.log('setFilterOff', this.filterOff)
+        const {commit, dispatch} = this.$store
+        commit('setFilterOff', !this.filterOff)
+      },
     },
     computed: {
       loading () {
@@ -249,12 +266,28 @@
       idBoard () {
         return this.$store.getters.boardId
       },
+      labelActiv: {
+        get () {
+          return this.$store.state.labelActiv
+        },
+        set (value) {
+          this.$store.commit('setLabelActiv', value)
+        }
+      },
+      filterOff: {
+        get () {
+          return this.$store.state.filterOff
+        },
+        set (value) {
+          this.$store.commit('setFilterOff', value)
+        }
+      },
     },
   }
 </script>
 
 <style lang="scss" scoped>
-    .w100{
+    .w100 {
         width: 100%;
     }
 </style>
