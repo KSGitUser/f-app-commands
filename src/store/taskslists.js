@@ -609,6 +609,31 @@ export default {
           }
         )
     },
+    async updateTasksList ({commit, getters}, payload) {
+      return fetch(`${URL}/api/v1/task/change-position`, {
+        mode: 'cors',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Headers': '*',
+          'Authorization': getters.user,
+        },
+        method: 'PATCH',
+        body: JSON.stringify(payload)
+      })
+        .then(response => {
+          console.log("response =>", response.json());
+        })
+        .catch(
+          error => {
+            console.error(error)
+            commit('clearSnackbar')
+            commit('setSnackbarMsg', 'Ошибка загрузки данных')
+            commit('setSnackbarType', 'error')
+          }
+        )
+    },
   },
   getters: {
     columns (state) {

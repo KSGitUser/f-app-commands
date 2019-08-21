@@ -58,9 +58,9 @@
                         <!--group="a"-->
                         <!--&gt;-->
 
-                        <draggable v-model="draggableArray[index].tasks" @change="onTaskMoved($event, column)">
+                        <draggable v-model="column.tasks" @change="onTaskMoved($event, column)">
                             <transition-group>
-                                <div class="item" v-for="element in draggableArray[index].tasks" :key="element.id" @click="" v-show="element.labels.indexOf(labelActiv) !== -1 || !filterOff">
+                                <div class="item" v-for="element in column.tasks" :key="element.id" @click="" v-show="element.labels.indexOf(labelActiv) !== -1 || !filterOff">
                                     <!--<p class="body-2">{{ element.title }}</p>-->
 
                                     <task-box :columnId="column.id" :task="element">
@@ -220,14 +220,8 @@
             labels() {
                 return this.$store.getters.labels;
             },
-            columns: {
-                get() {
-                    return this.$store.getters.columns;
-                },
-                async set(val) {
-                    console.log('Change Tasks');
-                    await this.$store.dispatch('updateTasksList', val);
-                }
+            columns() {
+                return this.$store.getters.columns;
             },
             loading() {
                 return this.$store.getters.loading;
