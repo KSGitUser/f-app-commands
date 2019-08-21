@@ -1,15 +1,20 @@
 <template>
 
-    <div v-if="!update">
+    <div v-if="!update"
+         @click="updateForm"
+         :loading="loading"
+         :disabled="loading"
+         style="cursor: pointer"
+    >
         <v-toolbar-title>
-            <v-btn
-                    @click="updateForm"
-                    :loading="loading"
-                    :disabled="loading"
-                    icon
-            >
-                <v-icon>more_vert</v-icon>
-            </v-btn>
+            <!--<v-btn-->
+                    <!--@click="updateForm"-->
+                    <!--:loading="loading"-->
+                    <!--:disabled="loading"-->
+                    <!--icon-->
+            <!--&gt;-->
+                <!--<v-icon>more_vert</v-icon>-->
+            <!--</v-btn>-->
             {{boardTitle}}
         </v-toolbar-title>
     </div>
@@ -17,6 +22,7 @@
 
     <v-layout
             class="w100 mw500"
+            style="margin-top: 22px"
             v-else
     >
         <v-form
@@ -29,6 +35,7 @@
                     class="w100"
                     name="name"
                     type="text"
+                    label="Доска"
                     v-model="boardName"
                     required
                     :loading="loading"
@@ -39,23 +46,24 @@
                     :autofocus="true"
             ></v-text-field>
         </v-form>
-
+        <v-btn
+                v-if="!loading"
+                icon
+                small
+                @click="update=false"
+                :disabled="loading"
+        >
+            <v-icon>reply</v-icon>
+        </v-btn>
         <v-btn
                 icon
+                small
                 v-if="boardTitle.trim() !== boardName.trim() && !loading"
                 @click="saveNewBoardTitle"
                 :loading="loading"
                 :disabled="loading"
         >
             <v-icon>done</v-icon>
-        </v-btn>
-        <v-btn
-                v-if="!loading"
-                icon
-                @click="update=false"
-                :disabled="loading"
-        >
-            <v-icon>reply</v-icon>
         </v-btn>
     </v-layout>
 

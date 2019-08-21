@@ -271,7 +271,7 @@
 
     .item {
         border: 1px solid #b3b3b3;
-        border-radius: 3px;
+        border-radius: 2px;
         //background: #eeeeee;
         padding: 10px;
         margin: 5px;

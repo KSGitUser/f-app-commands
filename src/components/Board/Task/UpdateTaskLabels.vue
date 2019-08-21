@@ -1,11 +1,16 @@
 <template>
 
-    <div v-if="!update" style="display: flex" class="w100 pa-3">
-        <div class="w100">
-            <h4>Ярлыки</h4>
-            <!--<pre>{{labelsList}}</pre>-->
-            <!--<pre>{{labels}}</pre>-->
-            <!--<pre>{{task.labels}}</pre>-->
+    <div v-if="!update" style="display: flex;" class="w100 pa-3">
+        <div
+                @click="updateForm"
+                :disabled="loading"
+                class="w100"
+                style="margin-bottom: -20px; cursor: pointer"
+        >
+            <p class="subtitle-1">
+                <v-icon small>label</v-icon>
+                Ярлыки
+            </p>
             <v-chip
                     outline
                     color="primary"
@@ -17,22 +22,25 @@
                 {{labels[idx].title}}
             </v-chip>
         </div>
-        <div>
-            <v-btn
-                    @click="updateForm"
-                    :disabled="loading"
-                    icon
-            >
-                <v-icon>edit</v-icon>
-            </v-btn>
-        </div>
+        <!--<div>-->
+            <!--<v-btn-->
+                    <!--@click="updateForm"-->
+                    <!--:disabled="loading"-->
+                    <!--icon-->
+            <!--&gt;-->
+                <!--<v-icon>edit</v-icon>-->
+            <!--</v-btn>-->
+        <!--</div>-->
     </div>
 
     <div
             class="w100 pa-3"
             v-else
     >
-        <!--<pre>{{labelsTask}}</pre>-->
+        <p class="subtitle-1">
+            <v-icon small>label</v-icon>
+            Ярлыки
+        </p>
         <v-form class="w100">
             <v-autocomplete
                     class="w100"
@@ -43,6 +51,7 @@
                     item-value="id"
                     :loading="loading"
                     :disabled="loading"
+                    :autofocus="true"
                     multiple
                     @keypress.enter.prevent
                     @keypress.enter="saveTaskLabels"
@@ -63,8 +72,17 @@
 
 
         </v-form>
-        <v-card-actions v-if="!loading" style="margin-top: -20px">
+        <v-card-actions v-if="!loading" style="margin-top: -20px; margin-bottom: -20px">
             <v-spacer></v-spacer>
+
+            <v-btn
+                    icon
+                    small
+                    @click="update=false"
+                    :disabled="loading"
+            >
+                <v-icon>close</v-icon>
+            </v-btn>
             <v-btn
                     icon
                     small
@@ -73,15 +91,6 @@
                     :disabled="loading"
             >
                 <v-icon>done</v-icon>
-            </v-btn>
-            <br>
-            <v-btn
-                    icon
-                    small
-                    @click="update=false"
-                    :disabled="loading"
-            >
-                <v-icon>close</v-icon>
             </v-btn>
         </v-card-actions>
 
@@ -109,8 +118,8 @@
       labels () {
         return this.$store.getters.labels
       },
-      labelsList(){
-        if(this.task.labels){
+      labelsList () {
+        if (this.task.labels) {
           return this.labels.map(ll => this.task.labels.indexOf(ll.id))
         }
         return []

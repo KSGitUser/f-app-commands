@@ -1,19 +1,20 @@
 <template>
     <div>
-        <div class="subheading"
+        <div class="title"
              @click="fetchTask"
         >
             {{task.title}}
-            <div class="text-truncate">
-                <v-chip
+            <div class="mt-3" style="justify-content: flex-end; margin-left: -5px; display: flex; flex-wrap: wrap">
+                <span style="background: #dddddd; margin: 2px; border-radius: 50px;
+                padding: 2px 5px !important;
+                display: block"
                         class="caption pa-0"
                         v-for="(label, idx) in labelsList"
                         :key="idx"
                         v-if="label!==-1"
-
                 >
                     {{labels[idx].title}}
-                </v-chip>
+                </span>
             </div>
 
         </div>
@@ -41,18 +42,19 @@
                     <br> <br> <br>
                 </div>
                 <div v-else>
-                    <hr>
+                    <v-divider></v-divider>
 
                     <update-task-description></update-task-description>
 
-                    <hr>
+                    <v-divider></v-divider>
 
                     <update-task-labels :columnId="columnId"></update-task-labels>
 
-                    <!--<v-card-text>-->
-                    <!--<hr>-->
-                    <!--<pre>{{storeTask}}</pre>-->
-                    <!--</v-card-text>-->
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn flat @click="dialog = false">закрыть</v-btn>
+                    </v-card-actions>
+
                 </div>
             </v-card>
         </v-dialog>
