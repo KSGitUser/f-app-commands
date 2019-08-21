@@ -37,13 +37,33 @@
                     </v-btn>
                 </template>
 
-                <v-card>
-                    <form class="pa-3">
-                        <v-select v-model="bf"
-                                  :items="bfOptions"
-                                  label="выберите фон"
-                        ></v-select>
-                    </form>
+                <v-card style="width: 200px" class="pa-1">
+                    <p class="title pa-2">Выберите фон:</p>
+                    <v-img v-for="(el, idx) in bfOptions"
+                           :key="idx"
+                           :src="el.value"
+                           :lazy-src="el.value"
+                           aspect-ratio="1"
+                           class="grey lighten-2 ma-2"
+                           @click="bf=el.value"
+                    >
+                        <template v-slot:placeholder>
+                            <v-layout
+                                    fill-height
+                                    align-center
+                                    justify-center
+                                    ma-0
+                            >
+                                <v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>
+                            </v-layout>
+                        </template>
+                    </v-img>
+                    <!--<form class="pa-3">-->
+                        <!--<v-select v-model="bf"-->
+                                  <!--:items="bfOptions"-->
+                                  <!--label="выберите фон"-->
+                        <!--&gt;</v-select>-->
+                    <!--</form>-->
                 </v-card>
             </v-menu>
 
@@ -54,7 +74,7 @@
         >
 
             <div
-                    class="scrollbar-box mt mt-5 mb-5 mr-2 ml-2"
+                    class="scrollbar-box mt mt-5 mb-4 mr-2 ml-2"
                     v-for="column in columns"
                     :key="column.id"
             >
@@ -77,10 +97,13 @@
                                 v-for="element in column.tasks"
                                 :key="element.id"
                                 @click=""
+                                v-show="element.labels.indexOf(labelActiv) !== -1 || !filterOff"
                         >
-                            <!--<p class="body-2">{{ element.title }}</p>-->
 
-                            <task-box :columnId="column.id" :task="element"></task-box>
+                            <task-box
+                                    :columnId="column.id"
+                                    :task="element"
+                            ></task-box>
 
                             <!--<v-chip class="caption" v-for="(el, idx) in 2">ярлык {{idx+1}}</v-chip>-->
                         </div>
@@ -216,6 +239,12 @@
       boardId () {
         return this.$store.getters.boardId
       },
+      labelActiv () {
+        return this.$store.getters.labelActiv
+      },
+      filterOff() {
+        return this.$store.getters.filterOff
+      },
     }
   }
 </script>
@@ -242,14 +271,14 @@
     .item {
         border: 1px solid #b3b3b3;
         border-radius: 3px;
-        background: #eeeeee;
+        //background: #eeeeee;
         padding: 10px;
         margin: 5px;
         transition: background-color .3s;
         cursor: pointer;
 
         &:hover {
-            background: #d6d6d6;
+            background: rgba(238, 238, 238, 0.79);
         }
     }
 

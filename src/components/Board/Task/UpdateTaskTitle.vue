@@ -19,7 +19,7 @@
     </div>
 
 
-    <v-layout
+    <div
             class="w100"
             v-else
     >
@@ -29,36 +29,42 @@
                 v-model="valid"
                 lazy-validation
         >
-            <v-text-field
+            <v-textarea
                     class="w100"
                     name="name"
                     type="text"
                     v-model="taskName"
                     required
+                    auto-grow
+                    rows="1"
                     :rules="taskNameRules"
-                    @keypress.enter.prevent
-                    @keypress.enter="saveNewTaskTitle"
+                    :loading="loading"
+                    :disabled="loading"
                     :autofocus="true"
-            ></v-text-field>
+                    @keypress.enter="saveNewTaskTitle"
+            ></v-textarea>
         </v-form>
+        <v-card-actions v-if="!loading" style="margin-top: -20px">
+            <v-spacer></v-spacer>
+            <v-btn
+                    icon
+                    v-if="taskTitle.trim() !== taskName.trim()"
+                    @click="saveNewTaskTitle"
+                    :loading="loading"
+                    :disabled="loading"
+            >
+                <v-icon>done</v-icon>
+            </v-btn>
+            <v-btn
+                    icon
+                    @click="update=false"
+                    :disabled="loading"
+            >
+                <v-icon>reply</v-icon>
+            </v-btn>
+        </v-card-actions>
 
-        <v-btn
-                icon
-                v-if="taskTitle.trim() !== taskName.trim()"
-                @click="saveNewTaskTitle"
-                :loading="loading"
-                :disabled="loading"
-        >
-            <v-icon>done</v-icon>
-        </v-btn>
-        <v-btn
-                icon
-                @click="update=false"
-                :disabled="loading"
-        >
-            <v-icon>reply</v-icon>
-        </v-btn>
-    </v-layout>
+    </div>
 
 </template>
 

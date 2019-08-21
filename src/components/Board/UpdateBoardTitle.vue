@@ -31,6 +31,8 @@
                     type="text"
                     v-model="boardName"
                     required
+                    :loading="loading"
+                    :disabled="loading"
                     :rules="boardNameRules"
                     @keypress.enter.prevent
                     @keypress.enter="saveNewBoardTitle"
@@ -40,7 +42,7 @@
 
         <v-btn
                 icon
-                v-if="boardTitle.trim() !== boardName.trim()"
+                v-if="boardTitle.trim() !== boardName.trim() && !loading"
                 @click="saveNewBoardTitle"
                 :loading="loading"
                 :disabled="loading"
@@ -48,6 +50,7 @@
             <v-icon>done</v-icon>
         </v-btn>
         <v-btn
+                v-if="!loading"
                 icon
                 @click="update=false"
                 :disabled="loading"
@@ -107,10 +110,11 @@
 </script>
 
 <style scoped>
-.w100{
-    width: 100%;
-}
-    .mw500{
+    .w100 {
+        width: 100%;
+    }
+
+    .mw500 {
         max-width: 500px;
     }
 </style>
