@@ -124,8 +124,9 @@
                 <v-flex>
                     <v-list-tile-action>
                         <v-checkbox
-                                v-model="listItemExecution"
+                                :input-value="listItemExecution(listItem.id)"
                                 :label="listItem.title"
+                                @change="updateListItemExecution(listItem.id, listItem.execution)"
                         ></v-checkbox>
                     </v-list-tile-action>
                 </v-flex>
@@ -136,6 +137,7 @@
                 >
                     <v-icon>edit</v-icon>
                 </v-btn>
+
             </v-list-tile>
         </v-list>
     </div>
@@ -148,7 +150,6 @@
     data: () => ({
       inputNewListItem: false,
       updateTitle: false,
-      listItemExecution: false,
       valid: false,
       listItemName: '',
       updateListItemName: '',
@@ -164,6 +165,9 @@
       },
       listItems () {
         return this.$store.getters.listItems
+      },
+      listItemExecution () {
+        return this.$store.getters.listItemExecution
       }
     },
     methods: {
@@ -193,7 +197,7 @@
         if (this.$refs.formUpdateListItemTitle.validate()) {
           const newData = {
             title: this.updateListItemName.trim(),
-            id: +this.updateListItemId
+            id: +this.updateListItemId,
           }
           const {commit, dispatch} = this.$store
           commit('setLoading', true)
@@ -204,7 +208,23 @@
           commit('setLoading', false)
         }
       },
-    },
+      async updateListItemExecution (id, execution) {
+        if (execution === 1) {
+          execution = 0
+        } else execution = 1
+
+        const Data = {
+          id,
+          execution,
+        }
+        const {commit, dispatch} = this.$store
+        commit('setLoading', true)
+        const result = await dispatch('updateListItemExecution', Data)
+        if (result === 1) {
+          commit('setLoading', false)
+        }
+      }
+    }
   }
 </script>
 
