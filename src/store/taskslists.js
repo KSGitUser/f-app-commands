@@ -60,7 +60,6 @@ export default {
     },
     setListItems (state) {
       state.listItems = state.list.listItems
-      console.log('setListItems', state.listItems)
     },
     updateTaskLabels (state, payload) {
       const idxCol = state.columns.findIndex(el => +el.id === +payload.columnId)
@@ -72,6 +71,10 @@ export default {
     updateListItemTitle (state, {title, id}) {
       const listItem = state.listItems.filter(listItem => +listItem.id === id)
       listItem[0].title = title
+    },
+    updateListItemExecution (state, payload) {
+      const listItem = state.listItems.filter(listItem => +listItem.id === payload.id)
+      listItem[0].execution = payload.execution
     }
   },
   actions: {
@@ -567,22 +570,36 @@ export default {
           }
         )
     },
-    async updateTasksList ({commit, getters}, payload) {
-      return fetch(`${URL}/api/v1/task/change-position`, {
+    async updateListItemExecution ({commit, getters}, payload) {
+      return fetch(`${URL}/api/v1/list-item/${payload.id}`, {
         mode: 'cors',
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
           'Access-Control-Allow-Origin': '*',
           'Access-Control-Allow-Headers': '*',
-          'Authorization': getters.user,
+          'Authorization': getters.user
         },
         method: 'PATCH',
         body: JSON.stringify(payload)
       })
         .then(response => {
-          console.log("response =>", response.json());
-          })
+          commit('setUserHeader', response)
+          return response.json()
+        }).then(result => {
+          if (result.status === 1) {
+            commit('updateListItemExecution', payload)
+          } else if (result.status === -1) {
+            commit('clearSnackbar')
+            commit('setSnackbarMsg', Object.values(result.message).join('; '))
+            commit('setSnackbarType', 'error')
+          } else if (result.status === 401) {
+            commit('clearSnackbar')
+            commit('setSnackbarMsg', 'Требуется авторизация')
+            commit('setSnackbarType', 'error')
+          }
+          return result.status
+        })
         .catch(
           error => {
             console.error(error)
@@ -605,6 +622,12 @@ export default {
     },
     listItems (state) {
       return state.listItems
+    },
+    listItemExecution (state) {
+      return listItemId => {
+        const listItem = state.listItems.filter(listItems => +listItems.id === +listItemId)
+        return listItem[0].execution === 1
+      }
     }
   }
 }
