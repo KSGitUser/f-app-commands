@@ -52,16 +52,8 @@
                 ></v-textarea>
             </v-form>
 
-            <v-card-actions style="margin-top: -20px">
-                <v-spacer></v-spacer>
-                <v-btn
-                        icon
-                        small
-                        @click="update=false"
-                        :disabled="loading"
-                >
-                    <v-icon>reply</v-icon>
-                </v-btn>
+            <v-layout style="margin-top: -20px">
+<v-spacer></v-spacer>
                 <v-btn
                         icon
                         small
@@ -72,7 +64,15 @@
                 >
                     <v-icon>done</v-icon>
                 </v-btn>
-            </v-card-actions>
+                <v-btn
+                        icon
+                        small
+                        @click="update=false"
+                        :disabled="loading"
+                >
+                    <v-icon>reply</v-icon>
+                </v-btn>
+            </v-layout>
 
         </div>
     </div>

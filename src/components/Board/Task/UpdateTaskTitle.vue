@@ -1,25 +1,23 @@
 <template>
-    <div v-if="!update"
-         @click="updateForm"
-         :disabled="loading"
-         style="display: flex; cursor: pointer"
-         class="w100"
-    >
+
+    <div v-if="!update" style="display: flex" class="w100">
         <div class="w100">
             <h4>
                 {{taskTitle}}
             </h4>
         </div>
-        <!--<div>-->
-            <!--<v-btn-->
-                    <!--@click="updateForm"-->
-                    <!--:disabled="loading"-->
-                    <!--icon-->
-            <!--&gt;-->
-                <!--<v-icon>edit</v-icon>-->
-            <!--</v-btn>-->
-        <!--</div>-->
+        <div>
+            <v-btn
+                    @click="updateForm"
+                    :disabled="loading"
+                    icon
+            >
+                <v-icon>edit</v-icon>
+            </v-btn>
+        </div>
+
     </div>
+
 
     <div
             class="w100"
@@ -38,7 +36,6 @@
                     v-model="taskName"
                     required
                     auto-grow
-                    label="Задача"
                     rows="1"
                     :rules="taskNameRules"
                     :loading="loading"
@@ -47,15 +44,8 @@
                     @keypress.enter="saveNewTaskTitle"
             ></v-textarea>
         </v-form>
-        <v-card-actions v-if="!loading" style="margin-top: -20px; margin-bottom: -15px">
+        <v-card-actions v-if="!loading" style="margin-top: -20px">
             <v-spacer></v-spacer>
-            <v-btn
-                    icon
-                    @click="update=false"
-                    :disabled="loading"
-            >
-                <v-icon>reply</v-icon>
-            </v-btn>
             <v-btn
                     icon
                     v-if="taskTitle.trim() !== taskName.trim()"
@@ -64,6 +54,13 @@
                     :disabled="loading"
             >
                 <v-icon>done</v-icon>
+            </v-btn>
+            <v-btn
+                    icon
+                    @click="update=false"
+                    :disabled="loading"
+            >
+                <v-icon>reply</v-icon>
             </v-btn>
         </v-card-actions>
 

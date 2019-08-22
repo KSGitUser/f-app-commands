@@ -17,7 +17,7 @@
                 <v-text-field
                         prepend-icon="person"
                         name="email"
-                        label="Логин"
+                        label="Имя"
                         type="text"
                         v-model="name"
                         :rules="nameRules"

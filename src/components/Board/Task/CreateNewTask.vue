@@ -14,8 +14,9 @@
                 v-else
                 class="pa-2"
         >
+            <hr>
             <v-form
-                    @blur="formAction=false"
+
                     class="w100"
                     ref="form"
                     v-model="valid"
@@ -42,19 +43,19 @@
                 <v-btn
                         icon
                         small
-                        @click="formAction=!formAction"
-                        :disabled="loading"
-                >
-                    <v-icon>close</v-icon>
-                </v-btn>
-                <v-btn
-                        icon
-                        small
                         @click="addCard"
                         :loading="loading"
                         :disabled="loading"
                 >
                     <v-icon>done</v-icon>
+                </v-btn>
+                <v-btn
+                        icon
+                        small
+                        @click="formAction=!formAction"
+                        :disabled="loading"
+                >
+                    <v-icon>close</v-icon>
                 </v-btn>
             </v-card-actions>
         </div>

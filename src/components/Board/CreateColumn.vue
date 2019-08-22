@@ -29,7 +29,6 @@
                         @keypress.enter.prevent
                         @keypress.enter="createNewColumn"
                         :autofocus="true"
-                        @blur="columnForm=false"
                 ></v-textarea>
             </v-form>
             <v-card-actions
@@ -40,19 +39,19 @@
                 <v-btn
                         icon
                         small
-                        @click="columnForm=!columnForm"
-                        :disabled="loading"
-                >
-                    <v-icon>close</v-icon>
-                </v-btn>
-                <v-btn
-                        icon
-                        small
                         @click="createNewColumn"
                         :loading="loading"
                         :disabled="loading"
                 >
                     <v-icon>done</v-icon>
+                </v-btn>
+                <v-btn
+                        icon
+                        small
+                        @click="columnForm=!columnForm"
+                        :disabled="loading"
+                >
+                    <v-icon>close</v-icon>
                 </v-btn>
             </v-card-actions>
         </div>

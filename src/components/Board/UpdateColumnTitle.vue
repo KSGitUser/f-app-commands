@@ -3,22 +3,18 @@
 
         <v-flex v-if="!update">
             <div>
-                <div
-                        :disabled="loading"
-                        @click="updateForm"
-                        class="title align-start"
-                        style="display: flex; cursor: pointer">
+                <div class="title align-start" style="display: flex">
                     {{column.title}}
-                    <!--<v-spacer></v-spacer>-->
-                    <!--<v-btn-->
-                    <!--class="ma-0"-->
-                    <!--icon-->
-                    <!--small-->
-                    <!--:disabled="loading"-->
-                    <!--@click="updateForm"-->
-                    <!--&gt;-->
-                    <!--<v-icon>more_vert</v-icon>-->
-                    <!--</v-btn>-->
+                    <v-spacer></v-spacer>
+                    <v-btn
+                            class="ma-0"
+                            icon
+                            small
+                            :disabled="loading"
+                            @click="updateForm"
+                    >
+                        <v-icon>more_vert</v-icon>
+                    </v-btn>
                 </div>
             </div>
         </v-flex>
@@ -44,19 +40,10 @@
                         :rules="columnNameRules"
                         @keypress.enter.prevent
                         @keypress.enter="saveNewColumnTitle"
-                        :autofocus="true"
                 ></v-textarea>
             </v-form>
-            <v-card-actions v-if="!loading" style="margin-top: -20px; margin-bottom: -20px">
+            <v-card-actions v-if="!loading" style="margin-top: -20px">
                 <v-spacer></v-spacer>
-                <v-btn
-                        icon
-                        small
-                        @click="update=false"
-                        :disabled="loading"
-                >
-                    <v-icon>reply</v-icon>
-                </v-btn>
                 <v-btn
                         icon
                         small
@@ -66,6 +53,15 @@
                         :disabled="loading"
                 >
                     <v-icon>done</v-icon>
+                </v-btn>
+                <br>
+                <v-btn
+                        icon
+                        small
+                        @click="update=false"
+                        :disabled="loading"
+                >
+                    <v-icon>reply</v-icon>
                 </v-btn>
             </v-card-actions>
         </v-flex>
@@ -121,7 +117,7 @@
 </script>
 
 <style scoped>
-    .w100 {
-        width: 100%;
-    }
+.w100{
+    width: 100%;
+}
 </style>
