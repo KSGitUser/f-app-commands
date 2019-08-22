@@ -24,6 +24,8 @@
                         label="Список"
                         type="text"
                         required
+                        auto-grow
+                        rows="1"
                         v-model="listTitle"
                         :rules="listTitleRules"
                         @keypress.enter.prevent
@@ -31,20 +33,19 @@
                         :autofocus="true"
                 ></v-textarea>
             </v-form>
-            <v-card-actions>
+            <v-card-actions style="margin-top: -20px">
                 <v-spacer></v-spacer>
                 <v-btn
                         icon
-                        small
                         @click="addList"
                         :loading="loading"
                         :disabled="loading"
                 >
                     <v-icon>done</v-icon>
                 </v-btn>
+                <br>
                 <v-btn
                         icon
-                        small
                         @click="formAction=!formAction"
                         :disabled="loading"
                 >

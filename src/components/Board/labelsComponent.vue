@@ -163,7 +163,9 @@
                             v-if="labels.length === 0"
                     >
                         <v-flex>
-                            <v-list-tile-action>
+                            <v-list-tile-action
+                                    @click="inputNewLabel=!inputNewLabel"
+                            >
                                 Создайте первый ярлык
                             </v-list-tile-action>
                         </v-flex>

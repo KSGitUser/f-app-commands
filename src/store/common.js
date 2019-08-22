@@ -5,6 +5,7 @@ export default {
   },
   mutations: {
     setLoading (state, payload) {
+      console.log('setLoading===', payload)
       state.loading = payload
     },
     setError (state, payload) {

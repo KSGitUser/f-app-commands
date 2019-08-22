@@ -17,6 +17,7 @@
 
     <v-layout
             class="w100 mw500"
+            style="margin-top: 15px"
             v-else
     >
         <v-form

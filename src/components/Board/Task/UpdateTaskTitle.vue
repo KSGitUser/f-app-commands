@@ -1,7 +1,11 @@
 <template>
 
     <div v-if="!update" style="display: flex" class="w100">
-        <div class="w100">
+        <div
+                @click="updateForm"
+                class="w100"
+                style="cursor: pointer"
+        >
             <h4>
                 {{taskTitle}}
             </h4>
@@ -17,7 +21,6 @@
         </div>
 
     </div>
-
 
     <div
             class="w100"
@@ -35,6 +38,7 @@
                     type="text"
                     v-model="taskName"
                     required
+                    label="Задача"
                     auto-grow
                     rows="1"
                     :rules="taskNameRules"
@@ -44,7 +48,7 @@
                     @keypress.enter="saveNewTaskTitle"
             ></v-textarea>
         </v-form>
-        <v-card-actions v-if="!loading" style="margin-top: -20px">
+        <v-card-actions v-if="!loading" style="margin: -20px 0 -15px 0">
             <v-spacer></v-spacer>
             <v-btn
                     icon
