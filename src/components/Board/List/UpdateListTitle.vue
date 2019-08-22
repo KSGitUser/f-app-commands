@@ -37,6 +37,7 @@
                     required
                     :rules="listNameRules"
                     @keypress.enter.prevent
+                    @keypress.enter="saveNewListTitle"
                     :autofocus="true"
             ></v-text-field>
         </v-form>
