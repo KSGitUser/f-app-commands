@@ -26,6 +26,8 @@
                         required
                         v-model="listTitle"
                         :rules="listTitleRules"
+                        @keypress.enter.prevent
+                        @keypress.enter="addList"
                         :autofocus="true"
                 ></v-textarea>
             </v-form>

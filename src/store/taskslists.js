@@ -468,7 +468,12 @@ export default {
         }).then(result => {
           console.log(result)
           if (result.status === 1) {
-            commit('addListItem', payload)
+            const newData = {
+              id: result.data.id,
+              title: payload.title,
+              id_list: payload.id_list
+            }
+            commit('addListItem',newData)
           } else if (result.status === -1) {
             commit('clearSnackbar')
             commit('setSnackbarMsg', Object.values(result.message).join('; '))

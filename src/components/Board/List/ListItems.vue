@@ -40,6 +40,7 @@
                                     required
                                     :rules="listItemRules"
                                     @keypress.enter.prevent
+                                    @keypress.enter="addListItem"
                                     :autofocus="true"
                             ></v-text-field>
                         </v-form>
