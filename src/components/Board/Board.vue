@@ -42,61 +42,69 @@
 
             </v-toolbar>
 
-            <div class="root-box pre style-1" :style="{'background': `url('${bf}')`}">
-                <div class="scrollbar-box mt mt-5 mb-5 mr-2 ml-2" v-for="(column, index) in columns" :key="column.id">
+            <div class="root-box style-1" :style="{'background': `url('${bf}')`}">
+                <draggable class="pre" v-model="columns">
+                    <!--      -->
+                    <div class="scrollbar-box mt mt-5 mb-5 mr-2 ml-2" v-for="(column, index) in columns" :key="column.id">
 
-                    <div class="fff column">
-                        <update-column-title :column="column"></update-column-title>
-                    </div>
+                        <div class="fff column">
+                            <update-column-title :column="column"></update-column-title>
+                        </div>
 
-                    <div class="scrollbar fff column style-1  pa-1">
-                        <!--<draggable-->
-                        <!--id="first"-->
-                        <!--data-source="juju"-->
-                        <!--:list="column.tasks"-->
-                        <!--draggable=".item"-->
-                        <!--group="a"-->
-                        <!--&gt;-->
+                        <div class="scrollbar fff column style-1  pa-1">
+                            <!--<draggable-->
+                            <!--id="first"-->
+                            <!--data-source="juju"-->
+                            <!--:list="column.tasks"-->
+                            <!--draggable=".item"-->
+                            <!--group="a"-->
+                            <!--&gt;-->
 
-                        <draggable v-model="column.tasks" @change="onTaskMoved($event, column)">
-                            <transition-group>
-                                <div class="item" v-for="element in column.tasks" :key="element.id" @click="" v-show="element.labels.indexOf(labelActiv) !== -1 || !filterOff">
-                                    <!--<p class="body-2">{{ element.title }}</p>-->
+                            <draggable v-model="column.tasks" @change="onTaskMoved($event, column)">
+                                <transition-group>
+                                    <div class="item" v-for="element in column.tasks" :key="element.id" @click="" v-show="element.labels.indexOf(labelActiv) !== -1 || !filterOff">
+                                        <!--<p class="body-2">{{ element.title }}</p>-->
 
-                                    <task-box :columnId="column.id" :task="element">
-                                    </task-box>
+                                        <task-box :columnId="column.id" :task="element">
+                                        </task-box>
 
-                                    <!--<v-chip class="caption" v-for="(el, idx) in 2">ярлык {{idx+1}}</v-chip>-->
+                                        <!--<v-chip class="caption" v-for="(el, idx) in 2">ярлык {{idx+1}}</v-chip>-->
+                                    </div>
+                                </transition-group>
+                            </draggable>
+                            <!--</draggable>-->
+                            <!--<pre> {{ column.tasks }} </pre>-->
+                        </div>
+                        <create-new-task class="fff column" :id="column.id">
+                        </create-new-task>
+
+                        <div class="scrollbar fff column style-1  pa-1">
+                            <draggable id="second" data-source="juju" :list="column.lists" draggable=".item" group="a">
+                                <div class="item" v-for="element in column.lists" :key="element.id" @click="">
+                                    <list-box :columnId="column.id" :list="element">
+                                    </list-box>
                                 </div>
-                            </transition-group>
-                        </draggable>
-                        <!--</draggable>-->
-                        <!--<pre> {{ column.tasks }} </pre>-->
-                    </div>
-                    <create-new-task class="fff column" :id="column.id">
-                    </create-new-task>
+                            </draggable>
+                        </div>
 
-                    <div class="scrollbar fff column style-1  pa-1">
-                        <draggable id="second" data-source="juju" :list="column.lists" draggable=".item" group="a">
-                            <div class="item" v-for="element in column.lists" :key="element.id" @click="">
-                                <list-box :columnId="column.id" :list="element">
-                                </list-box>
-                            </div>
-                        </draggable>
+                        <create-new-list class="fff column" :id="column.id"></create-new-list>
+
                     </div>
 
-                    <create-new-list class="fff column" :id="column.id"></create-new-list>
 
-                </div>
 
-                <!--добавить столбец-->
 
-                <div class="scrollbar-box mt mb-5 mr-2 ml-2" style="padding-right: 10px">
-                    <v-card>
-                        <create-column class="w100" :id="id"></create-column>
-                    </v-card>
-                </div>
+
+                    <!--добавить столбец-->
+
+                    <div class="scrollbar-box mt mb-5 mr-2 ml-2" slot="footer" style="padding-right: 10px">
+                        <v-card>
+                            <create-column class="w100" :id="id"></create-column>
+                        </v-card>
+                    </div>
+                </draggable>
             </div>
+            <!-- </div> -->
         </div>
     </div>
 </template>
@@ -151,19 +159,17 @@
             onTaskMoved: async function ($event, column) {
                 let oldIndex = $event.moved.oldIndex;
                 let newIndex = $event.moved.newIndex;
-                if (oldIndex < newIndex) {
-                    column.tasks[newIndex].position = ++column.tasks[oldIndex]
-                        .position;
-                } else if ($event.moved.oldIndex > $event.moved.newIndex) {
-                    column.tasks[newIndex].position =
-                        column.tasks[oldIndex].position;
+                if (newIndex !== 0) {
+                    column.tasks[newIndex].position = column.tasks[newIndex - 1].position + 10;
+                } else {
+                    column.tasks[newIndex].position = column.tasks[newIndex + 1].position - 10;
                 }
-
                 const taskToMove = {
-                    id: $event.moved.element.id,
-                    position: $event.moved.element.position,
-                    id_column: column.id
+                    id_column: column.id,
+                    id: column.tasks[newIndex].id,
+                    position: column.tasks[newIndex].position,
                 };
+                console.log("task to move=>", taskToMove)
                 await this.$store.dispatch('updateTasksList', taskToMove);
             },
             add: function (idx) {
@@ -188,12 +194,6 @@
                     this.showMenu = true;
                 });
             },
-            sortTasksForDraggable() {
-                this.draggableArray = [...this.columns];
-                this.draggableArray.forEach(element => {
-                    element.tasks = _.sortBy(element.tasks, 'position');
-                });
-            }
         },
         mounted: function () {
             this.$nextTick(async () => {
@@ -212,16 +212,25 @@
                 }
                 commit('setLoading', false);
                 this.localLoading = false;
-
-                this.sortTasksForDraggable();
             });
         },
         computed: {
             labels() {
                 return this.$store.getters.labels;
             },
-            columns() {
-                return this.$store.getters.columns;
+            columns: {
+
+                get: function () {
+                    let unsortedColumns = this.$store.getters.columns;
+                    unsortedColumns.forEach(element => {
+                        return _.sortBy(element.tasks, ['position']);
+                    });
+                    console.log("Columns => ", unsortedColumns);
+                    return unsortedColumns;
+                },
+                set: function (val) {
+                    this.$store.commit('setColumns', val);
+                },
             },
             loading() {
                 return this.$store.getters.loading;
