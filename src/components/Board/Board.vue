@@ -212,6 +212,8 @@
         const {commit, dispatch} = this.$store
         commit('setLoading', true)
         this.localLoading = true
+        commit('setFilterOff', false)
+        commit('setLabelActiv', null)
         let res = await dispatch('fetchBoard', this.id)
         if (res === -1) {
           this.$router.push('/boards')
