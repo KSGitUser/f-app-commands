@@ -137,6 +137,7 @@
                 <v-flex>
                     <v-list-tile-action>
                         <v-checkbox
+                                :class="{done: listItem.execution === 1}"
                                 :input-value="listItemExecution(listItem.id)"
                                 :label="listItem.title"
                                 @change="updateListItemExecution(listItem.id, listItem.execution)"
@@ -245,5 +246,9 @@
 <style scoped>
     .inputListItem {
         width: 100%;
+    }
+
+    .done >>> label {
+        text-decoration: line-through;
     }
 </style>
