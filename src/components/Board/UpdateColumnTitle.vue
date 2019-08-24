@@ -42,6 +42,7 @@
                         :disabled="loading"
                         :rules="columnNameRules"
                         @keypress.enter.prevent
+                        :autofocus="true"
                         @keypress.enter="saveNewColumnTitle"
                 ></v-textarea>
             </v-form>

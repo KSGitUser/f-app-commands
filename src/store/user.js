@@ -17,14 +17,14 @@ export default {
     setUser (state, payload) {
       state.user = payload
       localStorage.setItem('user', payload)
-      console.log('====== SET USER ======== ', state.user)
+      //console.log('====== SET USER ======== ', state.user)
     },
     setUserHeader (state, payload) {
       const Authorization = payload.headers.get('Authorization')
       if (Authorization) {
         state.user = Authorization
         localStorage.setItem('user', Authorization)
-        console.log('====== USER Header ======== ', state.user)
+        //console.log('====== USER Header ======== ', state.user)
       }
     },
     setUserLogin (state, payload) {
@@ -55,7 +55,7 @@ export default {
         .then(response => response.json())
         .then(
           json => {
-            console.log(json)
+            //console.log(json)
             if (json.status === -1) {
               commit('clearSnackbar')
               commit('setSnackbarMsg', Object.values(json.message).join('; '))
@@ -178,7 +178,7 @@ export default {
         .then(response => response.json())
         .then(
           json => {
-            console.log(json)
+            //console.log(json)
           }
         )
         .catch(
@@ -210,7 +210,7 @@ export default {
         })
         .then(
           json => {
-            console.log(json)
+            //console.log(json)
             commit('setLoading', false)
             commit('setUserLogin', json.data.login)
             commit('setUserEmail', json.data.email)
@@ -246,7 +246,7 @@ export default {
         })
         .then(
           json => {
-            console.log(json)
+            //console.log(json)
             if (json.status === 401) {
               commit('setSnackbarMsg', 'Требуется авторизация')
               commit('setSnackbarType', 'error')
@@ -289,7 +289,7 @@ export default {
         })
         .then(
           json => {
-            console.log(json)
+            //console.log(json)
             if (json.status === 401) {
               commit('setSnackbarMsg', 'Требуется авторизация')
               commit('setSnackbarType', 'error')
@@ -332,7 +332,7 @@ export default {
         })
         .then(
           json => {
-            console.log(json)
+            //console.log(json)
             if (json.status === 401) {
               commit('setSnackbarMsg', 'Требуется авторизация')
               commit('setSnackbarType', 'error')

@@ -7,7 +7,7 @@
                 style="cursor: pointer"
         >
             <h4>
-                {{taskTitle}}
+                {{task.title}}
             </h4>
         </div>
         <div>
@@ -52,7 +52,7 @@
             <v-spacer></v-spacer>
             <v-btn
                     icon
-                    v-if="taskTitle.trim() !== taskName.trim()"
+                    v-if="task.title.trim() !== taskName.trim()"
                     @click="saveNewTaskTitle"
                     :loading="loading"
                     :disabled="loading"
@@ -75,7 +75,7 @@
 <script>
   export default {
     name: 'UpdateTaskTitle',
-    props: ['taskTitle', 'columnId', 'id'],
+    props: ['columnId'],
     data () {
       return {
         update: false,
@@ -91,13 +91,16 @@
       loading () {
         return this.$store.getters.loading
       },
+      task () {
+        return this.$store.getters.task
+      },
     },
     methods: {
       async saveNewTaskTitle () {
         if (this.$refs.form.validate()) {
           const newTitle = {
             title: this.taskName.trim(),
-            id: this.id,
+            id: this.task.id,
             columnId: this.columnId,
           }
           const {commit, dispatch} = this.$store
@@ -111,7 +114,7 @@
       },
       updateForm () {
         this.update = true
-        this.taskName = this.taskTitle
+        this.taskName = this.task.title
       },
     }
   }

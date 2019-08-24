@@ -14,9 +14,7 @@
 
     <div v-else class="demo">
 
-        <v-toolbar
-                style="position: absolute; z-index: 1; left: 0; right: 0"
-        >
+        <v-toolbar class="my-toolbar">
             <v-toolbar-title class="w100">
                 <update-board-title></update-board-title>
             </v-toolbar-title>
@@ -37,7 +35,7 @@
                     </v-btn>
                 </template>
 
-                <v-card style="width: 200px" class="pa-1">
+                <v-card class="pa-1 w200p">
                     <p class="title pa-2">Выберите фон:</p>
                     <v-img v-for="(el, idx) in bfOptions"
                            :key="idx"
@@ -58,23 +56,17 @@
                             </v-layout>
                         </template>
                     </v-img>
-                    <!--<form class="pa-3">-->
-                        <!--<v-select v-model="bf"-->
-                                  <!--:items="bfOptions"-->
-                                  <!--label="выберите фон"-->
-                        <!--&gt;</v-select>-->
-                    <!--</form>-->
                 </v-card>
             </v-menu>
 
         </v-toolbar>
 
-        <div class="root-box pre style-1"
+        <div class="root-box pre style-1 pl-2"
              :style="{'background': `url('${bf}')`}"
         >
 
             <div
-                    class="scrollbar-box mt mt-5 mb-4 mr-2 ml-2"
+                    class="scrollbar-box  mt-4 mb-4 mr-2 ml-2"
                     v-for="column in columns"
                     :key="column.id"
             >
@@ -84,62 +76,143 @@
                 </div>
 
                 <div class="scrollbar fff column style-1  pa-1">
+                    <div
+                            class="item"
+                            v-for="element in column.tasks"
+                            :key="element.id"
+                            v-show="element.labels.indexOf(labelActiv) !== -1 || !filterOff"
+                            @click="openTaskDialog(element, column.id)"
+                    >
 
-                    <!--<draggable-->
-                            <!--id="first"-->
-                            <!--data-source="juju"-->
-                            <!--:list="column.tasks"-->
-                            <!--draggable=".item"-->
-                            <!--group="a"-->
-                    <!--&gt;-->
-                        <div
-                                class="item"
-                                v-for="element in column.tasks"
-                                :key="element.id"
-                                @click=""
-                                v-show="element.labels.indexOf(labelActiv) !== -1 || !filterOff"
-                        >
+                        <task-box-mini :task="element"></task-box-mini>
 
-                            <task-box
-                                    :columnId="column.id"
-                                    :task="element"
-                            ></task-box>
-
-                            <!--<v-chip class="caption" v-for="(el, idx) in 2">ярлык {{idx+1}}</v-chip>-->
-                        </div>
-                    <!--</draggable>-->
-                    <!--<pre> {{ column.tasks }} </pre>-->
+                    </div>
                 </div>
                 <create-new-task class="fff column" :id="column.id"></create-new-task>
                 <div class="scrollbar fff column style-1  pa-1">
 
-                    <draggable
-                            id="second"
-                            data-source="juju"
-                            :list="column.lists"
-                            draggable=".item"
-                            group="a"
+                    <!--<draggable-->
+                    <!--id="second"-->
+                    <!--data-source="juju"-->
+                    <!--:list="column.lists"-->
+                    <!--draggable=".item"-->
+                    <!--group="a"-->
+                    <!--&gt;-->
+                    <div
+                            class="item"
+                            v-for="element in column.lists"
+                            :key="element.id"
+                            @click="openListDialog(element, column.id)"
                     >
-                        <div
-                                class="item"
-                                v-for="element in column.lists"
-                                :key="element.id"
-                                @click=""
-                        >
-                            <list-box :columnId="column.id" :list="element"></list-box>
+                        <div class="title pa-1">
+                            {{element.title}}
                         </div>
-                    </draggable>
+                        <!--<list-box :columnId="column.id" :list="element"></list-box>-->
+
+                    </div>
+                    <!--</draggable>-->
                 </div>
                 <create-new-list class="fff column" :id="column.id"></create-new-list>
             </div>
             <!--добавить столбец-->
-            <div class="scrollbar-box mt mb-5 mr-2 ml-2" style="padding-right: 10px">
+            <div class="scrollbar-box mt-4 mb-5 mr-2 ml-2 pr-3">
                 <v-card>
                     <create-column class="w100" :id="id"></create-column>
                 </v-card>
             </div>
 
         </div>
+
+        <!-- Диалог работы с задачами -->
+        <v-dialog
+                v-model="dialogTask"
+                width="700"
+        >
+            <v-card>
+                <v-card-title
+                        class="headline  lighten-2"
+                >
+                    <update-task-title
+                            :columnId="taskActiv.columnId"
+                            :id="taskActiv.id"
+                    ></update-task-title>
+                </v-card-title>
+                <div
+                        v-if="loadingLocalTaskDialog"
+                        class="text-xs-center align-center mt-5"
+                >
+                    <v-progress-circular
+                            :size="100"
+                            :width="3"
+                            color="primary"
+                            indeterminate
+                    ></v-progress-circular>
+                    <br> <br> <br>
+                </div>
+                <div v-else>
+                    <v-divider></v-divider>
+
+                    <update-task-description></update-task-description>
+
+                    <v-divider></v-divider>
+
+                    <update-task-labels :columnId="taskActiv.columnId"></update-task-labels>
+
+                    <v-card-actions
+                            style="margin-top: -25px"
+                    >
+                        <v-spacer></v-spacer>
+                        <v-btn flat @click="dialogTask = false">Закрыть</v-btn>
+                    </v-card-actions>
+                </div>
+            </v-card>
+        </v-dialog>
+        <!---->
+
+        <!-- Диалог работы со списками -->
+        <v-dialog
+                v-model="dialogList"
+                width="700"
+        >
+            <v-card>
+                <v-card-title
+                        class="headline  lighten-2"
+                >
+                    <update-list-title
+                            :columnId="listActiv.columnId"
+                            :id="listActiv.list.id"
+                            :listTitle="listActiv.list.title"
+                            :list="listActiv.list"
+                    ></update-list-title>
+                </v-card-title>
+
+                <div
+                        v-if="loadingLocalListDialog"
+                        class="text-xs-center align-center mt-5"
+                >
+                    <v-progress-circular
+                            :size="100"
+                            :width="3"
+                            color="primary"
+                            indeterminate
+                    ></v-progress-circular>
+                    <br> <br> <br>
+                </div>
+                <div v-else>
+                    <v-card-text>
+                        <list-items :list="listActiv.list"></list-items>
+                    </v-card-text>
+                </div>
+                <v-card-actions
+                        style="margin-top: -25px"
+                >
+                    <v-spacer></v-spacer>
+                    <v-btn flat @click="dialogList = false">Закрыть</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+        <!---->
+
     </div>
 </template>
 
@@ -150,16 +223,25 @@
   import LabelsComponent from './labelsComponent'
   import UpdateColumnTitle from './UpdateColumnTitle'
   import CreateNewTask from './Task/CreateNewTask'
-  import TaskBox from './Task/TaskBox'
   import CreateNewList from './List/CreateNewList'
-  import ListBox from './List/ListBox'
+  import TaskBoxMini from './Task/TaskBoxMini'
+  import UpdateTaskDescription from './Task/UpdateTaskDescription'
+  import UpdateTaskTitle from './Task/UpdateTaskTitle'
+  import UpdateTaskLabels from './Task/UpdateTaskLabels'
+  import UpdateListTitle from './List/UpdateListTitle'
+  import ListItems from './List/ListItems'
 
   export default {
     props: ['id'],
     name: 'Board',
     order: 14,
     components: {
-      TaskBox,
+      ListItems,
+      UpdateListTitle,
+      UpdateTaskLabels,
+      UpdateTaskTitle,
+      UpdateTaskDescription,
+      TaskBoxMini,
       CreateNewTask,
       UpdateColumnTitle,
       LabelsComponent,
@@ -167,7 +249,6 @@
       draggable,
       UpdateBoardTitle,
       CreateNewList,
-      ListBox
     },
     data () {
       return {
@@ -175,6 +256,19 @@
         newCollumnDialog: false,
         updateBoardTitleDialog: false,
         dialog: false,
+        dialogTask: false,
+        dialogList: false,
+        loadingLocalTaskDialog: false,
+        loadingLocalListDialog: false,
+        taskActiv: {
+          id: '',
+          taskTitle: '',
+          columnId: '',
+        },
+        listActiv: {
+          list: '',
+          columnId: '',
+        },
         bf: 'https://cdn.vuetifyjs.com/images/parallax/material2.jpg',
         bfOptions: [
           {
@@ -205,7 +299,32 @@
         this.$nextTick(() => {
           this.showMenu = true
         })
-      }
+      },
+      async openTaskDialog (task, columnId) {
+        this.taskActiv = {
+          columnId: columnId,
+          id: task.id,
+        }
+
+        const {commit, dispatch} = this.$store
+        this.dialogTask = true
+        this.loadingLocalTaskDialog = true
+        commit('setLoading', true)
+        await dispatch('fetchTask', task.id)
+        this.loadingLocalTaskDialog = false
+        commit('setLoading', false)
+      },
+      async openListDialog (list, columnId) {
+        this.listActiv = {list, columnId}
+
+        const {commit, dispatch} = this.$store
+        this.dialogList = true
+        this.loadingLocalListDialog = true
+        commit('setLoading', true)
+        await dispatch('fetchList', list.id)
+        this.loadingLocalListDialog = false
+        commit('setLoading', false)
+      },
     },
     mounted: function () {
       this.$nextTick(async () => {
@@ -244,7 +363,7 @@
       labelActiv () {
         return this.$store.getters.labelActiv
       },
-      filterOff() {
+      filterOff () {
         return this.$store.getters.filterOff
       },
     }
@@ -273,7 +392,6 @@
     .item {
         border: 1px solid #b3b3b3;
         border-radius: 3px;
-        //background: #eeeeee;
         padding: 10px;
         margin: 5px;
         transition: background-color .3s;
@@ -369,4 +487,9 @@
     .mt {
         margin-top: 75px !important;
     }
+
+    .w200p {
+        width: 200px;
+    }
+
 </style>

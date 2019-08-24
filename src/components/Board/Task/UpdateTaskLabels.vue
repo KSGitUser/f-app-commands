@@ -31,6 +31,7 @@
 
     <div
             class="w100 pa-3"
+            style="display: flex"
             v-else
     >
         <v-form class="w100">
@@ -64,7 +65,7 @@
 
 
         </v-form>
-        <v-card-actions v-if="!loading" style="margin-top: -20px">
+        <v-card-actions v-if="!loading" style="margin-top: -20px; display: flex; align-items: flex-end">
             <v-spacer></v-spacer>
             <v-btn
                     icon

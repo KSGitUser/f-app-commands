@@ -10,12 +10,12 @@ export default {
   mutations: {
     setColumns (state, payload) {
       state.columns = [...payload]
-      console.log('state.columns', payload)
+      //console.log('state.columns', payload)
     },
     addColumns (state, payload) {
       state.columns = state.columns.concat(payload)
-      console.log('state.columns add', payload)
-      console.log('state.columns', state.columns)
+      //console.log('state.columns add', payload)
+      //console.log('state.columns', state.columns)
     },
     updateColumn (state, payload) {
       const idx = state.columns.findIndex(el => +el.id === +payload.id)
@@ -36,7 +36,7 @@ export default {
     setTask (state, payload) {
       payload.description = payload.description !== null ? payload.description : ''
       state.task = payload
-      console.log('state.task', payload)
+      //console.log('state.task', payload)
     },
     setList (state, payload) {
       state.list = payload
@@ -95,7 +95,7 @@ export default {
           commit('setUserHeader', response)
           return response.json()
         }).then(result => {
-          console.log(result)
+          //console.log(result)
           if (result.status === 1) {
             payload.id = result.data.id
             payload.lists = []
@@ -138,7 +138,7 @@ export default {
           commit('setUserHeader', response)
           return response.json()
         }).then(result => {
-          console.log('updateLabel', result)
+          //console.log('updateLabel', result)
           if (result.status === 1) {
             commit('updateColumn', payload)
           } else if (result.status === -1) {
@@ -178,7 +178,7 @@ export default {
           commit('setUserHeader', response)
           return response.json()
         }).then(result => {
-          console.log(result)
+          //console.log(result)
           if (result.status === 1) {
             payload.id = result.data.id
             payload.position = result.data.position
@@ -223,7 +223,7 @@ export default {
           return response.json()
         })
         .then(json => {
-            console.log('json ', json)
+            //console.log('json ', json)
             if (json.status === 1) {
               commit('setTask', json.data)
             } else if (json.status === -1) {
@@ -263,7 +263,7 @@ export default {
           commit('setUserHeader', response)
           return response.json()
         }).then(result => {
-          console.log(result)
+          //console.log(result)
           if (result.status === 1) {
             payload.id = result.data.id
             payload.position = result.data.position
@@ -306,7 +306,7 @@ export default {
           return response.json()
         })
         .then(json => {
-            console.log('json ', json)
+            //console.log('json ', json)
             if (json.status === 1) {
               commit('setList', json.data)
               commit('setListItems')
@@ -347,7 +347,7 @@ export default {
           commit('setUserHeader', response)
           return response.json()
         }).then(result => {
-          console.log('updateLabel', result)
+          //console.log('updateLabel', result)
           if (result.status === 1) {
             commit('updateTaskTitle', payload)
           } else if (result.status === -1) {
@@ -387,7 +387,7 @@ export default {
           commit('setUserHeader', response)
           return response.json()
         }).then(result => {
-          console.log(result)
+          //console.log(result)
           if (result.status === 1) {
             commit('updateTaskDescription', payload)
           } else if (result.status === -1) {
@@ -466,7 +466,7 @@ export default {
           commit('setUserHeader', response)
           return response.json()
         }).then(result => {
-          console.log(result)
+          //console.log(result)
           if (result.status === 1) {
             const newData = {
               id: result.data.id,
@@ -511,7 +511,7 @@ export default {
           commit('setUserHeader', response)
           return response.json()
         }).then(result => {
-          console.log(result)
+          //console.log(result)
           if (result.status === 1) {
             commit('updateTaskLabels', payload)
           } else if (result.status === -1) {
@@ -535,7 +535,7 @@ export default {
         )
     },
     async updateListItemTitle ({commit, getters}, payload) {
-      console.log(payload)
+      //console.log(payload)
       return fetch(`${URL}/api/v1/list-item/${payload.id}`, {
         mode: 'cors',
         headers: {

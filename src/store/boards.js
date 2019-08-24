@@ -10,25 +10,25 @@ export default {
   mutations: {
     setBoards (state, payload) {
       state.boards = [...payload]
-      console.log('state.boards', payload)
+      //console.log('state.boards', payload)
     },
     addBoards (state, payload) {
       state.boards = state.boards.concat(payload)
-      console.log('state.boards add', payload)
-      console.log('state.boards', state.boards)
+      //console.log('state.boards add', payload)
+      //console.log('state.boards', state.boards)
     },
     setBoardTitle (state, payload) {
       state.title = payload
-      console.log('state.title', payload)
+      //console.log('state.title', payload)
     },
     setLabels (state, payload) {
       state.labels = [...payload]
-      console.log('state.labels', payload)
+      //console.log('state.labels', payload)
     },
     addLabels (state, payload) {
       state.labels = state.labels.concat(payload)
-      console.log('state.labels add', payload)
-      console.log('state.labels', state.labels)
+      //console.log('state.labels add', payload)
+      //console.log('state.labels', state.labels)
     },
     updateLabels (state, payload) {
       const idx = state.labels.findIndex(el => +el.id === +payload.id)
@@ -36,7 +36,7 @@ export default {
     },
     setBoardId (state, payload) {
       state.boardId = +payload
-      console.log('state.boardId', +payload)
+      //console.log('state.boardId', +payload)
     },
   },
   actions: {
@@ -58,7 +58,7 @@ export default {
           return response.json()
         })
         .then(json => {
-            console.log('json ', json)
+            //console.log('json ', json)
             if (json.status === 1) {
               const {title, columns, labels, id} = json.data
               commit('setBoardTitle', title)
@@ -103,7 +103,7 @@ export default {
           return response.json()
         })
         .then(json => {
-            console.log('json ', json)
+            //console.log('json ', json)
             if (json.status === 1) {
               commit('setBoards', json.data.boards)
             } else if (json.status === 401) {
@@ -140,7 +140,7 @@ export default {
           commit('setUserHeader', response)
           return response.json()
         }).then(result => {
-          console.log(result)
+          //console.log(result)
           if (result.status === 1) {
             payload.id = result.data.id
             commit('addBoards', payload)
@@ -183,7 +183,7 @@ export default {
           commit('setUserHeader', response)
           return response.json()
         }).then(result => {
-          console.log(result)
+          //console.log(result)
           if (result.status === 1) {
             this.boardName = ''
           } else if (result.status === -1) {
@@ -223,7 +223,7 @@ export default {
           commit('setUserHeader', response)
           return response.json()
         }).then(result => {
-          console.log(result)
+          //console.log(result)
           if (result.status === 1) {
             payload.id = result.data.id
             commit('addLabels', payload)
@@ -264,7 +264,7 @@ export default {
           commit('setUserHeader', response)
           return response.json()
         }).then(result => {
-          console.log('updateLabel', result)
+          //console.log('updateLabel', result)
           if (result.status === 1) {
             commit('updateLabels', newData)
           } else if (result.status === -1) {
