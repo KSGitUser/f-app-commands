@@ -37,7 +37,7 @@
             </v-toolbar>
 
             <div class="root-box style-1 pl-2" :style="{'background': `url('${bf}')`}">
-                <draggable class="pre" v-model="columns">
+                <draggable class="pre" v-model="columns" @change="onColumnMoved($event, columns)">
                     <div class="scrollbar-box mt-4 mb-4 mr-2 ml-2" v-for="(column, index) in columns" :key="column.id">
 
                         <div class="fff column">
@@ -230,6 +230,30 @@
                 console.log("task to move=>", taskToMove);
                 await this.$store.dispatch('updateTasksList', taskToMove);
             },
+
+            onColumnMoved: async function ($event, columns) {
+                console.log("moved", $event.moved);
+
+                let oldIndex = $event.moved.oldIndex;
+                let newIndex = $event.moved.newIndex;
+                console.log("column.tasks[newIndex].position => ",
+                    columns[newIndex].position);
+                console.log("column.tasks[oldIndex].position => ",
+                    columns[oldIndex].position);
+                if (newIndex !== 0) {
+                    columns[oldIndex].position = columns[newIndex].position + 10;
+                } else {
+                    columns[oldIndex].position = columns[newIndex].position - 10;
+                }
+                const columnsToMove = {
+
+                    id_column: columns[newIndex].id,
+                    id_board: columns[newIndex].id_board,
+                    position: columns[newIndex].position,
+                };
+                console.log("columns to move=>", columnsToMove);
+                await this.$store.dispatch('updateColumnPosition', columnsToMove);
+            },
             add: function (idx) {
                 this.lists[idx].items.push({
                     name: 'Juan ' + id,
@@ -313,6 +337,10 @@
 
                 get: function () {
                     let unsortedColumns = this.$store.getters.columns;
+
+                    unsortedColumns.sort((a, b) => {
+                        a.position - b.position
+                    })
 
                     unsortedColumns.forEach(element => {
                         //console.log("Element.tasks=>", element.tasks);
