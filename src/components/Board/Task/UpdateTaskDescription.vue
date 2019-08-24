@@ -1,8 +1,8 @@
 <template>
     <div>
-        <div v-if="!update"  class="w100 pa-3">
+        <div v-if="!update" class="w100 pa-3">
             <div style="display: flex">
-                <div class="w100" >
+                <div class="w100">
                     <h4>Описание</h4>
 
                     <textarea v-if="task.description !== ''"
@@ -44,7 +44,6 @@
                         label="Описание"
                         auto-grow
                         :outline="!loading"
-                        clearable
                         :loading="loading"
                         v-model="description"
                         :rules="taskDescriptionRules"
@@ -52,11 +51,10 @@
                 ></v-textarea>
             </v-form>
 
-            <v-layout style="margin-top: -20px">
-<v-spacer></v-spacer>
+            <v-card-actions style="margin: -20px 0 -10px 0">
+                <v-spacer></v-spacer>
                 <v-btn
                         icon
-                        small
                         v-if="description.trim() !== task.description.trim()"
                         @click="saveNewTaskDescription"
                         :loading="loading"
@@ -66,13 +64,12 @@
                 </v-btn>
                 <v-btn
                         icon
-                        small
                         @click="update=false"
                         :disabled="loading"
                 >
                     <v-icon>reply</v-icon>
                 </v-btn>
-            </v-layout>
+            </v-card-actions>
 
         </div>
     </div>
@@ -126,7 +123,8 @@
     mounted () {
       if (this.$refs.textarea) {
         this.$refs.textarea.style.minHeight = this.$refs.textarea.scrollHeight + 'px'
-      }    },
+      }
+    },
     updated () {
       if (this.$refs.textarea) {
         this.$refs.textarea.style.minHeight = this.$refs.textarea.scrollHeight + 'px'

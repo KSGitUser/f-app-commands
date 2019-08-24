@@ -1,11 +1,12 @@
 <template>
 
     <div v-if="!update" style="display: flex" class="w100 pa-3">
-        <div class="w100">
+        <div
+                style="cursor: pointer"
+                class="w100"
+                @click="updateForm"
+        >
             <h4>Ярлыки</h4>
-            <!--<pre>{{labelsList}}</pre>-->
-            <!--<pre>{{labels}}</pre>-->
-            <!--<pre>{{task.labels}}</pre>-->
             <v-chip
                     outline
                     color="primary"
@@ -30,9 +31,9 @@
 
     <div
             class="w100 pa-3"
+            style="display: flex"
             v-else
     >
-        <!--<pre>{{labelsTask}}</pre>-->
         <v-form class="w100">
             <v-autocomplete
                     class="w100"
@@ -44,6 +45,7 @@
                     :loading="loading"
                     :disabled="loading"
                     multiple
+                    :autofocus="true"
                     @keypress.enter.prevent
                     @keypress.enter="saveTaskLabels"
             >
@@ -63,11 +65,10 @@
 
 
         </v-form>
-        <v-card-actions v-if="!loading" style="margin-top: -20px">
+        <v-card-actions v-if="!loading" style="margin-top: -20px; display: flex; align-items: flex-end">
             <v-spacer></v-spacer>
             <v-btn
                     icon
-                    small
                     @click="saveTaskLabels"
                     :loading="loading"
                     :disabled="loading"
@@ -77,7 +78,6 @@
             <br>
             <v-btn
                     icon
-                    small
                     @click="update=false"
                     :disabled="loading"
             >

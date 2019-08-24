@@ -3,7 +3,11 @@
 
         <v-flex v-if="!update">
             <div>
-                <div class="title align-start" style="display: flex">
+                <div
+                        @click="updateForm"
+                        class="title align-start"
+                        style="display: flex; cursor: pointer"
+                >
                     {{column.title}}
                     <v-spacer></v-spacer>
                     <v-btn
@@ -33,20 +37,19 @@
                         v-model="columnName"
                         required
                         auto-grow
-                        clearable
                         rows="1"
                         :loading="loading"
                         :disabled="loading"
                         :rules="columnNameRules"
                         @keypress.enter.prevent
+                        :autofocus="true"
                         @keypress.enter="saveNewColumnTitle"
                 ></v-textarea>
             </v-form>
-            <v-card-actions v-if="!loading" style="margin-top: -20px">
+            <v-card-actions v-if="!loading" style="margin: -20px 0">
                 <v-spacer></v-spacer>
                 <v-btn
                         icon
-                        small
                         v-if="columnName.trim() !== column.title.trim()"
                         @click="saveNewColumnTitle"
                         :loading="loading"
@@ -57,7 +60,6 @@
                 <br>
                 <v-btn
                         icon
-                        small
                         @click="update=false"
                         :disabled="loading"
                 >

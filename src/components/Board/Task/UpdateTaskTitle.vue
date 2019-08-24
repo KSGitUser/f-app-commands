@@ -1,9 +1,13 @@
 <template>
 
     <div v-if="!update" style="display: flex" class="w100">
-        <div class="w100">
+        <div
+                @click="updateForm"
+                class="w100"
+                style="cursor: pointer"
+        >
             <h4>
-                {{taskTitle}}
+                {{task.title}}
             </h4>
         </div>
         <div>
@@ -17,7 +21,6 @@
         </div>
 
     </div>
-
 
     <div
             class="w100"
@@ -35,6 +38,7 @@
                     type="text"
                     v-model="taskName"
                     required
+                    label="Задача"
                     auto-grow
                     rows="1"
                     :rules="taskNameRules"
@@ -44,11 +48,11 @@
                     @keypress.enter="saveNewTaskTitle"
             ></v-textarea>
         </v-form>
-        <v-card-actions v-if="!loading" style="margin-top: -20px">
+        <v-card-actions v-if="!loading" style="margin: -20px 0 -15px 0">
             <v-spacer></v-spacer>
             <v-btn
                     icon
-                    v-if="taskTitle.trim() !== taskName.trim()"
+                    v-if="task.title.trim() !== taskName.trim()"
                     @click="saveNewTaskTitle"
                     :loading="loading"
                     :disabled="loading"
@@ -71,7 +75,7 @@
 <script>
   export default {
     name: 'UpdateTaskTitle',
-    props: ['taskTitle', 'columnId', 'id'],
+    props: ['columnId'],
     data () {
       return {
         update: false,
@@ -87,13 +91,16 @@
       loading () {
         return this.$store.getters.loading
       },
+      task () {
+        return this.$store.getters.task
+      },
     },
     methods: {
       async saveNewTaskTitle () {
         if (this.$refs.form.validate()) {
           const newTitle = {
             title: this.taskName.trim(),
-            id: this.id,
+            id: this.task.id,
             columnId: this.columnId,
           }
           const {commit, dispatch} = this.$store
@@ -107,7 +114,7 @@
       },
       updateForm () {
         this.update = true
-        this.taskName = this.taskTitle
+        this.taskName = this.task.title
       },
     }
   }

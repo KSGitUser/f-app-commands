@@ -39,6 +39,12 @@
                         <list-items :list="list"></list-items>
                     </v-card-text>
                 </div>
+                <v-card-actions
+                        style="margin-top: -25px"
+                >
+                    <v-spacer></v-spacer>
+                    <v-btn flat @click="dialog = false">Закрыть</v-btn>
+                </v-card-actions>
             </v-card>
         </v-dialog>
 

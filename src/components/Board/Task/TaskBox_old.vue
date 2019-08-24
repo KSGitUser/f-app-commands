@@ -1,21 +1,25 @@
 <template>
     <div>
-        <div class="subheading"
+        <!--<div class="subheading"-->
+        <div class="title pa-1"
              @click="fetchTask"
         >
             {{task.title}}
-            <div class="text-truncate">
-                <v-chip
-                        class="caption pa-0"
+            <div
+                    style="display: flex; flex-wrap: wrap; margin-left: -2px; justify-content: flex-end"
+                    class="mt-3"
+            >
+                <span
+                        style="background: #e5e5e5; font-size: 12px; border-radius: 50px; margin: 2px; padding: 3px
+                        3px; display: block"
                         v-for="(label, idx) in labelsList"
                         :key="idx"
                         v-if="label!==-1"
 
                 >
                     {{labels[idx].title}}
-                </v-chip>
+                </span>
             </div>
-
         </div>
 
         <v-dialog
@@ -41,18 +45,20 @@
                     <br> <br> <br>
                 </div>
                 <div v-else>
-                    <hr>
+                    <v-divider></v-divider>
 
                     <update-task-description></update-task-description>
 
-                    <hr>
+                    <v-divider></v-divider>
 
                     <update-task-labels :columnId="columnId"></update-task-labels>
 
-                    <!--<v-card-text>-->
-                    <!--<hr>-->
-                    <!--<pre>{{storeTask}}</pre>-->
-                    <!--</v-card-text>-->
+                    <v-card-actions
+                        style="margin-top: -25px"
+                    >
+                        <v-spacer></v-spacer>
+                        <v-btn flat @click="dialog = false">Закрыть</v-btn>
+                    </v-card-actions>
                 </div>
             </v-card>
         </v-dialog>
@@ -100,22 +106,22 @@
       },
     },
     methods: {
-      async createNewColumn () {
-        if (this.$refs.form.validate()) {
-          const column = {
-            title: this.columnTitle.trim(),
-            id_board: this.id,
-          }
-          const {commit, dispatch} = this.$store
-          commit('setLoading', true)
-          const res = await dispatch('createColumn', column)
-          if (res === 1) {
-            this.columnTitle = ''
-            this.columnForm = false
-          }
-          commit('setLoading', false)
-        }
-      },
+      // async createNewColumn () {
+      //   if (this.$refs.form.validate()) {
+      //     const column = {
+      //       title: this.columnTitle.trim(),
+      //       id_board: this.id,
+      //     }
+      //     const {commit, dispatch} = this.$store
+      //     commit('setLoading', true)
+      //     const res = await dispatch('createColumn', column)
+      //     if (res === 1) {
+      //       this.columnTitle = ''
+      //       this.columnForm = false
+      //     }
+      //     commit('setLoading', false)
+      //   }
+      // },
       async fetchTask () {
         const {commit, dispatch} = this.$store
         this.dialog = !this.dialog

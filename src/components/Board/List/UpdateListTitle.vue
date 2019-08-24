@@ -1,7 +1,10 @@
 <template>
 
     <div v-if="!update" style="display: flex" class="w100">
-        <div class="w100">
+        <div
+                @click="updateForm"
+                class="w100"
+                style="cursor: pointer">
             <h4>
                 {{listTitle}}
             </h4>
@@ -19,7 +22,7 @@
     </div>
 
 
-    <v-layout
+    <div
             class="w100"
             v-else
     >
@@ -35,29 +38,36 @@
                     type="text"
                     v-model="listName"
                     required
+                    :loading="loading"
+                    :disabled="loading"
                     :rules="listNameRules"
                     @keypress.enter.prevent
+                    @keypress.enter="saveNewListTitle"
                     :autofocus="true"
             ></v-text-field>
         </v-form>
 
-        <v-btn
-                icon
-                v-if="listTitle.trim() !== listName.trim()"
-                @click="saveNewListTitle"
-                :loading="loading"
-                :disabled="loading"
-        >
-            <v-icon>done</v-icon>
-        </v-btn>
-        <v-btn
-                icon
-                @click="update=false"
-                :disabled="loading"
-        >
-            <v-icon>reply</v-icon>
-        </v-btn>
-    </v-layout>
+        <v-card-actions v-if="!loading" style="margin: -20px 0 -15px 0">
+            <v-spacer></v-spacer>
+            <v-btn
+                    icon
+                    v-if="listTitle.trim() !== listName.trim()"
+                    @click="saveNewListTitle"
+                    :loading="loading"
+                    :disabled="loading"
+            >
+                <v-icon>done</v-icon>
+            </v-btn>
+            <v-btn
+                    icon
+                    @click="update=false"
+                    :disabled="loading"
+            >
+                <v-icon>reply</v-icon>
+            </v-btn>
+        </v-card-actions>
+
+    </div>
 
 </template>
 

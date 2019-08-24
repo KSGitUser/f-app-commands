@@ -2,7 +2,7 @@
     <div>
         <v-card>
             <v-list>
-                <v-list-tile>
+                <v-list-tile v-if="!inputNewListItem">
 
                     <v-list-tile-content>
                         <v-list-tile-title>Добавить список задач</v-list-tile-title>
@@ -17,62 +17,70 @@
                         </v-btn>
                     </v-list-tile-action>
                 </v-list-tile>
+
+                <v-flex v-else>
+                    <div class="pa-2" style="display: flex">
+                        <v-flex>
+                            <div>
+
+                                <v-form
+                                        class="inputListItem"
+                                        ref="formListItem"
+                                        v-model="valid"
+                                        lazy-validation
+                                >
+                                    <v-text-field
+                                            name="labelName"
+                                            label="Новый список задач"
+                                            type="text"
+                                            v-model="listItemName"
+                                            required
+                                            :loading="loading"
+                                            :disabled="loading"
+                                            :rules="listItemRules"
+                                            @keypress.enter.prevent
+                                            @keypress.enter="addListItem"
+                                            :autofocus="true"
+                                    ></v-text-field>
+                                </v-form>
+
+                                <v-card-actions style="margin: -20px 0 -5px 0">
+                                    <v-spacer></v-spacer>
+                                    <v-btn
+                                            icon
+                                            small
+                                            @click="addListItem"
+                                            :loading="loading"
+                                            :disabled="loading"
+                                    >
+                                        <v-icon>done</v-icon>
+                                    </v-btn>
+                                    <v-btn
+                                            icon
+                                            small
+                                            @click="inputNewListItem=!inputNewListItem"
+                                            :disabled="loading"
+                                    >
+                                        <v-icon>close</v-icon>
+                                    </v-btn>
+                                </v-card-actions>
+
+                            </div>
+                        </v-flex>
+                    </div>
+                    <!--<v-divider></v-divider>-->
+                </v-flex>
+
             </v-list>
         </v-card>
         <v-divider></v-divider>
 
-        <v-flex v-if="inputNewListItem">
-            <div class="pa-2" style="display: flex">
-                <v-flex>
-                    <div style="display: flex">
 
-                        <v-form
-                                class="inputListItem"
-                                ref="formListItem"
-                                v-model="valid"
-                                lazy-validation
-                        >
-                            <v-text-field
-                                    name="labelName"
-                                    label="Новый список задач"
-                                    type="text"
-                                    v-model="listItemName"
-                                    required
-                                    :rules="listItemRules"
-                                    @keypress.enter.prevent
-                                    :autofocus="true"
-                            ></v-text-field>
-                        </v-form>
-
-                        <v-card-actions>
-                            <v-btn
-                                    icon
-                                    small
-                                    @click="addListItem"
-                                    :loading="loading"
-                                    :disabled="loading"
-                            >
-                                <v-icon>done</v-icon>
-                            </v-btn>
-                            <v-btn
-                                    icon
-                                    small
-                                    @click="inputNewListItem=!inputNewListItem"
-                                    :disabled="loading"
-                            >
-                                <v-icon>close</v-icon>
-                            </v-btn>
-                        </v-card-actions>
-                    </div>
-                </v-flex>
-            </div>
-            <v-divider></v-divider>
-        </v-flex>
 
         <v-flex v-if="updateTitle">
             <div class="pa-2" style="display: flex">
                 <v-flex>
-                    <div style="display: flex">
+                    <div>
                         <v-form class="inputListItem"
                                 ref="formUpdateListItemTitle"
                                 lazy-validation
@@ -84,12 +92,16 @@
                                     v-model="updateListItemName"
                                     required
                                     :rules="listItemRules"
+                                    :loading="loading"
+                                    :disabled="loading"
+                                    :autofocus="true"
                                     @keypress.enter.prevent
                                     @keypress.enter="updateListItemTitle"
                             ></v-text-field>
                         </v-form>
 
-                        <v-card-actions>
+                        <v-card-actions style="margin: -20px 0 -5px 0">
+                            <v-spacer></v-spacer>
                             <v-btn
                                     icon
                                     small
@@ -120,10 +132,12 @@
             <v-list-tile
                     v-for="listItem in listItems"
                     :key="listItem.id"
+                    style="margin-right: -15px"
             >
                 <v-flex>
                     <v-list-tile-action>
                         <v-checkbox
+                                :class="{done: listItem.execution === 1}"
                                 :input-value="listItemExecution(listItem.id)"
                                 :label="listItem.title"
                                 @change="updateListItemExecution(listItem.id, listItem.execution)"
@@ -132,6 +146,7 @@
                 </v-flex>
 
                 <v-btn
+                        :disabled="loading"
                         icon
                         @click="updateListItemForm(listItem.id)"
                 >
@@ -231,5 +246,9 @@
 <style scoped>
     .inputListItem {
         width: 100%;
+    }
+
+    .done >>> label {
+        text-decoration: line-through;
     }
 </style>
