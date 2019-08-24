@@ -159,7 +159,6 @@
     import UpdateTaskLabels from './Task/UpdateTaskLabels'
     import UpdateListTitle from './List/UpdateListTitle'
     import ListItems from './List/ListItems'
-    import _ from "lodash"
 
     export default {
         props: ['id'],
