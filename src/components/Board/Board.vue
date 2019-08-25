@@ -204,7 +204,7 @@
                     value: 'https://cdn.vuetifyjs.com/images/parallax/material2.jpg'
                 }, {
                     text: '2',
-                    value: 'https://ns328286.ip-37-187-113.eu/ew/wallpapers/800x480/   02715_800x480.jpg'
+                    value: 'https://ns328286.ip-37-187-113.eu/ew/wallpapers/800x480/02715_800x480.jpg'
                 }],
             }
         },
