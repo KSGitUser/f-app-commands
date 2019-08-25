@@ -1,95 +1,91 @@
 <template>
-    <div>
-        <!--загрузка данных-->
-        <div v-if="localLoading" class="text-xs-center align-center mt-5">
-            <v-progress-circular :size="100" :width="3" color="primary" indeterminate></v-progress-circular>
-        </div>
+    <!--загрузка данных-->
+    <div v-if="localLoading" class="text-xs-center align-center mt-5">
+        <v-progress-circular :size="100" :width="3" color="primary" indeterminate></v-progress-circular>
+    </div>
 
-        <div v-else class="demo">
+    <div v-else class="demo">
 
-            <v-toolbar class="my-toolbar">
-                <v-toolbar-title class="w100">
-                    <update-board-title></update-board-title>
-                </v-toolbar-title>
-                <v-spacer></v-spacer>
+        <v-toolbar class="my-toolbar">
+            <v-toolbar-title class="w100">
+                <update-board-title></update-board-title>
+            </v-toolbar-title>
+            <v-spacer></v-spacer>
 
-                <labels-component></labels-component>
-                <v-menu :close-on-content-click="false">
+            <labels-component></labels-component>
+            <v-menu :close-on-content-click="false">
 
-                    <template v-slot:activator="{ on }">
-                        <v-btn icon v-on="on">
-                            <v-icon>insert_photo</v-icon>
-                        </v-btn>
-                    </template>
+                <template v-slot:activator="{ on }">
+                    <v-btn icon v-on="on">
+                        <v-icon>insert_photo</v-icon>
+                    </v-btn>
+                </template>
 
-                    <v-card class="pa-1 w200p">
-                        <p class="title pa-2">Выберите фон:</p>
-                        <v-img v-for="(el, idx) in bfOptions" :key="idx" :src="el.value" :lazy-src="el.value" aspect-ratio="1" class="grey lighten-2 ma-2" @click="bf=el.value">
-                            <template v-slot:placeholder>
-                                <v-layout fill-height align-center justify-center ma-0>
-                                    <v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>
-                                </v-layout>
-                            </template>
-                        </v-img>
+                <v-card class="pa-1 w200p">
+                    <p class="title pa-2">Выберите фон:</p>
+                    <v-img v-for="(el, idx) in bfOptions" :key="idx" :src="el.value" :lazy-src="el.value" aspect-ratio="1" class="grey lighten-2 ma-2" @click="bf=el.value">
+                        <template v-slot:placeholder>
+                            <v-layout fill-height align-center justify-center ma-0>
+                                <v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>
+                            </v-layout>
+                        </template>
+                    </v-img>
+                </v-card>
+            </v-menu>
+
+        </v-toolbar>
+
+        <div class="root-box style-1 pl-2 " :style="{'background': `url('${bf}')`}">
+            <draggable class="pre" v-model="columns" @change="onColumnMoved($event, columns)">
+                <div class="scrollbar-box mt-4 mb-4 mr-2 ml-2" v-for="(column, index) in columns" :key="column.id">
+
+                    <div class="fff column">
+                        <update-column-title :column="column"></update-column-title>
+                    </div>
+
+                    <div class="scrollbar fff column style-1  pa-1">
+                        <draggable v-model="column.tasks" item @change="onTaskMoved($event, column)">
+
+                            <div class="item" v-for="element in column.tasks" :key="element.id" v-show="element.labels.indexOf(labelActiv) !== -1 || !filterOff" @click="openTaskDialog(element, column.id)">
+                                <task-box-mini :task="element">
+                                </task-box-mini>
+                            </div>
+                            <create-new-task slot="footer" class="fff column" :id="column.id">
+                            </create-new-task>
+                        </draggable>
+
+                    </div>
+
+
+                    <div class="scrollbar fff column style-1  pa-1">
+                        <!--<draggable-->
+                        <!--id="second"-->
+                        <!--data-source="juju"-->
+                        <!--:list="column.lists"-->
+                        <!--draggable=".item"-->
+                        <!--group="a"-->
+                        <!--&gt;-->
+
+
+                        <div class="item" v-for="element in column.lists" :key="element.id" @click="openListDialog(element, column.id)">
+                            <div class="title pa-1">
+                                {{element.title}}
+                            </div>
+                            <!--<list-box :columnId="column.id" :list="element"></list-box>-->
+                        </div>
+                        <!--</draggable>-->
+                    </div>
+
+                    <create-new-list class="fff column" :id="column.id"></create-new-list>
+
+                </div>
+                <!--добавить столбец-->
+                <div class="scrollbar-box mt-4 mb-5 mr-2 ml-2 pr-3" slot="footer">
+                    <v-card>
+                        <create-column class="w100" :id="id"></create-column>
                     </v-card>
-                </v-menu>
-
-            </v-toolbar>
-
-            <div class="root-box style-1 pl-2" :style="{'background': `url('${bf}')`}">
-                <draggable class="pre" v-model="columns" @change="onColumnMoved($event, columns)">
-                    <div class="scrollbar-box mt-4 mb-4 mr-2 ml-2" v-for="(column, index) in columns" :key="column.id">
-
-                        <div class="fff column">
-                            <update-column-title :column="column"></update-column-title>
-                        </div>
-
-                        <div class="scrollbar fff column style-1  pa-1">
-                            <draggable v-model="column.tasks" item @change="onTaskMoved($event, column)">
-                                <transition-group>
-                                    <div class="item" v-for="element in column.tasks" :key="element.id" v-show="element.labels.indexOf(labelActiv) !== -1 || !filterOff" @click="openTaskDialog(element, column.id)">
-                                        <task-box-mini :task="element">
-                                        </task-box-mini>
-                                    </div>
-                                </transition-group>
-                            </draggable>
-
-                        </div>
-                        <create-new-task class="fff column" :id="column.id">
-                        </create-new-task>
-
-                        <div class="scrollbar fff column style-1  pa-1">
-                            <!--<draggable-->
-                            <!--id="second"-->
-                            <!--data-source="juju"-->
-                            <!--:list="column.lists"-->
-                            <!--draggable=".item"-->
-                            <!--group="a"-->
-                            <!--&gt;-->
-
-                            <draggable id="second" data-source="juju" :list="column.lists" draggable=".item" group="a">
-                                <div class="item" v-for="element in column.lists" :key="element.id" @click="openListDialog(element, column.id)">
-                                    <div class="title pa-1">
-                                        {{element.title}}
-                                    </div>
-                                    <!--<list-box :columnId="column.id" :list="element"></list-box>-->
-                                </div>
-                            </draggable>
-                        </div>
-
-                        <create-new-list class="fff column" :id="column.id"></create-new-list>
-
-                    </div>
-                    <!--добавить столбец-->
-
-                    <div class="scrollbar-box mt-4 mb-5 mr-2 ml-2 pr-3" slot="footer">
-                        <v-card>
-                            <create-column class="w100" :id="id"></create-column>
-                        </v-card>
-                    </div>
-                </draggable>
-            </div>
-
+                </div>
+            </draggable>
         </div>
 
         <!-- Диалог работы с задачами -->
@@ -142,6 +138,8 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
+        <!---->
+
     </div>
 </template>
 
