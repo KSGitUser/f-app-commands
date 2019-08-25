@@ -45,7 +45,7 @@
                         </div>
 
                         <div class="scrollbar fff column style-1  pa-1">
-                            <draggable v-model="column.tasks" @change="onTaskMoved($event, column)">
+                            <draggable v-model="column.tasks" item @change="onTaskMoved($event, column)">
                                 <transition-group>
                                     <div class="item" v-for="element in column.tasks" :key="element.id" v-show="element.labels.indexOf(labelActiv) !== -1 || !filterOff" @click="openTaskDialog(element, column.id)">
                                         <task-box-mini :task="element">
@@ -210,48 +210,55 @@
         },
         methods: {
             onTaskMoved: async function ($event, column) {
-
                 let oldIndex = $event.moved.oldIndex;
                 let newIndex = $event.moved.newIndex;
-                console.log("column.tasks[newIndex].position => ",
-                    column.tasks[newIndex].position);
-                console.log("column.tasks[oldIndex].position => ",
-                    column.tasks[oldIndex].position);
-                if (newIndex !== 0) {
-                    column.tasks[oldIndex].position = column.tasks[newIndex].position + 10;
+                if (newIndex < oldIndex) {
+                    if (newIndex === 0) {
+                        column.tasks[oldIndex].position = column.tasks[newIndex].position - 100;
+                    } else {
+                        const positionToMove = Math.floor((column.tasks[newIndex].position - column.tasks[newIndex - 1].position) / 2);
+                        column.tasks[oldIndex].position = column.tasks[newIndex].position - positionToMove;
+                    }
                 } else {
-                    column.tasks[oldIndex].position = column.tasks[newIndex].position - 10;
+                    if (newIndex === column.tasks.length - 1) {
+                        column.tasks[oldIndex].position = column.tasks[newIndex].position + 100;
+                    } else {
+                        const positionToMove = Math.floor((column.tasks[newIndex].position - column.tasks[newIndex + 1].position) / 2);
+                        column.tasks[oldIndex].position = column.tasks[newIndex].position - positionToMove;
+                    }
                 }
+
                 const taskToMove = {
                     id_column: column.id,
-                    id: column.tasks[newIndex].id,
-                    position: column.tasks[newIndex].position,
+                    id: column.tasks[oldIndex].id,
+                    position: column.tasks[oldIndex].position,
                 };
-                console.log("task to move=>", taskToMove);
-                await this.$store.dispatch('updateTasksList', taskToMove);
+                await this.$store.dispatch('updateTaskPosition', taskToMove);
             },
 
             onColumnMoved: async function ($event, columns) {
-                console.log("moved", $event.moved);
-
                 let oldIndex = $event.moved.oldIndex;
                 let newIndex = $event.moved.newIndex;
-                console.log("column.tasks[newIndex].position => ",
-                    columns[newIndex].position);
-                console.log("column.tasks[oldIndex].position => ",
-                    columns[oldIndex].position);
-                if (newIndex !== 0) {
-                    columns[oldIndex].position = columns[newIndex].position + 10;
+                if (newIndex < oldIndex) {
+                    if (newIndex === 0) {
+                        columns[oldIndex].position = columns[newIndex].position - 100;
+                    } else {
+                        const positionToMove = Math.floor((columns[newIndex].position - columns[newIndex - 1].position) / 2);
+                        columns[oldIndex].position = columns[newIndex].position - positionToMove;
+                    }
                 } else {
-                    columns[oldIndex].position = columns[newIndex].position - 10;
+                    if (newIndex === columns.length - 1) {
+                        columns[oldIndex].position = columns[newIndex].position + 100;
+                    } else {
+                        const positionToMove = Math.floor((columns[newIndex].position - columns[newIndex + 1].position) / 2);
+                        columns[oldIndex].position = columns[newIndex].position - positionToMove;
+                    }
                 }
                 const columnsToMove = {
-
-                    id_column: columns[newIndex].id,
-                    id_board: columns[newIndex].id_board,
-                    position: columns[newIndex].position,
+                    id: columns[oldIndex].id,
+                    id_board: columns[oldIndex].id_board,
+                    position: columns[oldIndex].position,
                 };
-                console.log("columns to move=>", columnsToMove);
                 await this.$store.dispatch('updateColumnPosition', columnsToMove);
             },
             add: function (idx) {
@@ -338,20 +345,13 @@
                 get: function () {
                     let unsortedColumns = this.$store.getters.columns;
 
-                    unsortedColumns.sort((a, b) => {
-                        a.position - b.position
-                    })
+                    unsortedColumns.sort((a, b) => a.position - b.position);
 
                     unsortedColumns.forEach(element => {
-                        //console.log("Element.tasks=>", element.tasks);
-                        //_.sortBy(element.tasks, ['position']);
                         element.tasks.sort((a, b) => a.position - b.position);
-                        //console.table("newElement=>", element.tasks)
                         return element;
 
                     });
-
-                    console.log("Columns => ", unsortedColumns);
                     return unsortedColumns;
                 },
                 set: function (val) {

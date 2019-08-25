@@ -613,7 +613,7 @@ export default {
           }
         )
     },
-    async updateTasksList ({commit, getters}, payload) {
+    async updateTaskPosition ({commit, getters}, payload) {
       return fetch(`${URL}/api/v1/task/change-position`, {
         mode: 'cors',
         headers: {
@@ -626,9 +626,14 @@ export default {
         method: 'PATCH',
         body: JSON.stringify(payload)
       })
-        .then(response => {
-          console.log("response =>", response.json());
-        })
+        .then(response => response.json())
+         .then(data => {
+           if (data.status === -1) {
+            console.error(data.message)
+            commit('clearSnackbar')
+            commit('setSnackbarMsg', 'Ошибка перемещения задачи')
+            commit('setSnackbarType', 'error')
+           }})     
         .catch(
           error => {
             console.error(error)
@@ -651,9 +656,14 @@ export default {
         method: 'PATCH',
         body: JSON.stringify(payload)
       })
-        .then(response => {
-          console.log("response =>", response.json());
-        })
+      .then(response => response.json())
+      .then(data => {
+        if (data.status === -1) {
+         console.error(data.message)
+         commit('clearSnackbar')
+         commit('setSnackbarMsg', 'Ошибка перемещения колонки')
+         commit('setSnackbarType', 'error')
+        }})
         .catch(
           error => {
             console.error(error)
